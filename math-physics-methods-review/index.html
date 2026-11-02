@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="数学物理方法互动复习站：复变函数、解析函数、洛朗级数、孤立奇点与留数。">
-  <title>数学物理方法 · 复变与留数</title>
+  <meta name="description" content="数学物理方法互动复习站：复变函数、解析函数、留数、三类数学物理方程与定解条件。">
+  <title>数学物理方法 · 复变与方程</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
   <link rel="stylesheet" href="./css/styles.css">
@@ -16,15 +16,15 @@
     <div class="hero__inner">
       <div class="hero__copy">
         <p class="eyebrow">MATHEMATICAL METHODS · COMPLEX ANALYSIS</p>
-        <h1>数学物理方法<span>复变与留数</span></h1>
+        <h1>数学物理方法<span>复变与方程</span></h1>
         <p class="hero__lead">
-          从复数的几何表示出发，用柯西–黎曼方程识别解析函数，再通过洛朗级数和留数把复积分收束成算术。
+          从复数的几何表示出发，用柯西–黎曼方程识别解析函数，再通过留数和数学物理方程理解积分、传播与稳态场。
         </p>
         <div class="hero__stats" aria-label="站点统计">
-          <span><strong>3</strong> 个章节</span>
+          <span><strong>4</strong> 个章节</span>
           <span><strong id="totalKnowledge">0</strong> 个知识点</span>
           <span><strong id="totalFigures">0</strong> 张资料图</span>
-          <span><strong>6</strong> 份原始笔记</span>
+          <span><strong>8</strong> 份原始笔记</span>
           <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
         </div>
         <div class="hero__actions" aria-label="快速入口">
@@ -126,7 +126,7 @@
 
         <nav class="rail__actions" aria-label="冲刺入口">
           <a href="#assessment">通关自测 <span>18 题</span></a>
-          <a href="#formulaSheet">公式速查 <span>13 组</span></a>
+          <a href="#formulaSheet">公式速查 <span>17 组</span></a>
           <a href="#examWorkflow">解题流程 <span>4 步</span></a>
         </nav>
       </div>
@@ -135,7 +135,7 @@
     <main id="courseContent" class="main">
       <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
         <div class="assessment__intro">
-          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <p class="eyebrow">CHECKPOINT · 24 QUESTIONS</p>
           <h2 id="assessmentTitle">用题目暴露“解析、奇点、留数”混淆</h2>
           <p>
             每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
@@ -157,7 +157,7 @@
           </div>
           <div class="quiz-dashboard" aria-live="polite">
             <div class="quiz-dashboard__status">
-              <strong id="quizProgressText">已答 0 / 18</strong>
+              <strong id="quizProgressText">已答 0 / 24</strong>
               <span id="quizScoreText">答对 0 题</span>
             </div>
             <div class="quiz-dashboard__track" aria-hidden="true">
@@ -281,6 +281,26 @@
                 <td>$\int_{-\infty}^{\infty}f(x)\,dx=2\pi i\sum_{\operatorname{Im}z>0}\operatorname{Res}$</td>
                 <td>需说明大半圆弧积分趋于零。</td>
               </tr>
+              <tr>
+                <td>波动方程</td>
+                <td>$u_{tt}=a^2\Delta u+f$</td>
+                <td>二阶时间导数，需要初始位移和初始速度。</td>
+              </tr>
+              <tr>
+                <td>热传导方程</td>
+                <td>$u_t=D\Delta u+f$</td>
+                <td>一阶时间导数，只需初始温度分布。</td>
+              </tr>
+              <tr>
+                <td>泊松方程</td>
+                <td>$\Delta V=-\rho_e/\varepsilon$</td>
+                <td>稳态场；没有自由电荷时退化为 $\Delta V=0$。</td>
+              </tr>
+              <tr>
+                <td>三类边界</td>
+                <td>$u=g,\quad \partial u/\partial n=g,\quad \alpha u+\beta\partial u/\partial n=\mu$</td>
+                <td>依次为 Dirichlet、Neumann、Robin 边界条件。</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -346,7 +366,7 @@
             <p class="eyebrow">SOURCE LIBRARY</p>
             <h2 id="sourcesTitle">原始笔记与课堂图片</h2>
           </div>
-          <p>网站内容以这六份材料为边界；点击图片可放大对照原笔记。</p>
+          <p>网站内容以这八份材料为边界；点击图片可放大对照原笔记。</p>
         </div>
         <div class="figure-gallery source-gallery">
           <button class="figure-card" type="button" data-figure-src="./assets/source/residue-theory-notes.jpg" data-figure-title="留数理论笔记" data-figure-caption="留数定义、定理、无穷远点与实积分">
@@ -373,6 +393,14 @@
             <span class="figure-card__media"><img src="./assets/source/analytic-functions-figures.jpg" alt="解析函数图示" loading="lazy"></span>
             <span class="figure-card__text"><strong>解析函数图示</strong><small>课堂例题与知识结构图</small></span>
           </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/pde-definition-notes.jpg" data-figure-title="定解问题物理内容笔记" data-figure-caption="弦振动、热传导、泊松方程、初始条件与边界条件">
+            <span class="figure-card__media"><img src="./assets/source/pde-definition-notes.jpg" alt="定解问题物理内容笔记" loading="lazy"></span>
+            <span class="figure-card__text"><strong>三类方程与定解条件</strong><small>波动、传热、稳态场与边界类型</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/pde-examples-figures.jpg" data-figure-title="数学物理方程图示" data-figure-caption="课堂图片：弦振动、热传导、泊松方程和初始条件">
+            <span class="figure-card__media"><img src="./assets/source/pde-examples-figures.jpg" alt="数学物理方程图示" loading="lazy"></span>
+            <span class="figure-card__text"><strong>方程推导与例题图</strong><small>物理模型到数学方程</small></span>
+          </button>
         </div>
       </section>
 
@@ -392,15 +420,15 @@
   </div>
 
   <footer class="footer">
-    <p>数学物理方法互动复习站 · 复变函数、解析函数、奇点与留数</p>
+    <p>数学物理方法互动复习站 · 复变函数、留数、数学物理方程与定解条件</p>
     <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 原始笔记入口</p>
   </footer>
 
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
-  <script defer src="./js/course-data.js?v=20261101-mpm1"></script>
-  <script defer src="./js/quiz-data.js?v=20261101-mpm1"></script>
-  <script defer src="./js/app.js?v=20261101-mpm1"></script>
-  <script defer src="./js/practice.js?v=20261101-mpm1"></script>
+  <script defer src="./js/course-data.js?v=20261102-pde"></script>
+  <script defer src="./js/quiz-data.js?v=20261102-pde"></script>
+  <script defer src="./js/app.js?v=20261102-pde"></script>
+  <script defer src="./js/practice.js?v=20261102-pde"></script>
 </body>
 </html>

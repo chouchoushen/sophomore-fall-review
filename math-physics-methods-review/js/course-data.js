@@ -856,6 +856,328 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
           ]
         }
       ]
+    },
+    {
+      id: "pde",
+      number: "04",
+      title: "数学物理方程与定解条件",
+      english: "PDEs & Well-Posed Problems",
+      accent: "rose",
+      summary: "先由物理守恒或运动规律建立波动、热传导和静电场方程，再用初始条件与边界条件确定唯一物理过程。",
+      examFocus: ["三类典型方程", "初始条件数量", "三类边界条件", "定解问题的完整表述"],
+      themes: [
+        {
+          id: "pde-models",
+          title: "三类典型数学物理方程",
+          summary: "同一个未知函数 u 可以表示位移、温度或电势；偏微分方程描述它在空间和时间中怎样变化。",
+          figures: [
+            {
+              src: "./assets/source/pde-definition-notes.jpg",
+              title: "定解问题物理内容笔记",
+              caption: "笔记：弦振动、热传导、泊松方程以及初始条件和边界条件"
+            },
+            {
+              src: "./assets/source/pde-examples-figures.jpg",
+              title: "三类方程与初始条件图示",
+              caption: "课堂图片：弦振动、热传导、泊松方程和初始条件例题"
+            }
+          ],
+          cards: [
+            {
+              id: "pde-definition",
+              type: "definition",
+              title: "什么是偏微分方程",
+              body: [
+                "偏微分方程（PDE）是含有未知多元函数及其偏导数的方程。这里的未知函数通常写成 $u(x,t)$、$V(x,y,z)$ 等。",
+                "“解 PDE”不是只找到一个代数数，而是找到满足方程、定义域以及附加条件的函数。",
+                "物理方程只描述一般规律；要确定某个具体过程，还必须告诉系统一开始是什么状态，以及边界上受什么控制。"
+              ]
+            },
+            {
+              id: "wave-equation-model",
+              type: "formula",
+              title: "弦振动方程：描述传播与振荡",
+              body: [
+                "细长柔软弦作小幅横振动时，可以只研究横向位移 $u(x,t)$。对小振幅、小斜率且张力近似恒定，得到一维波动方程。",
+                "$a$ 是波速：$a^2=T/\\rho$；$T$ 为张力，$\\rho$ 为线密度。$f$ 表示单位质量所受外力折算后的强迫项。",
+                "没有外力时 $f=0$，称齐次波动方程；初始扰动会分成向左右传播的两列波。"
+              ],
+              formula: String.raw`u_{tt}=a^2u_{xx}+f,
+\qquad
+a^2=\frac{T}{\rho}`
+            },
+            {
+              id: "wave-equation-3d",
+              type: "formula",
+              title: "三维波动方程",
+              body: [
+                "在三维介质中，拉普拉斯算子 $\\Delta u=u_{xx}+u_{yy}+u_{zz}$ 表示所有空间方向的曲率效应。",
+                "$F$ 是单位体积外力，$\\rho$ 是体密度，则强迫项近似为 $F/\\rho$。"
+              ],
+              formula: String.raw`u_{tt}=a^2\Delta u+f,
+\qquad
+f=\frac{F}{\rho}`
+            },
+            {
+              id: "heat-equation-model",
+              type: "formula",
+              title: "热传导方程：描述扩散与趋于均匀",
+              body: [
+                "均匀细杆侧面绝热、温度只沿长度方向变化时，温度 $u(x,t)$ 由热传导方程描述。",
+                "热量总是从高温区流向低温区，因此温度曲线的凹性决定该点温度升高还是降低；这体现扩散、平滑效应。",
+                "$c_p$ 为定压比热容，$\\rho$ 为密度，$k$ 为热导率，$F$ 为单位体积热源功率。"
+              ],
+              formula: String.raw`u_t=D u_{xx}+f,
+\qquad
+D=\frac{k}{\rho c_p},
+\qquad
+f=\frac{F}{\rho c_p}`
+            },
+            {
+              id: "heat-equation-3d",
+              type: "formula",
+              title: "三维热传导方程",
+              formula: String.raw`u_t=D\Delta u+f`
+            },
+            {
+              id: "poisson-equation",
+              type: "formula",
+              title: "泊松方程：描述稳态场",
+              body: [
+                "在介电常数为 $\\varepsilon$ 的空间中，由电荷体密度 $\\rho_e$ 产生静电场，电势 $V$ 满足泊松方程。",
+                "该方程没有时间导数，描述的是已经稳定的电势分布，而不是随时间演化的过程。",
+                "符号与电势和电荷的约定有关；本课程采用正电荷密度对应负拉普拉斯项的形式。"
+              ],
+              formula: String.raw`\Delta V=-\frac{\rho_e}{\varepsilon}`
+            },
+            {
+              id: "laplace-equation",
+              type: "formula",
+              title: "拉普拉斯方程：无自由电荷的稳态场",
+              body: [
+                "当区域中没有自由电荷 $\\rho_e=0$ 时，泊松方程退化为拉普拉斯方程。",
+                "在没有源的空区域，电势由边界上的取值控制；内部不会自行产生新的极值。"
+              ],
+              formula: String.raw`\Delta V=0`
+            },
+            {
+              id: "three-pdes-comparison",
+              type: "judgment",
+              title: "三类方程一眼区分",
+              bullets: [
+                "$u_{tt}=a^2\\Delta u+f$：二阶时间导数，波动方程，有惯性、会来回振荡。",
+                "$u_t=D\\Delta u+f$：一阶时间导数，热传导方程，随时间扩散和平滑。",
+                "$\\Delta u=-\\rho_e/\\varepsilon$：没有时间导数，泊松方程，求稳态场。",
+                "$\\Delta u=0$：无源稳态场，是泊松方程的特例。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "initial-boundary-conditions",
+          title: "为什么需要定解条件",
+          summary: "PDE 给出普遍规律，初始条件和边界条件挑选出某个具体物理过程。",
+          cards: [
+            {
+              id: "why-conditions",
+              type: "definition",
+              title: "定解问题",
+              body: [
+                "只写 PDE 通常不足以确定唯一解。例如同一条弦，不同初始形状会形成完全不同的波形。",
+                "“定解问题” = 偏微分方程 + 定义域 + 初始条件 + 边界条件。有时还可能有接口条件、无穷远条件或周期性条件。",
+                "条件既不能少到留下大量可能解，也不能彼此矛盾到没有解。具体需要哪些条件，由物理过程和方程结构决定。"
+              ]
+            },
+            {
+              id: "initial-condition-count",
+              type: "judgment",
+              title: "初始条件要写几个",
+              body: [
+                "如果方程对时间 $t$ 的最高阶导数是 $n$，就需要 $n$ 个独立的初始条件。",
+                "二阶时间导数需要初始函数值和初始一阶时间导数；一阶时间导数只需要初始函数值。",
+                "这里的“初始”必须是随时间演化的问题；泊松、拉普拉斯这类稳态问题没有时间变量，也就没有时间初始条件。"
+              ]
+            },
+            {
+              id: "wave-initial",
+              type: "formula",
+              title: "波动方程：需要形状和速度",
+              body: [
+                "$u(x,0)$ 给出弦一开始的形状；$u_t(x,0)$ 给出每一点一开始的竖直速度。",
+                "只给初始形状不够，因为相同的弯形可能正在向上、向下或静止运动。"
+              ],
+              formula: String.raw`u(x,0)=\varphi(x),
+\qquad
+u_t(x,0)=\psi(x)`
+            },
+            {
+              id: "heat-initial",
+              type: "formula",
+              title: "热传导方程：只需初始温度",
+              body: [
+                "热方程只出现一阶时间导数，因此一个初始温度分布就能确定之后温度的演化。",
+                "热方程本身决定冷却或升温速度，不需要额外指定“初始升温速度”。"
+              ],
+              formula: String.raw`u(x,0)=\varphi(x)`
+            },
+            {
+              id: "steady-no-initial",
+              type: "warning",
+              title: "稳态方程没有时间初值",
+              body: [
+                "泊松方程和拉普拉斯方程描述已经稳定的场，时间不进入方程，因此不能写 $V(x,y,0)$ 作为初值。",
+                "这些问题的“挑选信息”主要来自边界电势、边界法向导数或导体电位等空间边界条件。"
+              ]
+            },
+            {
+              id: "boundary-condition-role",
+              type: "definition",
+              title: "边界条件控制外界影响",
+              body: [
+                "边界条件说明系统与外界怎样交换信息：端点是否固定、温度是否维持、边界是否绝热、是否有热流。",
+                "空间二阶方程通常需要每个空间方向的边界信息；一个一维区间 $0<x<l$ 通常要在 $x=0$ 与 $x=l$ 两端各给出一项边界条件。"
+              ]
+            },
+            {
+              id: "initial-boundary-together",
+              type: "judgment",
+              title: "初始与边界的分工",
+              bullets: [
+                "初始条件回答：$t=0$ 时系统在哪里、怎样运动。",
+                "边界条件回答：在整个时间过程中，系统的端点受到什么约束。",
+                "PDE 回答：区域内部怎样随时间或空间变化。",
+                "三者共同组成一个明确的物理问题。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "boundary-types",
+          title: "三类边界条件与完整例题",
+          summary: "固定函数值、固定法向导数、给出两者组合，对应三类最常见的线性边界条件。",
+          cards: [
+            {
+              id: "dirichlet-condition",
+              type: "formula",
+              title: "第一类边界条件：固定 u",
+              body: [
+                "边界上直接指定未知函数的取值，称为 Dirichlet 条件。",
+                "弦的端点位移固定、杆端温度维持恒定、导体表面电势固定，都属于第一类条件。"
+              ],
+              formula: String.raw`u(0,t)=\mu_1(t),
+\qquad
+u(l,t)=\mu_2(t)`
+            },
+            {
+              id: "neumann-condition",
+              type: "formula",
+              title: "第二类边界条件：固定法向导数",
+              body: [
+                "边界上指定 $u$ 的外法向导数 $\\partial u/\\partial n$，称为 Neumann 条件。",
+                "对热传导，法向导数对应边界热流；$\\partial u/\\partial n=0$ 表示绝热，没有热量穿过边界。"
+              ],
+              formula: String.raw`\left.\frac{\partial u}{\partial n}\right|_{\partial\Omega}
+=g(t)`
+            },
+            {
+              id: "robin-condition",
+              type: "formula",
+              title: "第三类边界条件：函数值与导数组合",
+              body: [
+                "边界上同时涉及 $u$ 与其法向导数，通常写成两者线性组合，称为 Robin 条件。",
+                "牛顿冷却边界中，边界热流与物体表面和环境温度之差有关，就会出现这种组合。"
+              ],
+              formula: String.raw`\left(
+\alpha u+\beta\frac{\partial u}{\partial n}
+\right)_{\partial\Omega}=\mu(t)`
+            },
+            {
+              id: "boundary-physical",
+              type: "judgment",
+              title: "看到物理条件先翻译数学条件",
+              bullets: [
+                "“端点固定” → $u=0$（第一类）。",
+                "“端点温度保持为 $T_0$” → $u=T_0$（第一类）。",
+                "“侧面绝热” → 法向热流为零，即 $\\partial u/\\partial n=0$（第二类）。",
+                "“与外界按牛顿定律散热” → 温度与法向梯度成线性关系（第三类）。"
+              ]
+            },
+            {
+              id: "wave-well-posed-example",
+              type: "example",
+              title: "完整例子：两端固定的弦",
+              body: [
+                "长度 $l$ 的弦两端固定，给初始形状和初始速度，求 $u(x,t)$。",
+                "这里 PDE 描述弦内部振动，两个空间端点的边界条件描述固定端，两个初始条件描述 $t=0$ 的状态。"
+              ],
+              example: {
+                title: "完整写出定解问题",
+                body: [
+                  "$0<x<l,\\ t>0$：$u_{tt}=a^2u_{xx}$。",
+                  "边界：$u(0,t)=u(l,t)=0$。",
+                  "初始：$u(x,0)=\\varphi(x)$，$u_t(x,0)=\\psi(x)$。",
+                  "其中初始形状和速度还应在端点处满足与固定边界相容的条件。"
+                ],
+                formula: String.raw`\begin{cases}
+u_{tt}=a^2u_{xx}, & 0<x<l,\ t>0,\\
+u(0,t)=u(l,t)=0, & t\ge0,\\
+u(x,0)=\varphi(x),\quad u_t(x,0)=\psi(x), & 0\le x\le l.
+\end{cases}`
+              }
+            },
+            {
+              id: "heat-well-posed-example",
+              type: "example",
+              title: "完整例子：两端温度固定的细杆",
+              body: [
+                "细杆 $0<x<l$，两端温度分别维持在 $T_1,T_2$，初始温度为 $\\varphi(x)$。"
+              ],
+              example: {
+                title: "完整写出定解问题",
+                body: [
+                  "内部满足 $u_t=Du_{xx}$。",
+                  "两端 $u(0,t)=T_1$，$u(l,t)=T_2$。",
+                  "初始仅需 $u(x,0)=\\varphi(x)$；热方程是一阶时间方程。"
+                ],
+                formula: String.raw`\begin{cases}
+u_t=Du_{xx}, & 0<x<l,\ t>0,\\
+u(0,t)=T_1,\quad u(l,t)=T_2, & t\ge0,\\
+u(x,0)=\varphi(x), & 0\le x\le l.
+\end{cases}`
+              }
+            },
+            {
+              id: "poisson-boundary-example",
+              type: "example",
+              title: "完整例子：区域内的静电场",
+              body: [
+                "在区域 $\\Omega$ 内给定自由电荷密度 $\\rho_e$，边界电势已知。",
+                "因为没有时间演化，只需泊松方程和空间边界条件，不写初始条件。"
+              ],
+              example: {
+                title: "完整写出边值问题",
+                body: [
+                  "$\\Delta V=-\\rho_e/\\varepsilon$ in $\\Omega$。",
+                  "$V=V_0$ on $\\partial\\Omega$。",
+                  "这是第一类边值问题；若边界给的是法向电场 $\\partial V/\\partial n$，则属于第二类。"
+                ]
+              }
+            },
+            {
+              id: "conditions-common-errors",
+              type: "warning",
+              title: "定解问题常见错误",
+              bullets: [
+                "波动方程只写一个初始条件，漏掉初始速度。",
+                "给热方程多写一个初始温度变化率。",
+                "给泊松方程硬加时间初始条件。",
+                "在区间两端漏写边界条件，或把绝热误写成温度为零。",
+                "边界条件和初始条件在角落处相互矛盾，例如固定弦端却有非零初始位移。"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ]
 };
