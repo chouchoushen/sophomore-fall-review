@@ -34,7 +34,7 @@
       id: "math",
       name: "数学物理方法",
       href: "../math-physics-methods-review/",
-      total: 65,
+      total: 88,
       key: "math-physics-methods-review.mastered.v1"
     }
   ];

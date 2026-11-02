@@ -8,7 +8,7 @@
 | 模拟电子技术 | `../analog-electronics-review/` | 器件、放大电路与频率响应 |
 | 数字电子技术 | `../digital-electronics-review/` | 逻辑代数与组合逻辑 |
 | 普通物理学 | `../general-physics-review/` | 静电场、电介质与电容 |
-| 数学物理方法 | `../math-physics-methods-review/` | 复变函数与留数 |
+| 数学物理方法 | `../math-physics-methods-review/` | 复变函数、留数与数学物理方程 |
 
 ## 总入口功能
 

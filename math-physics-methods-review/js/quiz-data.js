@@ -4,7 +4,8 @@ window.ANALOG_QUIZ = {
   chapterLabels: {
     complex: "复数与复变函数",
     analytic: "解析函数与复积分",
-    residues: "奇点、留数与积分应用"
+    residues: "奇点、留数与积分应用",
+    pde: "数学物理方程与定解条件"
   },
   questions: [
     {
@@ -226,6 +227,86 @@ window.ANALOG_QUIZ = {
       answer: 1,
       explanation:
         "上半平面只有 $z=i$，留数为 $1/(2i)$，因此积分 $=2\\pi i\\cdot1/(2i)=\\pi$。"
+    },
+    {
+      id: "q19",
+      chapter: "pde",
+      topic: "三类典型方程",
+      prompt: "下列哪一个是描述温度随时间扩散的方程？",
+      options: [
+        "$u_{tt}=a^2u_{xx}$",
+        "$u_t=Du_{xx}$",
+        "$\\Delta u=0$",
+        "$u_{xx}+u_{yy}=0$"
+      ],
+      answer: 1,
+      explanation:
+        "热传导方程含一阶时间导数 $u_t$，形式为 $u_t=Du_{xx}$。含 $u_{tt}$ 的是波动方程，没有时间导数的是稳态方程。"
+    },
+    {
+      id: "q20",
+      chapter: "pde",
+      topic: "波动方程初始条件",
+      prompt: "一维波动方程 $u_{tt}=a^2u_{xx}$ 通常需要几个时间初始条件？",
+      options: ["0 个", "1 个", "2 个", "3 个"],
+      answer: 2,
+      explanation:
+        "方程对时间的最高阶是二阶，需要两个独立初始条件：初始位移 $u(x,0)$ 和初始速度 $u_t(x,0)$。"
+    },
+    {
+      id: "q21",
+      chapter: "pde",
+      topic: "热方程初始条件",
+      prompt: "一维热传导方程 $u_t=Du_{xx}$ 通常需要哪类时间初始条件？",
+      options: [
+        "初始温度分布 $u(x,0)$ 一个条件",
+        "初始温度和初始升温速度两个条件",
+        "完全不需要初始条件",
+        "只需要初始空间导数"
+      ],
+      answer: 0,
+      explanation:
+        "$u_t$ 只含一阶时间导数，因此给出初始温度 $u(x,0)$ 即可；不需要额外给 $u_t(x,0)$。"
+    },
+    {
+      id: "q22",
+      chapter: "pde",
+      topic: "Poisson 与 Laplace",
+      prompt: "泊松方程 $\\Delta V=-\\rho_e/\\varepsilon$ 在没有自由电荷时退化为？",
+      options: [
+        "$V_t=DV_{xx}$",
+        "$\\Delta V=0$",
+        "$V_{tt}=a^2\\Delta V$",
+        "$V=0$ everywhere"
+      ],
+      answer: 1,
+      explanation:
+        "当自由电荷密度 $\\rho_e=0$ 时，右端为零，泊松方程变成拉普拉斯方程 $\\Delta V=0$。"
+    },
+    {
+      id: "q23",
+      chapter: "pde",
+      topic: "第二类边界条件",
+      prompt: "热传导问题中，绝热边界通常写成哪一类边界条件？",
+      options: [
+        "$u=0$",
+        "$\\partial u/\\partial n=0$",
+        "$u+\alpha\\partial u/\\partial n=0$",
+        "不需要任何边界条件"
+      ],
+      answer: 1,
+      explanation:
+        "绝热表示没有法向热量流，而热流与温度的法向导数相关，因此 $\\partial u/\\partial n=0$，属于第二类边界条件。"
+    },
+    {
+      id: "q24",
+      chapter: "pde",
+      topic: "第三类边界条件",
+      prompt: "边界上给出 $\\alpha u+\\beta\\partial u/\\partial n=\\mu(t)$ 属于？",
+      options: ["第一类边界条件", "第二类边界条件", "第三类边界条件", "初始条件"],
+      answer: 2,
+      explanation:
+        "同时含函数值与法向导数的线性组合称为第三类边界条件，也常称 Robin 条件。"
     }
   ]
 };
