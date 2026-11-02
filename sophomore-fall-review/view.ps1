@@ -25,7 +25,7 @@ if (-not $python) {
     throw "Python was not found. Install Python or run any static server from the outputs folder."
 }
 
-$url = "http://127.0.0.1:$Port/sophomore-fall-review/"
+$url = "http://127.0.0.1:$Port/"
 $listening = Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue
 if (-not $listening) {
     Start-Process `

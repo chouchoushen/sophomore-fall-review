@@ -26,6 +26,6 @@
 powershell -NoProfile -ExecutionPolicy Bypass -File .\view.ps1
 ```
 
-默认地址：`http://127.0.0.1:8771/sophomore-fall-review/`
+默认地址：`http://127.0.0.1:8771/`
 
 服务器根目录自动设为上一级 `outputs`，因此五个课程站点都能在同一个网址下访问。
