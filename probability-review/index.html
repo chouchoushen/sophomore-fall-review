@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="概率论知识点互动复习站：随机事件与概率、随机变量及其分布、多维随机变量及其分布。">
+  <title>概率论知识主线</title>
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#courseContent">跳到知识内容</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">PROBABILITY NOTES · 2026</p>
+        <h1>概率论<span>知识主线</span></h1>
+        <p class="hero__lead">
+          从事件语言到随机变量，再到多维联合规律。先选章节，展开后查看按类型整理的知识点。
+        </p>
+        <div class="hero__stats" aria-label="站点统计">
+          <span><strong>3</strong> 个章节</span>
+          <span><strong id="totalKnowledge">0</strong> 个知识点</span>
+          <span><strong>5</strong> 类知识标签</span>
+          <span>KaTeX 离线公式</span>
+        </div>
+      </div>
+
+      <div class="hero__figure" aria-hidden="true">
+        <span class="orbit orbit--one"></span>
+        <span class="orbit orbit--two"></span>
+        <span class="orbit orbit--three"></span>
+        <span class="formula-float formula-float--one">P(A∪B)</span>
+        <span class="formula-float formula-float--two">f(x,y)</span>
+        <span class="formula-float formula-float--three">F(x)</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <aside class="rail" aria-label="学习导航">
+      <div class="rail__sticky">
+        <div class="progress-card">
+          <div class="progress-card__head">
+            <span>复习进度</span>
+            <strong id="masteryText">0 / 0</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <i id="masteryBar"></i>
+          </div>
+          <button class="text-button" id="resetProgress" type="button">重置掌握标记</button>
+        </div>
+
+        <nav class="chapter-nav" aria-label="章节目录">
+          <p class="rail__label">章节</p>
+          <div id="chapterNav"></div>
+        </nav>
+
+        <div class="type-nav">
+          <p class="rail__label">知识点类型</p>
+          <div id="typeFilters" class="type-filters" role="group" aria-label="筛选知识点类型"></div>
+        </div>
+
+        <div class="rail__note">
+          <strong>阅读方法</strong>
+          <p>先展开章节，再用标签筛选。例题默认折叠，掌握一项后可以点亮进度。</p>
+        </div>
+      </div>
+    </aside>
+
+    <main id="courseContent" class="main">
+      <section class="toolbar" aria-label="知识查询工具">
+        <label class="search-box">
+          <span class="search-box__icon" aria-hidden="true"></span>
+          <input id="searchInput" type="search" placeholder="搜索知识点、公式或关键词，如“贝叶斯”" autocomplete="off">
+          <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
+        </label>
+        <div class="toolbar__actions">
+          <span id="resultCount" class="result-count" aria-live="polite"></span>
+          <button id="expandAll" class="secondary-button" type="button">展开全部</button>
+          <button id="collapseAll" class="secondary-button" type="button">全部折叠</button>
+        </div>
+      </section>
+
+      <aside class="legend" aria-label="知识点颜色说明">
+        <span><i class="dot dot--definition"></i>定义与概念</span>
+        <span><i class="dot dot--formula"></i>公式与计算</span>
+        <span><i class="dot dot--property"></i>性质</span>
+        <span><i class="dot dot--judgment"></i>判定与辨析</span>
+        <span><i class="dot dot--example"></i>例题</span>
+        <span><i class="dot dot--warning"></i>易错提醒</span>
+      </aside>
+
+      <div id="chapterRoot" class="chapters"></div>
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>概率论互动复习站 · 内容依据你提供的三张概率论知识图整理</p>
+    <p>章节默认折叠 · 公式离线渲染 · 进度仅保存在当前浏览器</p>
+  </footer>
+
+  <script defer src="./vendor/katex/katex.min.js"></script>
+  <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
+  <script defer src="./js/course-data.js?v=20261101-notes2"></script>
+  <script defer src="./js/note-enhancements.js?v=20261101-notes2"></script>
+  <script defer src="./js/app.js?v=20261101-notes2"></script>
+</body>
+</html>

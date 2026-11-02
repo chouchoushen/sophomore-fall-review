@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="数学物理方法互动复习站：复变函数、解析函数、洛朗级数、孤立奇点与留数。">
+  <title>数学物理方法 · 复变与留数</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#courseContent">跳到知识内容</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">MATHEMATICAL METHODS · COMPLEX ANALYSIS</p>
+        <h1>数学物理方法<span>复变与留数</span></h1>
+        <p class="hero__lead">
+          从复数的几何表示出发，用柯西–黎曼方程识别解析函数，再通过洛朗级数和留数把复积分收束成算术。
+        </p>
+        <div class="hero__stats" aria-label="站点统计">
+          <span><strong>3</strong> 个章节</span>
+          <span><strong id="totalKnowledge">0</strong> 个知识点</span>
+          <span><strong id="totalFigures">0</strong> 张资料图</span>
+          <span><strong>6</strong> 份原始笔记</span>
+          <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
+        </div>
+        <div class="hero__actions" aria-label="快速入口">
+          <a class="hero__action hero__action--primary" href="#assessment">开始通关自测</a>
+          <a class="hero__action" href="#formulaSheet">打开公式速查</a>
+          <a class="hero__action" href="#sources">查看原始笔记</a>
+        </div>
+      </div>
+
+      <div class="hero__figure" aria-hidden="true">
+        <svg class="complex-map" viewBox="0 0 520 430" role="presentation">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z"></path>
+            </marker>
+          </defs>
+          <g class="complex-grid">
+            <path d="M45 25V370H480"></path>
+            <path d="M45 105H480M45 185H480M45 265H480M45 345H480"></path>
+            <path d="M125 25V370M205 25V370M285 25V370M365 25V370M445 25V370"></path>
+          </g>
+          <path class="contour" d="M135 105 C280 10 450 95 435 225 C420 355 250 380 135 285 C55 220 45 145 135 105 Z"></path>
+          <path class="contour-arrow" d="M129 112 C170 66 230 52 280 55" marker-end="url(#arrow)"></path>
+          <g class="poles">
+            <circle cx="205" cy="225" r="7"></circle>
+            <circle cx="335" cy="225" r="7"></circle>
+            <path d="M199 225H211M205 219V231"></path>
+            <path d="M329 225H341"></path>
+          </g>
+          <text x="192" y="255">z₀</text>
+          <text x="326" y="255">z₁</text>
+          <text x="430" y="395">Re z</text>
+          <text x="54" y="42">Im z</text>
+          <text x="154" y="335">γ</text>
+          <text x="147" y="72">2πi Σ Res</text>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <section class="study-loop" id="studyLoop" aria-labelledby="studyLoopTitle">
+    <div class="study-loop__head">
+      <div>
+        <p class="eyebrow">PROBLEM PROTOCOL</p>
+        <h2 id="studyLoopTitle">每条积分路线只围住需要的奇点</h2>
+      </div>
+      <p>复变题先判断解析区域和奇点位置，再决定用柯西定理、柯西公式、洛朗展开还是留数定理。</p>
+    </div>
+    <ol class="study-loop__steps">
+      <li>
+        <span>01</span>
+        <strong>画区域与路径</strong>
+        <p>标出曲线、方向、奇点和解析区域，方向默认逆时针。</p>
+      </li>
+      <li>
+        <span>02</span>
+        <strong>判断函数性质</strong>
+        <p>先看 C–R 条件和解析性；再看闭合路径是否可连续收缩。</p>
+      </li>
+      <li>
+        <span>03</span>
+        <strong>局部展开</strong>
+        <p>找孤立奇点阶数，写洛朗主要部分；留数只需负一次幂系数。</p>
+      </li>
+      <li>
+        <span>04</span>
+        <strong>套定理并验符号</strong>
+        <p>检查哪些奇点在内部、路径方向、$2\pi i$ 和无穷远点负号。</p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="page">
+    <aside class="rail" aria-label="学习导航">
+      <div class="rail__sticky">
+        <div class="progress-card">
+          <div class="progress-card__head">
+            <span>复习进度</span>
+            <strong id="masteryText">0 / 0</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true"><i id="masteryBar"></i></div>
+          <button class="text-button" id="resetProgress" type="button">重置掌握标记</button>
+        </div>
+
+        <nav class="chapter-nav" aria-label="章节目录">
+          <p class="rail__label">章节</p>
+          <div id="chapterNav"></div>
+        </nav>
+
+        <div class="type-nav">
+          <p class="rail__label">知识点类型</p>
+          <div id="typeFilters" class="type-filters" role="group" aria-label="筛选知识点类型"></div>
+        </div>
+
+        <div class="rail__note">
+          <strong>核心顺序</strong>
+          <p>解析 → 洛朗展开 → 判断奇点阶数 → 取负一次幂系数。</p>
+        </div>
+
+        <nav class="rail__actions" aria-label="冲刺入口">
+          <a href="#assessment">通关自测 <span>18 题</span></a>
+          <a href="#formulaSheet">公式速查 <span>13 组</span></a>
+          <a href="#examWorkflow">解题流程 <span>4 步</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main id="courseContent" class="main">
+      <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
+        <div class="assessment__intro">
+          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <h2 id="assessmentTitle">用题目暴露“解析、奇点、留数”混淆</h2>
+          <p>
+            每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
+          </p>
+          <div class="assessment__rules">
+            <span>先画路径</span>
+            <span>先判阶数</span>
+            <span>最后核符号</span>
+          </div>
+        </div>
+
+        <div class="quiz-card" id="quizPanel">
+          <div class="quiz-card__top">
+            <label>
+              <span>自测范围</span>
+              <select id="quizChapterFilter"></select>
+            </label>
+            <button class="text-button" id="quizRestart" type="button">重新开始</button>
+          </div>
+          <div class="quiz-dashboard" aria-live="polite">
+            <div class="quiz-dashboard__status">
+              <strong id="quizProgressText">已答 0 / 18</strong>
+              <span id="quizScoreText">答对 0 题</span>
+            </div>
+            <div class="quiz-dashboard__track" aria-hidden="true">
+              <i id="quizProgressBar"></i>
+            </div>
+          </div>
+          <div id="quizQuestion" class="quiz-question"></div>
+          <div id="quizResult" class="quiz-result" hidden></div>
+          <div class="quiz-card__nav">
+            <button id="quizPrev" class="secondary-button" type="button">上一题</button>
+            <button id="quizNext" class="primary-button" type="button" disabled>下一题</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="知识查询工具">
+        <label class="search-box">
+          <span class="search-box__icon" aria-hidden="true"></span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜索知识点，如“柯西–黎曼”“洛朗展开”“留数”"
+            aria-label="搜索知识点"
+            autocomplete="off"
+          >
+          <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
+        </label>
+        <div class="toolbar__actions">
+          <span id="resultCount" class="result-count" aria-live="polite"></span>
+          <button id="expandAll" class="secondary-button" type="button">展开全部</button>
+          <button id="collapseAll" class="secondary-button" type="button">全部折叠</button>
+        </div>
+      </section>
+
+      <aside class="legend" aria-label="知识点颜色说明">
+        <span><i class="dot dot--definition"></i>概念</span>
+        <span><i class="dot dot--formula"></i>公式</span>
+        <span><i class="dot dot--property"></i>性质与判别</span>
+        <span><i class="dot dot--judgment"></i>分析与判别</span>
+        <span><i class="dot dot--application"></i>应用与积分</span>
+        <span><i class="dot dot--example"></i>例题</span>
+        <span><i class="dot dot--warning"></i>易错提醒</span>
+      </aside>
+
+      <section class="formula-sheet" id="formulaSheet" aria-labelledby="formulaSheetTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">FORMULA SHEET</p>
+            <h2 id="formulaSheetTitle">复变与留数公式速查</h2>
+          </div>
+          <p>先确认解析区域，再写公式；路径方向和奇点是否在内部，往往比公式本身更容易丢分。</p>
+        </div>
+        <div class="formula-table-wrap">
+          <table class="formula-table">
+            <thead>
+              <tr><th>环节</th><th>公式</th><th>适用与提醒</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>复指数</td>
+                <td>$e^z=e^x(\cos y+i\sin y)$</td>
+                <td>全平面解析，以 $2\pi i$ 为周期。</td>
+              </tr>
+              <tr>
+                <td>复对数</td>
+                <td>$\operatorname{Log}z=\ln|z|+i(\arg z)$</td>
+                <td>通常多值；主值需指定辐角范围。</td>
+              </tr>
+              <tr>
+                <td>柯西–黎曼</td>
+                <td>$u_x=v_y,\quad u_y=-v_x$</td>
+                <td>需配合偏导连续或可微性条件判断解析。</td>
+              </tr>
+              <tr>
+                <td>调和函数</td>
+                <td>$\Delta u=0,\quad\Delta v=0$</td>
+                <td>解析函数的实部与虚部互为共轭调和。</td>
+              </tr>
+              <tr>
+                <td>柯西定理</td>
+                <td>$\oint_\gamma f(z)\,dz=0$</td>
+                <td>单连通区域内解析，曲线方向不影响零值。</td>
+              </tr>
+              <tr>
+                <td>柯西积分公式</td>
+                <td>$f(z_0)=\dfrac1{2\pi i}\oint\dfrac{f(z)}{z-z_0}dz$</td>
+                <td>$z_0$ 在逆时针曲线内部，$f$ 解析。</td>
+              </tr>
+              <tr>
+                <td>高阶导数</td>
+                <td>$f^{(n)}(z_0)=\dfrac{n!}{2\pi i}\oint\dfrac{f(z)}{(z-z_0)^{n+1}}dz$</td>
+                <td>分母幂次比导数阶数多 1。</td>
+              </tr>
+              <tr>
+                <td>泰勒级数</td>
+                <td>$f(z)=\sum a_n(z-z_0)^n$</td>
+                <td>圆盘内无奇点，收敛半径到最近奇点。</td>
+              </tr>
+              <tr>
+                <td>洛朗级数</td>
+                <td>$f(z)=\sum_{n=-\infty}^{\infty}a_n(z-z_0)^n$</td>
+                <td>去心圆环内展开，负次幂决定奇点类型。</td>
+              </tr>
+              <tr>
+                <td>简单极点留数</td>
+                <td>$\operatorname{Res}_{z_0}f=\lim_{z\to z_0}(z-z_0)f(z)$</td>
+                <td>一阶极点；$P/Q$ 形式可用 $P(z_0)/Q'(z_0)$。</td>
+              </tr>
+              <tr>
+                <td>$m$ 阶极点</td>
+                <td>$\operatorname{Res}=\dfrac1{(m-1)!}\lim\dfrac{d^{m-1}}{dz^{m-1}}[(z-z_0)^mf]$</td>
+                <td>先判阶数，阶数错则导数阶数也错。</td>
+              </tr>
+              <tr>
+                <td>留数定理</td>
+                <td>$\oint_\gamma f\,dz=2\pi i\sum\operatorname{Res}$</td>
+                <td>只收集曲线内部奇点；顺时针加负号。</td>
+              </tr>
+              <tr>
+                <td>实轴积分</td>
+                <td>$\int_{-\infty}^{\infty}f(x)\,dx=2\pi i\sum_{\operatorname{Im}z>0}\operatorname{Res}$</td>
+                <td>需说明大半圆弧积分趋于零。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="exam-workflow" id="examWorkflow" aria-labelledby="examWorkflowTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ANSWER PROTOCOL</p>
+            <h2 id="examWorkflowTitle">四类题的落笔顺序</h2>
+          </div>
+          <p>复变题的过程分很清楚：区域、方向、奇点、阶数、系数、定理。按顺序写就不容易漏。</p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span>01 · 解析判别</span>
+            <h3>先写 u、v，再验 C–R</h3>
+            <ol>
+              <li>把函数拆成实部 $u$ 和虚部 $v$。</li>
+              <li>求四个一阶偏导并检查柯西–黎曼方程。</li>
+              <li>说明偏导在区域内连续，从而判定解析。</li>
+              <li>若求调和共轭虚部，先用 $v_y=u_x$ 积分，再用 $v_x=-u_y$ 定常数函数。</li>
+            </ol>
+          </article>
+          <article>
+            <span>02 · 闭合积分</span>
+            <h3>先画奇点，再选定理</h3>
+            <ol>
+              <li>在复平面标出曲线、方向和所有奇点。</li>
+              <li>函数在区域内解析时直接用柯西定理。</li>
+              <li>分母是 $z-z_0$ 时考虑柯西积分公式或留数定理。</li>
+              <li>曲线方向若为顺时针，最后整体加负号。</li>
+            </ol>
+          </article>
+          <article>
+            <span>03 · 奇点与留数</span>
+            <h3>先判阶数，再取系数</h3>
+            <ol>
+              <li>检查去心邻域内是否解析，确认是孤立奇点。</li>
+              <li>展开洛朗级数，观察主要部分的最高负幂。</li>
+              <li>一阶极点用极限；$m$ 阶极点用 $(m-1)$ 阶导数。</li>
+              <li>留数只取负一次幂系数，结果必须是复数。</li>
+            </ol>
+          </article>
+          <article>
+            <span>04 · 实积分</span>
+            <h3>先补链，再只取上半平面</h3>
+            <ol>
+              <li>把实轴积分与上半平面大圆弧组成闭合路径。</li>
+              <li>说明大圆弧积分为零，否则不能直接使用公式。</li>
+              <li>找上半平面奇点并求和，乘 $2\pi i$。</li>
+              <li>用对称性、正负号和已知结果交叉检查。</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <div id="chapterRoot" class="chapters"></div>
+
+      <section class="source-library" id="sources" aria-labelledby="sourcesTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SOURCE LIBRARY</p>
+            <h2 id="sourcesTitle">原始笔记与课堂图片</h2>
+          </div>
+          <p>网站内容以这六份材料为边界；点击图片可放大对照原笔记。</p>
+        </div>
+        <div class="figure-gallery source-gallery">
+          <button class="figure-card" type="button" data-figure-src="./assets/source/residue-theory-notes.jpg" data-figure-title="留数理论笔记" data-figure-caption="留数定义、定理、无穷远点与实积分">
+            <span class="figure-card__media"><img src="./assets/source/residue-theory-notes.jpg" alt="留数理论笔记" loading="lazy"></span>
+            <span class="figure-card__text"><strong>留数理论笔记</strong><small>定义、计算方法与实积分</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/residue-examples.jpg" data-figure-title="留数计算例题" data-figure-caption="课堂例题：高阶极点和闭合积分">
+            <span class="figure-card__media"><img src="./assets/source/residue-examples.jpg" alt="留数计算例题" loading="lazy"></span>
+            <span class="figure-card__text"><strong>留数计算例题</strong><small>三阶极点、二阶极点和围道积分</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/complex-analysis-outline.jpg" data-figure-title="复变函数论提纲" data-figure-caption="级数、泰勒展开、洛朗展开与孤立奇点">
+            <span class="figure-card__media"><img src="./assets/source/complex-analysis-outline.jpg" alt="复变函数论提纲" loading="lazy"></span>
+            <span class="figure-card__text"><strong>复变函数论提纲</strong><small>级数、展开和奇点分类</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/isolated-singularities-slide.jpg" data-figure-title="孤立奇点定义与分类" data-figure-caption="课堂幻灯片：可去奇点、m 阶极点和本性奇点">
+            <span class="figure-card__media"><img src="./assets/source/isolated-singularities-slide.jpg" alt="孤立奇点定义与分类" loading="lazy"></span>
+            <span class="figure-card__text"><strong>孤立奇点分类</strong><small>洛朗级数主要部分</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/complex-analysis-notes.jpg" data-figure-title="复变函数基础笔记" data-figure-caption="复数、极限、连续性、导数、解析函数和初等函数">
+            <span class="figure-card__media"><img src="./assets/source/complex-analysis-notes.jpg" alt="复变函数基础笔记" loading="lazy"></span>
+            <span class="figure-card__text"><strong>复变函数基础</strong><small>复数、解析函数和初等函数</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/analytic-functions-figures.jpg" data-figure-title="解析函数图示" data-figure-caption="课堂与笔记图片：极限、解析函数、积分与导数桥接">
+            <span class="figure-card__media"><img src="./assets/source/analytic-functions-figures.jpg" alt="解析函数图示" loading="lazy"></span>
+            <span class="figure-card__text"><strong>解析函数图示</strong><small>课堂例题与知识结构图</small></span>
+          </button>
+        </div>
+      </section>
+
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
+    </main>
+  </div>
+
+  <div id="figureModal" class="figure-modal" role="dialog" aria-modal="true" aria-labelledby="figureModalTitle" hidden>
+    <button id="figureModalClose" class="figure-modal__close" type="button" aria-label="关闭图片">×</button>
+    <div class="figure-modal__body">
+      <img id="figureModalImage" src="" alt="">
+      <div class="figure-modal__caption">
+        <strong id="figureModalTitle"></strong>
+        <p id="figureModalCaption"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>数学物理方法互动复习站 · 复变函数、解析函数、奇点与留数</p>
+    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 原始笔记入口</p>
+  </footer>
+
+  <script defer src="./vendor/katex/katex.min.js"></script>
+  <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
+  <script defer src="./js/course-data.js?v=20261101-mpm1"></script>
+  <script defer src="./js/quiz-data.js?v=20261101-mpm1"></script>
+  <script defer src="./js/app.js?v=20261101-mpm1"></script>
+  <script defer src="./js/practice.js?v=20261101-mpm1"></script>
+</body>
+</html>

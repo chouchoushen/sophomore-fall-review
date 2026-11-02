@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="模拟电子技术互动复习站：半导体器件、放大电路基本原理与频率响应。">
+  <title>模拟电子技术知识主线</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#courseContent">跳到知识内容</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">ANALOG ELECTRONICS · 2026</p>
+        <h1>模拟电子技术<span>知识主线</span></h1>
+        <p class="hero__lead">
+          用器件特性理解电路，用等效模型完成计算，再用 Bode 图看清增益随频率的变化。
+        </p>
+        <div class="hero__stats" aria-label="站点统计">
+          <span><strong>3</strong> 个章节</span>
+          <span><strong id="totalKnowledge">0</strong> 个知识点</span>
+          <span><strong id="totalFigures">0</strong> 张笔记图</span>
+          <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
+          <span>KaTeX 离线公式</span>
+        </div>
+        <div class="hero__actions" aria-label="快速入口">
+          <a class="hero__action hero__action--primary" href="#assessment">开始通关自测</a>
+          <a class="hero__action" href="#formulaSheet">打开公式速查</a>
+        </div>
+      </div>
+
+      <div class="hero__figure" aria-hidden="true">
+        <svg class="signal-plot" viewBox="0 0 460 390" role="presentation">
+          <g class="scope-grid">
+            <path d="M45 48V330H420"></path>
+            <path d="M45 100H420M45 165H420M45 230H420M45 295H420"></path>
+            <path d="M130 48V330M215 48V330M300 48V330M385 48V330"></path>
+          </g>
+          <path class="signal-wave" d="M52 205 C86 135 120 135 154 205 S222 275 256 205 S324 135 358 205 S398 250 412 205"></path>
+          <path class="signal-guide" d="M52 205H412"></path>
+          <g class="transistor-mark">
+            <circle cx="330" cy="105" r="43"></circle>
+            <path d="M305 84V126M305 105L338 82M305 105L338 128M338 82V66M338 128V144"></path>
+          </g>
+          <text x="54" y="28">v(t)</text>
+          <text x="360" y="356">t</text>
+          <text x="284" y="41">AC + DC</text>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <section class="study-loop" id="studyLoop" aria-labelledby="studyLoopTitle">
+    <div class="study-loop__head">
+      <div>
+        <p class="eyebrow">EXAM CLOSED LOOP</p>
+        <h2 id="studyLoopTitle">从“看得懂”<span class="phrase-keep">走到</span>“会下笔”</h2>
+      </div>
+      <p>每章先走同一条解题链，再用自测验证。卡住时，只回补对应环节。</p>
+    </div>
+    <ol class="study-loop__steps">
+      <li>
+        <span>01</span>
+        <strong>判定题型</strong>
+        <p>先看二极管、三极管还是频率响应；明确大信号、小信号与所求端口量。</p>
+      </li>
+      <li>
+        <span>02</span>
+        <strong>拆直交通路</strong>
+        <p>电容在直流中开路、在中频交流中短路；电压源按交直流场景置零或保留。</p>
+      </li>
+      <li>
+        <span>03</span>
+        <strong>先 Q 点后模型</strong>
+        <p>求出 I<sub>BQ</sub>、I<sub>CQ</sub>、U<sub>CEQ</sub>，确认放大区后再用 r<sub>be</sub> 与受控源。</p>
+      </li>
+      <li>
+        <span>04</span>
+        <strong>计算并校验</strong>
+        <p>检查反相、数量级、单位、−3 dB 与失真；用自测解析定位错因。</p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="page">
+    <aside class="rail" aria-label="学习导航">
+      <div class="rail__sticky">
+        <div class="progress-card">
+          <div class="progress-card__head">
+            <span>复习进度</span>
+            <strong id="masteryText">0 / 0</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true"><i id="masteryBar"></i></div>
+          <button class="text-button" id="resetProgress" type="button">重置掌握标记</button>
+        </div>
+
+        <nav class="chapter-nav" aria-label="章节目录">
+          <p class="rail__label">章节</p>
+          <div id="chapterNav"></div>
+        </nav>
+
+        <div class="type-nav">
+          <p class="rail__label">知识点类型</p>
+          <div id="typeFilters" class="type-filters" role="group" aria-label="筛选知识点类型"></div>
+        </div>
+
+        <div class="rail__note">
+          <strong>阅读方法</strong>
+          <p>点击章节展开知识卡；图片可点击放大。先画直流通路，再画交流等效电路。</p>
+        </div>
+
+        <nav class="rail__actions" aria-label="冲刺入口">
+          <a href="#assessment">通关自测 <span>18 题</span></a>
+          <a href="#formulaSheet">公式速查 <span>12 组</span></a>
+          <a href="#examWorkflow">解题流程 <span>4 步</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main id="courseContent" class="main">
+      <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
+        <div class="assessment__intro">
+          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <h2 id="assessmentTitle">先做题，再决定回看哪一章</h2>
+          <p>
+            每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
+          </p>
+          <div class="assessment__rules">
+            <span>不必追求速度</span>
+            <span>先独立判断</span>
+            <span>错因比答案重要</span>
+          </div>
+        </div>
+
+        <div class="quiz-card" id="quizPanel">
+          <div class="quiz-card__top">
+            <label>
+              <span>自测范围</span>
+              <select id="quizChapterFilter"></select>
+            </label>
+            <button class="text-button" id="quizRestart" type="button">重新开始</button>
+          </div>
+          <div class="quiz-dashboard" aria-live="polite">
+            <div class="quiz-dashboard__status">
+              <strong id="quizProgressText">已答 0 / 18</strong>
+              <span id="quizScoreText">答对 0 题</span>
+            </div>
+            <div class="quiz-dashboard__track" aria-hidden="true">
+              <i id="quizProgressBar"></i>
+            </div>
+          </div>
+          <div id="quizQuestion" class="quiz-question"></div>
+          <div id="quizResult" class="quiz-result" hidden></div>
+          <div class="quiz-card__nav">
+            <button id="quizPrev" class="secondary-button" type="button">上一题</button>
+            <button id="quizNext" class="primary-button" type="button" disabled>下一题</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="知识查询工具">
+        <label class="search-box">
+          <span class="search-box__icon" aria-hidden="true"></span>
+          <input id="searchInput" type="search" placeholder="搜索知识点，如“静态工作点”“密勒效应”“稳压管”" aria-label="搜索知识点" autocomplete="off">
+          <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
+        </label>
+        <div class="toolbar__actions">
+          <span id="resultCount" class="result-count" aria-live="polite"></span>
+          <button id="expandAll" class="secondary-button" type="button">展开全部</button>
+          <button id="collapseAll" class="secondary-button" type="button">全部折叠</button>
+        </div>
+      </section>
+
+      <aside class="legend" aria-label="知识点颜色说明">
+        <span><i class="dot dot--definition"></i>概念</span>
+        <span><i class="dot dot--formula"></i>公式</span>
+        <span><i class="dot dot--property"></i>器件特性</span>
+        <span><i class="dot dot--judgment"></i>分析与判别</span>
+        <span><i class="dot dot--application"></i>电路应用</span>
+        <span><i class="dot dot--example"></i>例题</span>
+        <span><i class="dot dot--warning"></i>易错提醒</span>
+      </aside>
+
+      <section class="formula-sheet" id="formulaSheet" aria-labelledby="formulaSheetTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">FORMULA SHEET</p>
+            <h2 id="formulaSheetTitle">考前公式速查</h2>
+          </div>
+          <p>先写适用条件，再代入数值。下面的“适用”栏就是最容易漏掉的一行。</p>
+        </div>
+        <div class="formula-table-wrap">
+          <table class="formula-table">
+            <thead>
+              <tr>
+                <th>环节</th>
+                <th>公式</th>
+                <th>适用与提醒</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>二极管恒压降</td>
+                <td>$I_D=\dfrac{V_{DD}-U_D}{R}$</td>
+                <td>先判断导通；硅管默认约 0.7 V。</td>
+              </tr>
+              <tr>
+                <td>三极管电流</td>
+                <td>$I_E=I_B+I_C,\quad \beta=\dfrac{I_C}{I_B}$</td>
+                <td>放大区使用；必须核对实际偏置。</td>
+              </tr>
+              <tr>
+                <td>基本共射 Q 点</td>
+                <td>$I_{BQ}=\dfrac{V_{CC}-U_{BEQ}}{R_b}$</td>
+                <td>随后求 $I_{CQ}=\beta I_{BQ}$ 并验算 $U_{CEQ}$。</td>
+              </tr>
+              <tr>
+                <td>输入电阻参数</td>
+                <td>$r_{be}=r_{bb'}+(1+\beta)\dfrac{U_T}{I_{EQ}}$</td>
+                <td>$U_T\approx26$ mV；必须使用静态 $I_{EQ}$。</td>
+              </tr>
+              <tr>
+                <td>共射电压增益</td>
+                <td>$\dot A_u=-\dfrac{\beta R_L'}{r_{be}}$</td>
+                <td>$R_L'=R_c\parallel R_L$；负号表示反相。</td>
+              </tr>
+              <tr>
+                <td>源电压增益</td>
+                <td>$\dot A_{us}=\dfrac{R_i}{R_i+R_s}\dot A_u$</td>
+                <td>先求出放大电路输入电阻 $R_i$。</td>
+              </tr>
+              <tr>
+                <td>发射极电阻</td>
+                <td>$\dot A_u\approx-\dfrac{\beta R_L'}{r_{be}+(1+\beta)R_e}$</td>
+                <td>适用于 $R_e$ 未被旁路时的近似分析。</td>
+              </tr>
+              <tr>
+                <td>RC 截止频率</td>
+                <td>$f_c=\dfrac{1}{2\pi RC}$</td>
+                <td>低通上限、高通下限均用此式辨型。</td>
+              </tr>
+              <tr>
+                <td>分贝</td>
+                <td>$A(\mathrm{dB})=20\lg|A|$</td>
+                <td>幅值乘 $1/\sqrt2$ 对应约 −3 dB。</td>
+              </tr>
+              <tr>
+                <td>密勒等效电容</td>
+                <td>$C_i\approx C_\pi+(1+|K|)C_\mu$</td>
+                <td>高频共射分析；$K$ 为跨接电容两端电压比。</td>
+              </tr>
+              <tr>
+                <td>多级增益</td>
+                <td>$\dot A_u=\prod_i\dot A_{ui},\quad \varphi=\sum_i\varphi_i$</td>
+                <td>复数增益相乘，分贝和相位相加。</td>
+              </tr>
+              <tr>
+                <td>多级带宽</td>
+                <td>$\dfrac1{f_H}\approx1.1\sqrt{\sum_i\dfrac1{f_{Hi}^2}}$</td>
+                <td>级数越多，总通频带通常越窄。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="exam-workflow" id="examWorkflow" aria-labelledby="examWorkflowTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ANSWER PROTOCOL</p>
+            <h2 id="examWorkflowTitle">四类题的落笔顺序</h2>
+          </div>
+          <p>不确定时先写“判断依据—所用模型—计算结果—合理性检查”，过程本身就能拿分。</p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span>01 · 二极管</span>
+            <h3>先断开，再验状态</h3>
+            <ol>
+              <li>暂时将所有二极管视为开路。</li>
+              <li>求阳极与阴极电位差；多个二极管同时可能导通时，先找正偏最大者。</li>
+              <li>理想管用短路/开路；恒压降管导通后锁定端电压。</li>
+              <li>回代检查：导通则电流非负，截止则端电压不高于导通阈值。</li>
+            </ol>
+          </article>
+          <article>
+            <span>02 · 静态工作点</span>
+            <h3>先电容开路，再求 Q</h3>
+            <ol>
+              <li>画直流通路，忽略交流源。</li>
+              <li>由基极回路求 $I_{BQ}$，再求 $I_{CQ}$ 与 $U_{CEQ}$。</li>
+              <li>检查 $U_{CEQ}>U_{CES}$；若接近电源或零，分别怀疑截止/饱和。</li>
+              <li>用 $I_{EQ}\approx I_{CQ}$ 计算 $r_{be}$。</li>
+            </ol>
+          </article>
+          <article>
+            <span>03 · 小信号</span>
+            <h3>先置零，再等效</h3>
+            <ol>
+              <li>画交流通路：耦合电容短路，直流电压源接地。</li>
+              <li>将三极管替换为 $r_{be}$ 与受控电流源 $\beta i_b$。</li>
+              <li>标清 $u_i$、$u_o$ 参考方向，输出端先求并联电阻。</li>
+              <li>由定义求 $A_u$、$R_i=u_i/i_i$、$R_o=u_o/i_o$，最后检查符号与量纲。</li>
+            </ol>
+          </article>
+          <article>
+            <span>04 · 频率响应</span>
+            <h3>先分频段，再画 Bode</h3>
+            <ol>
+              <li>中频段求 $A_{um}$，作为 Bode 图的水平基准。</li>
+              <li>低频找串联耦合电容，高频找结电容与密勒电容。</li>
+              <li>幅频以 ±20 dB/十倍频画折线，转折点 −3 dB；相频每项贡献至多 90°。</li>
+              <li>多级时增益乘、分贝加、相位加，通频带变窄。</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <div id="chapterRoot" class="chapters"></div>
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
+    </main>
+  </div>
+
+  <div id="figureModal" class="figure-modal" role="dialog" aria-modal="true" aria-labelledby="figureModalTitle" hidden>
+    <button id="figureModalClose" class="figure-modal__close" type="button" aria-label="关闭图片">×</button>
+    <div class="figure-modal__body">
+      <img id="figureModalImage" src="" alt="">
+      <div class="figure-modal__caption">
+        <strong id="figureModalTitle"></strong>
+        <p id="figureModalCaption"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>模拟电子技术互动复习站 · 内容整理自你提供的模电图片与笔记</p>
+    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 进度保存在当前浏览器</p>
+  </footer>
+
+  <script defer src="./vendor/katex/katex.min.js"></script>
+  <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
+  <script defer src="./js/course-data.js?v=20261101-analog1"></script>
+  <script defer src="./js/quiz-data.js?v=20261101-analog1"></script>
+  <script defer src="./js/app.js?v=20261101-analog1"></script>
+  <script defer src="./js/practice.js?v=20261101-analog1"></script>
+</body>
+</html>

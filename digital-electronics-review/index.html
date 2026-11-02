@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="数字电子技术互动复习站：逻辑代数、卡诺图、组合逻辑分析和常用数字器件。">
+  <title>数字电子技术 · 组合逻辑</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#courseContent">跳到知识内容</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">DIGITAL ELECTRONICS · COMBINATIONAL LOGIC</p>
+        <h1>数字电子技术<span>组合逻辑主线</span></h1>
+        <p class="hero__lead">
+          用真值表定义功能，用逻辑代数与卡诺图化简，再把最小项组合成加法器、编码器、译码器、MUX 和 ROM。
+        </p>
+        <div class="hero__stats" aria-label="站点统计">
+          <span><strong>3</strong> 个章节</span>
+          <span><strong id="totalKnowledge">0</strong> 个知识点</span>
+          <span><strong id="totalFigures">0</strong> 张资料图</span>
+          <span><strong>5</strong> 份原始笔记</span>
+          <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
+        </div>
+        <div class="hero__actions" aria-label="快速入口">
+          <a class="hero__action hero__action--primary" href="#assessment">开始通关自测</a>
+          <a class="hero__action" href="#formulaSheet">打开公式速查</a>
+          <a class="hero__action" href="#sources">查看原始笔记</a>
+        </div>
+      </div>
+
+      <div class="hero__figure" aria-hidden="true">
+        <svg class="logic-map" viewBox="0 0 520 430" role="presentation">
+          <g class="logic-grid">
+            <path d="M34 48H486M34 112H486M34 176H486M34 240H486M34 304H486M34 368H486"></path>
+            <path d="M80 26V390M152 26V390M224 26V390M296 26V390M368 26V390M440 26V390"></path>
+          </g>
+          <g class="kmap">
+            <rect x="54" y="55" width="62" height="54"></rect>
+            <rect x="116" y="55" width="62" height="54"></rect>
+            <rect x="178" y="55" width="62" height="54"></rect>
+            <rect x="240" y="55" width="62" height="54"></rect>
+            <rect x="54" y="109" width="62" height="54"></rect>
+            <rect x="116" y="109" width="62" height="54"></rect>
+            <rect x="178" y="109" width="62" height="54"></rect>
+            <rect x="240" y="109" width="62" height="54"></rect>
+            <text x="73" y="89">0</text><text x="135" y="89">1</text>
+            <text x="197" y="89">1</text><text x="259" y="89">0</text>
+            <text x="73" y="143">1</text><text x="135" y="143">1</text>
+            <text x="197" y="143">0</text><text x="259" y="143">0</text>
+            <path class="kmap-group" d="M112 104H244V158H112Z"></path>
+          </g>
+          <g class="gate gate--and">
+            <path d="M344 214H382A35 35 0 0 1 382 284H344Z"></path>
+            <path d="M308 228H344M308 270H344M417 249H462"></path>
+            <text x="366" y="256">AND</text>
+          </g>
+          <g class="gate gate--xor">
+            <path d="M341 311Q372 333 341 355H381A44 44 0 0 0 381 311Z"></path>
+            <path d="M330 311Q361 333 330 355M304 319H341M304 347H341M381 327Q405 327 415 340H461"></path>
+            <text x="363" y="339">XOR</text>
+          </g>
+          <text x="53" y="205">K-map</text>
+          <text x="365" y="196">1-bit adder</text>
+          <text x="455" y="397">Y</text>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <section class="study-loop" id="studyLoop" aria-labelledby="studyLoopTitle">
+    <div class="study-loop__head">
+      <div>
+        <p class="eyebrow">PROBLEM PROTOCOL</p>
+        <h2 id="studyLoopTitle">先把需求变成真值表，再决定怎样化简</h2>
+      </div>
+      <p>组合逻辑题只有两条主路：从电路推到功能，或从文字需求设计电路。两条路都绕不开真值表、最小项和化简。</p>
+    </div>
+    <ol class="study-loop__steps">
+      <li>
+        <span>01</span>
+        <strong>定义输入输出</strong>
+        <p>确认变量顺序、有效电平和实际可能出现的输入组合。</p>
+      </li>
+      <li>
+        <span>02</span>
+        <strong>写真值表</strong>
+        <p>$n$ 个变量先列全 $2^n$ 行，再按题目功能逐行确定输出。</p>
+      </li>
+      <li>
+        <span>03</span>
+        <strong>化简与圈组</strong>
+        <p>标准最小项式、逻辑恒等式或卡诺图；无关项用于扩大圈。</p>
+      </li>
+      <li>
+        <span>04</span>
+        <strong>选择器件验证</strong>
+        <p>检查门数量、反相器、使能端和竞争冒险，代回边界组合。</p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="page">
+    <aside class="rail" aria-label="学习导航">
+      <div class="rail__sticky">
+        <div class="progress-card">
+          <div class="progress-card__head">
+            <span>复习进度</span>
+            <strong id="masteryText">0 / 0</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true"><i id="masteryBar"></i></div>
+          <button class="text-button" id="resetProgress" type="button">重置掌握标记</button>
+        </div>
+
+        <nav class="chapter-nav" aria-label="章节目录">
+          <p class="rail__label">章节</p>
+          <div id="chapterNav"></div>
+        </nav>
+
+        <div class="type-nav">
+          <p class="rail__label">知识点类型</p>
+          <div id="typeFilters" class="type-filters" role="group" aria-label="筛选知识点类型"></div>
+        </div>
+
+        <div class="rail__note">
+          <strong>核心顺序</strong>
+          <p>功能 → 真值表 → 最小项 → 化简 → 门电路或标准器件。</p>
+        </div>
+
+        <nav class="rail__actions" aria-label="冲刺入口">
+          <a href="#assessment">通关自测 <span>18 题</span></a>
+          <a href="#formulaSheet">公式速查 <span>13 组</span></a>
+          <a href="#examWorkflow">解题流程 <span>4 步</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main id="courseContent" class="main">
+      <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
+        <div class="assessment__intro">
+          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <h2 id="assessmentTitle">先判断功能，再动代数式</h2>
+          <p>
+            每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
+          </p>
+          <div class="assessment__rules">
+            <span>先列真值表</span>
+            <span>圈组不能遗漏</span>
+            <span>最后代回验证</span>
+          </div>
+        </div>
+
+        <div class="quiz-card" id="quizPanel">
+          <div class="quiz-card__top">
+            <label>
+              <span>自测范围</span>
+              <select id="quizChapterFilter"></select>
+            </label>
+            <button class="text-button" id="quizRestart" type="button">重新开始</button>
+          </div>
+          <div class="quiz-dashboard" aria-live="polite">
+            <div class="quiz-dashboard__status">
+              <strong id="quizProgressText">已答 0 / 18</strong>
+              <span id="quizScoreText">答对 0 题</span>
+            </div>
+            <div class="quiz-dashboard__track" aria-hidden="true">
+              <i id="quizProgressBar"></i>
+            </div>
+          </div>
+          <div id="quizQuestion" class="quiz-question"></div>
+          <div id="quizResult" class="quiz-result" hidden></div>
+          <div class="quiz-card__nav">
+            <button id="quizPrev" class="secondary-button" type="button">上一题</button>
+            <button id="quizNext" class="primary-button" type="button" disabled>下一题</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="知识查询工具">
+        <label class="search-box">
+          <span class="search-box__icon" aria-hidden="true"></span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜索知识点，如“最小项”“卡诺图”“译码器”“竞争冒险”"
+            aria-label="搜索知识点"
+            autocomplete="off"
+          >
+          <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
+        </label>
+        <div class="toolbar__actions">
+          <span id="resultCount" class="result-count" aria-live="polite"></span>
+          <button id="expandAll" class="secondary-button" type="button">展开全部</button>
+          <button id="collapseAll" class="secondary-button" type="button">全部折叠</button>
+        </div>
+      </section>
+
+      <aside class="legend" aria-label="知识点颜色说明">
+        <span><i class="dot dot--definition"></i>概念</span>
+        <span><i class="dot dot--formula"></i>公式</span>
+        <span><i class="dot dot--property"></i>规则与性质</span>
+        <span><i class="dot dot--judgment"></i>分析与判别</span>
+        <span><i class="dot dot--application"></i>器件与应用</span>
+        <span><i class="dot dot--example"></i>例题</span>
+        <span><i class="dot dot--warning"></i>易错提醒</span>
+      </aside>
+
+      <section class="formula-sheet" id="formulaSheet" aria-labelledby="formulaSheetTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">FORMULA SHEET</p>
+            <h2 id="formulaSheetTitle">数电公式速查</h2>
+          </div>
+          <p>化简前先确定变量顺序和最小项编号；器件题先看有效电平与使能端。</p>
+        </div>
+        <div class="formula-table-wrap">
+          <table class="formula-table">
+            <thead>
+              <tr><th>环节</th><th>公式</th><th>适用与提醒</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>基本恒等式</td>
+                <td>$A+0=A,\quad A\cdot1=A,\quad A+1=1$</td>
+                <td>逻辑加不是普通算术加法，$1+1=1$。</td>
+              </tr>
+              <tr>
+                <td>互补律</td>
+                <td>$A+\overline A=1,\quad A\overline A=0$</td>
+                <td>用于消项和证明函数恒为 1/0。</td>
+              </tr>
+              <tr>
+                <td>德摩根</td>
+                <td>$\overline{A+B}=\overline A\,\overline B,\quad \overline{AB}=\overline A+\overline B$</td>
+                <td>取反时与、或互换并逐项反相。</td>
+              </tr>
+              <tr>
+                <td>吸收律</td>
+                <td>$A+AB=A,\quad A+\overline AB=A+B$</td>
+                <td>先提公因子再用 $1+$ 变量 $=1$。</td>
+              </tr>
+              <tr>
+                <td>最小项</td>
+                <td>$m_i,\quad F=\sum m_i$</td>
+                <td>原变量取 1、反变量取 0 后换算下标。</td>
+              </tr>
+              <tr>
+                <td>卡诺图合并</td>
+                <td>$2^k$ 个相邻 1 格消去 $k$ 个变量</td>
+                <td>允许重叠、跨边界和四角相邻。</td>
+              </tr>
+              <tr>
+                <td>半加器</td>
+                <td>$S=A\oplus B,\quad C=AB$</td>
+                <td>没有低位进位输入。</td>
+              </tr>
+              <tr>
+                <td>全加器</td>
+                <td>$S=A\oplus B\oplus C_i,\quad C_o=AB+AC_i+BC_i$</td>
+                <td>和看奇偶，进位看多数。</td>
+              </tr>
+              <tr>
+                <td>补码</td>
+                <td>$X_{2's}=2^n+X$</td>
+                <td>主要用于负数；正数补码等于原码。</td>
+              </tr>
+              <tr>
+                <td>编码器</td>
+                <td>$Y_2=I_4+I_5+I_6+I_7$</td>
+                <td>3 位输出中每一位都收集对应二进制为 1 的输入。</td>
+              </tr>
+              <tr>
+                <td>译码器</td>
+                <td>$Y_i=m_i$</td>
+                <td>高有效输出；低有效需再整体取反。</td>
+              </tr>
+              <tr>
+                <td>4 选 1 MUX</td>
+                <td>$Y=\overline{A_1}\overline{A_0}D_0+\cdots+A_1A_0D_3$</td>
+                <td>地址选择数据，数据端也可接逻辑函数。</td>
+              </tr>
+              <tr>
+                <td>静态 1 冒险</td>
+                <td>$AB+\overline AC\rightarrow AB+\overline AC+BC$</td>
+                <td>$BC$ 是冗余一致项，用来填补暂态空档。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="exam-workflow" id="examWorkflow" aria-labelledby="examWorkflowTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ANSWER PROTOCOL</p>
+            <h2 id="examWorkflowTitle">四类题的落笔顺序</h2>
+          </div>
+          <p>把输入输出、有效电平、真值表和最终门电路写完整，数字电路的逻辑错误通常能当场被发现。</p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span>01 · 逻辑化简</span>
+            <h3>先转最小项，再圈组</h3>
+            <ol>
+              <li>确认变量顺序和有效电平。</li>
+              <li>把 1 的行写成最小项，得到 $\\sum m_i$。</li>
+              <li>用恒等式或卡诺图圈出 $2^k$ 个相邻格。</li>
+              <li>把候选结果代回所有关键输入组合。</li>
+            </ol>
+          </article>
+          <article>
+            <span>02 · 电路分析</span>
+            <h3>逐级写式，再拼真值表</h3>
+            <ol>
+              <li>从输入侧逐级标注中间变量。</li>
+              <li>把最外层表达式用德摩根和吸收律整理。</li>
+              <li>识别是否为常见函数：异或、同或、多数表决等。</li>
+              <li>用真值表验证功能而非只看输入端。</li>
+            </ol>
+          </article>
+          <article>
+            <span>03 · 器件设计</span>
+            <h3>先功能表，再接地址</h3>
+            <ol>
+              <li>译码器输出对应最小项；编码器输入对应二进制地址。</li>
+              <li>MUX 把函数变量接地址端，把每行输出接到对应数据端。</li>
+              <li>ROM 把地址当自变量，把数据字当函数值。</li>
+              <li>接好使能端后，用所有输入组合检查。</li>
+            </ol>
+          </article>
+          <article>
+            <span>04 · 冒险排查</span>
+            <h3>找一对相反路径</h3>
+            <ol>
+              <li>观察某变量和其反变量是否同时经过不同路径。</li>
+              <li>静态 1 冒险找 $A+\\overline A$ 型结构，静态 0 找 $A\\overline A$ 型结构。</li>
+              <li>用一致项补上被化简掉的重叠区域。</li>
+              <li>检查补冗余项后没有引入新的错误逻辑。</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <div id="chapterRoot" class="chapters"></div>
+
+      <section class="source-library" id="sources" aria-labelledby="sourcesTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SOURCE LIBRARY</p>
+            <h2 id="sourcesTitle">原始笔记与课堂图片</h2>
+          </div>
+          <p>网站内容以这五份材料为边界；点击图片可放大对照原笔记。</p>
+        </div>
+        <div class="figure-gallery source-gallery">
+          <button class="figure-card" type="button" data-figure-src="./assets/source/logic-algebra-notes.jpg" data-figure-title="逻辑代数笔记" data-figure-caption="数制、逻辑运算、公式、三大规则和卡诺图">
+            <span class="figure-card__media"><img src="./assets/source/logic-algebra-notes.jpg" alt="逻辑代数笔记" loading="lazy"></span>
+            <span class="figure-card__text"><strong>逻辑代数笔记</strong><small>数制、恒等式、最小项与卡诺图</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/logic-kmap-figures.jpg" data-figure-title="逻辑符号与卡诺图" data-figure-caption="教材截图：逻辑符号、最小项合并和卡诺图圈法">
+            <span class="figure-card__media"><img src="./assets/source/logic-kmap-figures.jpg" alt="逻辑符号与卡诺图" loading="lazy"></span>
+            <span class="figure-card__text"><strong>逻辑符号与卡诺图</strong><small>门符号、最小项和四变量圈组</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/combinational-logic-overview.jpg" data-figure-title="组合逻辑电路总览" data-figure-caption="组合逻辑分析、设计、算术、编码译码和典型器件">
+            <span class="figure-card__media"><img src="./assets/source/combinational-logic-overview.jpg" alt="组合逻辑电路总览" loading="lazy"></span>
+            <span class="figure-card__text"><strong>组合逻辑总览</strong><small>分析方法、设计方法和典型器件</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/combinational-methods-figures.jpg" data-figure-title="组合逻辑分析与设计图示" data-figure-caption="课堂图片：逻辑图化简、真值表、编码器和译码器">
+            <span class="figure-card__media"><img src="./assets/source/combinational-methods-figures.jpg" alt="组合逻辑分析与设计图示" loading="lazy"></span>
+            <span class="figure-card__text"><strong>分析与设计图示</strong><small>课堂例题和方法流程</small></span>
+          </button>
+          <button class="figure-card" type="button" data-figure-src="./assets/source/combinational-circuit-figures.jpg" data-figure-title="典型组合逻辑电路" data-figure-caption="奇偶校验、数据选择器、ROM 和竞争冒险">
+            <span class="figure-card__media"><img src="./assets/source/combinational-circuit-figures.jpg" alt="典型组合逻辑电路" loading="lazy"></span>
+            <span class="figure-card__text"><strong>典型组合逻辑电路</strong><small>校验、MUX、ROM 与冒险</small></span>
+          </button>
+        </div>
+      </section>
+
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
+    </main>
+  </div>
+
+  <div id="figureModal" class="figure-modal" role="dialog" aria-modal="true" aria-labelledby="figureModalTitle" hidden>
+    <button id="figureModalClose" class="figure-modal__close" type="button" aria-label="关闭图片">×</button>
+    <div class="figure-modal__body">
+      <img id="figureModalImage" src="" alt="">
+      <div class="figure-modal__caption">
+        <strong id="figureModalTitle"></strong>
+        <p id="figureModalCaption"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>数字电子技术互动复习站 · 数制、逻辑代数、组合逻辑与典型器件</p>
+    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 原始笔记入口</p>
+  </footer>
+
+  <script defer src="./vendor/katex/katex.min.js"></script>
+  <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
+  <script defer src="./js/course-data.js?v=20261101-de1"></script>
+  <script defer src="./js/quiz-data.js?v=20261101-de1"></script>
+  <script defer src="./js/app.js?v=20261101-de1"></script>
+  <script defer src="./js/practice.js?v=20261101-de1"></script>
+</body>
+</html>

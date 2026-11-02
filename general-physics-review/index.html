@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="普通物理学互动复习站：静电场、导体与电介质、电容与电场能量。">
+  <title>普通物理学 · 静电场知识主线</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#courseContent">跳到知识内容</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">GENERAL PHYSICS · ELECTROSTATICS</p>
+        <h1>普通物理学<span>静电场主线</span></h1>
+        <p class="hero__lead">
+          用库仑定律建立场，用高斯面利用对称性，用等势面理解能量，再把场与介质收束到电容。
+        </p>
+        <div class="hero__stats" aria-label="站点统计">
+          <span><strong>3</strong> 个章节</span>
+          <span><strong id="totalKnowledge">0</strong> 个知识点</span>
+          <span><strong id="totalFigures">0</strong> 张资料图</span>
+          <span><strong>4</strong> 份原始笔记</span>
+          <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
+        </div>
+        <div class="hero__actions" aria-label="快速入口">
+          <a class="hero__action hero__action--primary" href="#assessment">开始通关自测</a>
+          <a class="hero__action" href="#formulaSheet">打开公式速查</a>
+          <a class="hero__action" href="#sources">查看原始笔记</a>
+        </div>
+      </div>
+
+      <div class="hero__figure" aria-hidden="true">
+        <svg class="field-map" viewBox="0 0 520 430" role="presentation">
+          <defs>
+            <radialGradient id="positiveGlow">
+              <stop offset="0" stop-color="#d65a4a" stop-opacity=".9"/>
+              <stop offset="1" stop-color="#d65a4a" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="negativeGlow">
+              <stop offset="0" stop-color="#2d5279" stop-opacity=".86"/>
+              <stop offset="1" stop-color="#2d5279" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <g class="equipotentials">
+            <ellipse cx="155" cy="212" rx="100" ry="95"></ellipse>
+            <ellipse cx="365" cy="212" rx="100" ry="95"></ellipse>
+            <ellipse cx="260" cy="212" rx="210" ry="155"></ellipse>
+          </g>
+          <g class="field-lines">
+            <path d="M174 187 C225 115 295 115 346 187"></path>
+            <path d="M174 212 C232 178 288 178 346 212"></path>
+            <path d="M174 237 C225 309 295 309 346 237"></path>
+            <path d="M164 173 C185 65 335 65 356 173"></path>
+            <path d="M164 251 C185 359 335 359 356 251"></path>
+          </g>
+          <g class="charge charge--positive">
+            <circle cx="155" cy="212" r="38" fill="url(#positiveGlow)"></circle>
+            <circle cx="155" cy="212" r="22"></circle>
+            <path d="M145 212H165M155 202V222"></path>
+          </g>
+          <g class="charge charge--negative">
+            <circle cx="365" cy="212" r="38" fill="url(#negativeGlow)"></circle>
+            <circle cx="365" cy="212" r="22"></circle>
+            <path d="M355 212H375"></path>
+          </g>
+          <text x="146" y="272">+Q</text>
+          <text x="350" y="272">−Q</text>
+          <text x="54" y="392">E-field lines</text>
+          <text x="334" y="52">∇V</text>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <section class="study-loop" id="studyLoop" aria-labelledby="studyLoopTitle">
+    <div class="study-loop__head">
+      <div>
+        <p class="eyebrow">PROBLEM PROTOCOL</p>
+        <h2 id="studyLoopTitle">先看对称性，再决定写哪一个积分</h2>
+      </div>
+      <p>静电场题不是从公式表里猜公式，而是先判断场源、对称性和题目要求的“场、势、能”中的哪一个。</p>
+    </div>
+    <ol class="study-loop__steps">
+      <li>
+        <span>01</span>
+        <strong>选择场源模型</strong>
+        <p>点、线、面、球、圆环或导体；先确认有限/无限、均匀/非均匀。</p>
+      </li>
+      <li>
+        <span>02</span>
+        <strong>判断对称性</strong>
+        <p>球、轴、面对称决定高斯面；不够对称时回到矢量积分与分量抵消。</p>
+      </li>
+      <li>
+        <span>03</span>
+        <strong>求 E、D 或 V</strong>
+        <p>求通量用高斯定理，求电势用路径积分；方向、参考零点和符号同时确定。</p>
+      </li>
+      <li>
+        <span>04</span>
+        <strong>回到边界验算</strong>
+        <p>检查内部 E、导体表面方向、介质边界和单位，最后再看能量或电容。</p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="page">
+    <aside class="rail" aria-label="学习导航">
+      <div class="rail__sticky">
+        <div class="progress-card">
+          <div class="progress-card__head">
+            <span>复习进度</span>
+            <strong id="masteryText">0 / 0</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true"><i id="masteryBar"></i></div>
+          <button class="text-button" id="resetProgress" type="button">重置掌握标记</button>
+        </div>
+
+        <nav class="chapter-nav" aria-label="章节目录">
+          <p class="rail__label">章节</p>
+          <div id="chapterNav"></div>
+        </nav>
+
+        <div class="type-nav">
+          <p class="rail__label">知识点类型</p>
+          <div id="typeFilters" class="type-filters" role="group" aria-label="筛选知识点类型"></div>
+        </div>
+
+        <div class="rail__note">
+          <strong>判断顺序</strong>
+          <p>先规定正方向与电势零点；再用对称性选择最省力的方程。</p>
+        </div>
+
+        <nav class="rail__actions" aria-label="冲刺入口">
+          <a href="#assessment">通关自测 <span>18 题</span></a>
+          <a href="#formulaSheet">公式速查 <span>13 组</span></a>
+          <a href="#examWorkflow">解题流程 <span>4 步</span></a>
+        </nav>
+      </div>
+    </aside>
+
+    <main id="courseContent" class="main">
+      <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
+        <div class="assessment__intro">
+          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <h2 id="assessmentTitle">用题目暴露“场、势、能”混淆</h2>
+          <p>
+            每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
+          </p>
+          <div class="assessment__rules">
+            <span>不靠背选项</span>
+            <span>先写判断依据</span>
+            <span>错因定位到章节</span>
+          </div>
+        </div>
+
+        <div class="quiz-card" id="quizPanel">
+          <div class="quiz-card__top">
+            <label>
+              <span>自测范围</span>
+              <select id="quizChapterFilter"></select>
+            </label>
+            <button class="text-button" id="quizRestart" type="button">重新开始</button>
+          </div>
+          <div class="quiz-dashboard" aria-live="polite">
+            <div class="quiz-dashboard__status">
+              <strong id="quizProgressText">已答 0 / 18</strong>
+              <span id="quizScoreText">答对 0 题</span>
+            </div>
+            <div class="quiz-dashboard__track" aria-hidden="true">
+              <i id="quizProgressBar"></i>
+            </div>
+          </div>
+          <div id="quizQuestion" class="quiz-question"></div>
+          <div id="quizResult" class="quiz-result" hidden></div>
+          <div class="quiz-card__nav">
+            <button id="quizPrev" class="secondary-button" type="button">上一题</button>
+            <button id="quizNext" class="primary-button" type="button" disabled>下一题</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="toolbar" aria-label="知识查询工具">
+        <label class="search-box">
+          <span class="search-box__icon" aria-hidden="true"></span>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜索知识点，如“高斯定理”“电势”“介质极化”"
+            aria-label="搜索知识点"
+            autocomplete="off"
+          >
+          <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
+        </label>
+        <div class="toolbar__actions">
+          <span id="resultCount" class="result-count" aria-live="polite"></span>
+          <button id="expandAll" class="secondary-button" type="button">展开全部</button>
+          <button id="collapseAll" class="secondary-button" type="button">全部折叠</button>
+        </div>
+      </section>
+
+      <aside class="legend" aria-label="知识点颜色说明">
+        <span><i class="dot dot--definition"></i>概念</span>
+        <span><i class="dot dot--formula"></i>公式</span>
+        <span><i class="dot dot--property"></i>性质与场图</span>
+        <span><i class="dot dot--judgment"></i>分析与判别</span>
+        <span><i class="dot dot--application"></i>模型与应用</span>
+        <span><i class="dot dot--example"></i>例题</span>
+        <span><i class="dot dot--warning"></i>易错提醒</span>
+      </aside>
+
+      <section class="formula-sheet" id="formulaSheet" aria-labelledby="formulaSheetTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">FORMULA SHEET</p>
+            <h2 id="formulaSheetTitle">静电场公式速查</h2>
+          </div>
+          <p>公式的右栏比公式本身更重要：有限长、无限大、球内外与介质是否填满都会改变结论。</p>
+        </div>
+        <div class="formula-table-wrap">
+          <table class="formula-table">
+            <thead>
+              <tr><th>环节</th><th>公式</th><th>适用与提醒</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>库仑定律</td>
+                <td>$F=\dfrac{1}{4\pi\varepsilon_0}\dfrac{|q_1q_2|}{r^2}$</td>
+                <td>真空中点电荷；方向要另行判断。</td>
+              </tr>
+              <tr>
+                <td>点电荷电场</td>
+                <td>$E=\dfrac{Q}{4\pi\varepsilon_0r^2}$</td>
+                <td>正电荷向外，负电荷向内。</td>
+              </tr>
+              <tr>
+                <td>高斯定理</td>
+                <td>$\oint\vec E\cdot\mathrm d\vec S=\dfrac{Q_{\rm in}}{\varepsilon_0}$</td>
+                <td>只求通量时无需对称；解 $E$ 时必须利用对称性。</td>
+              </tr>
+              <tr>
+                <td>无限长线</td>
+                <td>$E=\dfrac{\lambda}{2\pi\varepsilon_0r}$</td>
+                <td>线近似无限长，观察点远离端点。</td>
+              </tr>
+              <tr>
+                <td>无限大平面</td>
+                <td>$E=\dfrac{\sigma}{2\varepsilon_0}$</td>
+                <td>两侧场强大小相同、方向相反。</td>
+              </tr>
+              <tr>
+                <td>有介质高斯</td>
+                <td>$\oint\vec D\cdot\mathrm d\vec S=Q_{\rm free,\,in}$</td>
+                <td>右端只算自由电荷，不含束缚电荷。</td>
+              </tr>
+              <tr>
+                <td>导体表面</td>
+                <td>$E=\dfrac{\sigma}{\varepsilon_0}$</td>
+                <td>静电平衡，电场垂直导体表面。</td>
+              </tr>
+              <tr>
+                <td>电势积分</td>
+                <td>$V_A=-\displaystyle\int_{\infty}^{A}\vec E\cdot\mathrm d\vec l$</td>
+                <td>无穷长/无限大模型不能默认取无穷远为零。</td>
+              </tr>
+              <tr>
+                <td>平行板电容</td>
+                <td>$C=\dfrac{\varepsilon S}{d}$</td>
+                <td>忽略边缘效应，介质完全填满板间场区。</td>
+              </tr>
+              <tr>
+                <td>圆柱形电容</td>
+                <td>$C=\dfrac{2\pi\varepsilon L}{\ln(R_2/R_1)}$</td>
+                <td>长度远大于半径差，内外半径满足 $R_2>R_1$。</td>
+              </tr>
+              <tr>
+                <td>球形电容</td>
+                <td>$C=\dfrac{4\pi\varepsilon R_1R_2}{R_2-R_1}$</td>
+                <td>孤立球取 $R_2\to\infty$，得 $4\pi\varepsilon R_1$。</td>
+              </tr>
+              <tr>
+                <td>串联电容</td>
+                <td>$\dfrac1{C_{\rm eq}}=\sum_i\dfrac1{C_i}$</td>
+                <td>串联电荷相同，等效电容小于任一电容。</td>
+              </tr>
+              <tr>
+                <td>电场能量密度</td>
+                <td>$w_e=\dfrac12\varepsilon E^2$</td>
+                <td>线性各向同性介质；非均匀场需积分。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="exam-workflow" id="examWorkflow" aria-labelledby="examWorkflowTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">ANSWER PROTOCOL</p>
+            <h2 id="examWorkflowTitle">四类题的落笔顺序</h2>
+          </div>
+          <p>把“电荷分布—对称性—场/势—边界条件”写完整，通常比只写最终公式更稳。</p>
+        </div>
+        <div class="workflow-grid">
+          <article>
+            <span>01 · 场强积分</span>
+            <h3>先分解，再积分</h3>
+            <ol>
+              <li>标出场源电荷元 $\mathrm dq$ 和从电荷元指向场点的单位矢量。</li>
+              <li>先用对称性判断哪些分量两两抵消。</li>
+              <li>只对保留下来的分量积分，写明积分变量与上下限。</li>
+              <li>用极限情形检查：无限长线、圆环中心、远处点电荷。</li>
+            </ol>
+          </article>
+          <article>
+            <span>02 · 高斯定理</span>
+            <h3>先找对称，再选面</h3>
+            <ol>
+              <li>球对称选同心球面；轴对称选同轴圆柱；面对称选对称柱/盒。</li>
+              <li>只计算有通量的面，明确面积矢量指向外侧。</li>
+              <li>求 $Q_{\rm in}$ 或 $Q_{\rm free,in}$，再解 $E$ 或 $D$。</li>
+              <li>检查分区结果在边界处是否连续或按面电荷发生跃变。</li>
+            </ol>
+          </article>
+          <article>
+            <span>03 · 电势</span>
+            <h3>先定零点，再选路径</h3>
+            <ol>
+              <li>有限带电体通常取无穷远为零；无限长线/面要另设零点。</li>
+              <li>沿最方便积分的方向从零点积到目标点。</li>
+              <li>电势是标量，直接把各源的电势代数相加。</li>
+              <li>用 $E=-\nabla V$ 或 $U=Ed$ 检查方向与数量级。</li>
+            </ol>
+          </article>
+          <article>
+            <span>04 · 电容</span>
+            <h3>先求场和电压，再定义 C</h3>
+            <ol>
+              <li>按几何对称性求两导体之间的 $E(r)$。</li>
+              <li>从正极板积分到负极板求 $U$。</li>
+              <li>代入 $C=Q/U$，消去 $Q$ 或 $\sigma$。</li>
+              <li>明确介质是否填满；再判断电源是否连接，决定固定 $Q$ 还是固定 $U$。</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <div id="chapterRoot" class="chapters"></div>
+
+      <section class="source-library" id="sources" aria-labelledby="sourcesTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">SOURCE LIBRARY</p>
+            <h2 id="sourcesTitle">原始笔记与课堂图片</h2>
+          </div>
+          <p>网站内容以这四份材料为边界；点击图片可放大对照原笔记。</p>
+        </div>
+        <div class="figure-gallery source-gallery">
+          <button class="figure-card" type="button"
+            data-figure-src="./assets/source/electrostatics-outline.jpg"
+            data-figure-title="静电场知识提纲"
+            data-figure-caption="小米笔记：库仑定律到等势面的完整提纲">
+            <span class="figure-card__media"><img src="./assets/source/electrostatics-outline.jpg" alt="静电场知识提纲" loading="lazy"></span>
+            <span class="figure-card__text"><strong>静电场知识提纲</strong><small>场强、高斯定理、电势与等势面</small></span>
+          </button>
+          <button class="figure-card" type="button"
+            data-figure-src="./assets/source/classroom-figures.jpg"
+            data-figure-title="课堂电磁学图示索引"
+            data-figure-caption="课堂照片：带电直线、球面、无限平面与电势计算">
+            <span class="figure-card__media"><img src="./assets/source/classroom-figures.jpg" alt="课堂电磁学图示索引" loading="lazy"></span>
+            <span class="figure-card__text"><strong>课堂电磁学图示</strong><small>13 个典型场与电势图像</small></span>
+          </button>
+          <button class="figure-card" type="button"
+            data-figure-src="./assets/source/electrostatics-notes.jpg"
+            data-figure-title="导体与电介质笔记"
+            data-figure-caption="笔记：静电平衡、电荷分布、屏蔽、极化和电容器">
+            <span class="figure-card__media"><img src="./assets/source/electrostatics-notes.jpg" alt="导体与电介质笔记" loading="lazy"></span>
+            <span class="figure-card__text"><strong>导体与电介质</strong><small>第 10 章结构化笔记</small></span>
+          </button>
+          <button class="figure-card" type="button"
+            data-figure-src="./assets/source/capacitor-examples.jpg"
+            data-figure-title="三种典型电容器"
+            data-figure-caption="教材截图：平行板、圆柱形、球形电容器的公式与场图">
+            <span class="figure-card__media"><img src="./assets/source/capacitor-examples.jpg" alt="三种典型电容器" loading="lazy"></span>
+            <span class="figure-card__text"><strong>典型电容器</strong><small>平行板、圆柱形、球形</small></span>
+          </button>
+        </div>
+      </section>
+
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
+    </main>
+  </div>
+
+  <div id="figureModal" class="figure-modal" role="dialog" aria-modal="true" aria-labelledby="figureModalTitle" hidden>
+    <button id="figureModalClose" class="figure-modal__close" type="button" aria-label="关闭图片">×</button>
+    <div class="figure-modal__body">
+      <img id="figureModalImage" src="" alt="">
+      <div class="figure-modal__caption">
+        <strong id="figureModalTitle"></strong>
+        <p id="figureModalCaption"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>普通物理学互动复习站 · 静电场、导体与电介质、电容与电场能量</p>
+    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 原始笔记入口</p>
+  </footer>
+
+  <script defer src="./vendor/katex/katex.min.js"></script>
+  <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
+  <script defer src="./js/course-data.js?v=20261101-gp1"></script>
+  <script defer src="./js/quiz-data.js?v=20261101-gp1"></script>
+  <script defer src="./js/app.js?v=20261101-gp1"></script>
+  <script defer src="./js/practice.js?v=20261101-gp1"></script>
+</body>
+</html>

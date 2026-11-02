@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="大二上复习资料总入口：概率论、模拟电子技术、数字电子技术、普通物理学和数学物理方法。">
+  <title>大二上复习资料</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#library">跳到站点列表</a>
+
+  <header class="hero">
+    <nav class="topbar" aria-label="页面导航">
+      <a class="brand" href="./">
+        <span class="brand__mark" aria-hidden="true">
+          <i></i><i></i><i></i>
+        </span>
+        <span>大二上复习资料</span>
+      </a>
+      <div class="topbar__links">
+        <a href="#library">五门课程</a>
+        <a href="#overview">本周总览</a>
+      </div>
+      <span class="topbar__term">2026 · FALL</span>
+    </nav>
+
+    <div class="hero__body">
+      <div class="hero__copy">
+        <p class="eyebrow">FIVE SUBJECTS · ONE REVIEW DESK</p>
+        <h1>大二上<span>复习资料</span></h1>
+        <p class="hero__lead">
+          五门课程独立成站，统一从这里进入。知识卡、公式、自测和原始笔记都保存在本地，复习进度也由你掌控。
+        </p>
+        <div class="hero__actions">
+          <button class="button button--primary" id="continueButton" type="button">从概率论开始</button>
+          <a class="button button--ghost" href="#library">浏览全部课程</a>
+        </div>
+      </div>
+
+      <div class="hero__map" aria-hidden="true">
+        <svg viewBox="0 0 500 420">
+          <g class="map-grid">
+            <path d="M35 44H465M35 112H465M35 180H465M35 248H465M35 316H465M35 384H465"></path>
+            <path d="M68 25V395M140 25V395M212 25V395M284 25V395M356 25V395M428 25V395"></path>
+          </g>
+          <g class="map-links">
+            <path d="M250 208L117 112M250 208L383 112M250 208L105 315M250 208L395 315M250 208L250 55"></path>
+          </g>
+          <g class="map-node map-node--center">
+            <circle cx="250" cy="208" r="52"></circle>
+            <text x="250" y="202">大二上</text>
+            <text x="250" y="222">复习</text>
+          </g>
+          <g class="map-node map-node--probability">
+            <circle cx="117" cy="112" r="28"></circle>
+            <text x="117" y="117">P</text>
+          </g>
+          <g class="map-node map-node--analog">
+            <circle cx="383" cy="112" r="28"></circle>
+            <text x="383" y="117">模</text>
+          </g>
+          <g class="map-node map-node--digital">
+            <circle cx="105" cy="315" r="28"></circle>
+            <text x="105" y="320">数</text>
+          </g>
+          <g class="map-node map-node--physics">
+            <circle cx="395" cy="315" r="28"></circle>
+            <text x="395" y="320">物</text>
+          </g>
+          <g class="map-node map-node--math">
+            <circle cx="250" cy="55" r="24"></circle>
+            <text x="250" y="61">∮</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="hero__stats" aria-label="复习资料统计">
+      <div><strong>5</strong><span>门独立课程站</span></div>
+      <div><strong id="totalCards">373</strong><span>个知识卡</span></div>
+      <div><strong>72</strong><span>道通关自测</span></div>
+      <div><strong>34</strong><span>组资料图</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="library" id="library" aria-labelledby="libraryTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">COURSE LIBRARY</p>
+          <h2 id="libraryTitle">五门课程，各走各的主线</h2>
+        </div>
+        <p>选择一个站点进入。每门课的知识点、自测和原始笔记彼此独立，不会混在一起。</p>
+      </div>
+
+      <div class="library__tools">
+        <label class="search">
+          <span aria-hidden="true"></span>
+          <input id="courseSearch" type="search" aria-label="搜索课程" placeholder="搜索课程、章节或关键词，如“高斯”“卡诺图”“留数”" autocomplete="off">
+          <button id="clearSearch" type="button" hidden>清除</button>
+        </label>
+        <div class="filters" role="group" aria-label="课程分类">
+          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 5</button>
+          <button type="button" data-filter="electronics" aria-pressed="false">电类 2</button>
+          <button type="button" data-filter="science" aria-pressed="false">数理 2</button>
+          <button type="button" data-filter="statistics" aria-pressed="false">统计 1</button>
+        </div>
+      </div>
+
+      <div class="course-grid" id="courseGrid">
+        <a
+          class="course-card course-card--probability"
+          href="../probability-review/"
+          data-site="probability"
+          data-category="statistics"
+          data-search="概率论 随机事件 随机变量 多维随机变量 联合分布 贝叶斯 数学 统计"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">P</span>
+            <span class="course-index">01 / STAT</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">PROBABILITY</p>
+            <h3>概率论</h3>
+            <p>从事件语言、条件概率到多维随机变量与联合分布。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>3 章</span>
+            <span>81 个知识点</span>
+            <span>5 份资料</span>
+          </div>
+          <div class="course-progress">
+            <div><span>掌握进度</span><strong data-progress-label="probability">0 / 81</strong></div>
+            <i><span data-progress-bar="probability"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
+
+        <a
+          class="course-card course-card--analog"
+          href="../analog-electronics-review/"
+          data-site="analog"
+          data-category="electronics"
+          data-search="模拟电子技术 模电 二极管 三极管 放大电路 频率响应 运放 稳压管"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">A</span>
+            <span class="course-index">02 / ANALOG</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">ANALOG ELECTRONICS</p>
+            <h3>模拟电子技术</h3>
+            <p>器件、放大电路、小信号模型与频率响应。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>3 章</span>
+            <span>86 个知识点</span>
+            <span>18 道自测</span>
+          </div>
+          <div class="course-progress">
+            <div><span>掌握进度</span><strong data-progress-label="analog">0 / 86</strong></div>
+            <i><span data-progress-bar="analog"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
+
+        <a
+          class="course-card course-card--digital"
+          href="../digital-electronics-review/"
+          data-site="digital"
+          data-category="electronics"
+          data-search="数字电子技术 数电 逻辑代数 卡诺图 组合逻辑 编码器 译码器 加法器 ROM"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">01</span>
+            <span class="course-index">03 / DIGITAL</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">DIGITAL ELECTRONICS</p>
+            <h3>数字电子技术</h3>
+            <p>逻辑代数、组合逻辑设计与常用数字器件。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>3 章</span>
+            <span>70 个知识点</span>
+            <span>18 道自测</span>
+          </div>
+          <div class="course-progress">
+            <div><span>掌握进度</span><strong data-progress-label="digital">0 / 70</strong></div>
+            <i><span data-progress-bar="digital"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
+
+        <a
+          class="course-card course-card--physics"
+          href="../general-physics-review/"
+          data-site="physics"
+          data-category="science"
+          data-search="普通物理学 普物 静电场 库仑定律 高斯定理 电介质 电容 电场能量"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">Φ</span>
+            <span class="course-index">04 / PHYSICS</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">GENERAL PHYSICS</p>
+            <h3>普通物理学</h3>
+            <p>静电场、导体与电介质、电容与电场能量。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>3 章</span>
+            <span>71 个知识点</span>
+            <span>18 道自测</span>
+          </div>
+          <div class="course-progress">
+            <div><span>掌握进度</span><strong data-progress-label="physics">0 / 71</strong></div>
+            <i><span data-progress-bar="physics"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
+
+        <a
+          class="course-card course-card--math"
+          href="../math-physics-methods-review/"
+          data-site="math"
+          data-category="science"
+          data-search="数学物理方法 复变函数 复积分 柯西黎曼 解析函数 洛朗级数 留数 整函数"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">∮</span>
+            <span class="course-index">05 / METHODS</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">MATHEMATICAL METHODS</p>
+            <h3>数学物理方法</h3>
+            <p>复数、解析函数、洛朗级数、孤立奇点与留数。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>3 章</span>
+            <span>65 个知识点</span>
+            <span>18 道自测</span>
+          </div>
+          <div class="course-progress">
+            <div><span>掌握进度</span><strong data-progress-label="math">0 / 65</strong></div>
+            <i><span data-progress-bar="math"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
+      </div>
+
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配课程，换个关键词或选择“全部”。</p>
+    </section>
+
+    <section class="overview" id="overview" aria-labelledby="overviewTitle">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">SEMESTER SNAPSHOT</p>
+          <h2 id="overviewTitle">本周总览</h2>
+        </div>
+        <p>总进度直接读取各课程站点保存在同一浏览器中的“已掌握”标记。</p>
+      </div>
+
+      <div class="overview__grid">
+        <article class="overview-card overview-card--resume">
+          <p>CONTINUE</p>
+          <h3 id="resumeTitle">还没有开始记录</h3>
+          <span id="resumeText">从任意课程标记一个知识点，这里会保留你最近进入的站点。</span>
+          <button id="resumeButton" type="button">选择一门课程</button>
+        </article>
+        <article class="overview-card">
+          <p>MASTERY</p>
+          <h3><strong id="totalMastered">0</strong> / 373</h3>
+          <span>五个站点合计掌握进度</span>
+          <div class="overview-bar" aria-hidden="true"><i id="totalMasteryBar"></i></div>
+        </article>
+        <article class="overview-card">
+          <p>WEAKEST LINK</p>
+          <h3 id="weakestTitle">等待进度数据</h3>
+          <span>优先回看掌握比例最低的课程</span>
+          <button id="weakestButton" type="button" disabled>进入待补课程</button>
+        </article>
+      </div>
+
+      <div class="rules">
+        <div>
+          <span>01</span>
+          <strong>课程彼此独立</strong>
+          <p>五门课使用各自的章节、题型和公式体系，不在一个页面里混杂。</p>
+        </div>
+        <div>
+          <span>02</span>
+          <strong>进度统一汇总</strong>
+          <p>从总入口进入时，总览能读取各站保存在同一浏览器中的进度。</p>
+        </div>
+        <div>
+          <span>03</span>
+          <strong>资料内容有边界</strong>
+          <p>站点严格围绕已提供的课堂和笔记材料，后续内容可继续加入。</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <strong>大二上复习资料</strong>
+      <span>五个站点 · 一套入口 · 离线可用</span>
+    </div>
+    <p>知识卡 · 公式速查 · 通关自测 · 原始笔记</p>
+  </footer>
+
+  <script defer src="./js/portal.js"></script>
+</body>
+</html>
