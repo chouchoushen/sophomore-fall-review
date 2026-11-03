@@ -271,6 +271,7 @@
   function renderCard(chapter, theme, card) {
     const type = TYPE_META[card.type] ? card.type : "definition";
     const meta = TYPE_META[type];
+    const linkedFigures = card.figures || (card.figure ? [card.figure] : []);
     const searchText = normalizeSearchText(
       [
         chapter.title,
@@ -282,23 +283,40 @@
         stripSearchMarkup(card.formula || ""),
         stripSearchMarkup((card.bullets || []).join(" ")),
         stripSearchMarkup(card.note || ""),
-        stripSearchMarkup(card.example ? `${card.example.title} ${(card.example.body || []).join(" ")}` : "")
+        stripSearchMarkup(card.example ? `${card.example.title} ${(card.example.body || []).join(" ")}` : ""),
+        stripSearchMarkup(linkedFigures.map((figure) => `${figure.title} ${figure.caption || ""}`).join(" "))
       ].join(" ")
     );
 
     return `
-      <article class="knowledge-card" id="${card.id}" data-card="${card.id}" data-type="${type}" data-search="${escapeAttribute(searchText)}">
+      <article class="knowledge-card${linkedFigures.length ? " knowledge-card--illustrated" : ""}" id="${card.id}" data-card="${card.id}" data-type="${type}" data-search="${escapeAttribute(searchText)}">
         <div class="knowledge-card__head">
           <span class="knowledge-type">${meta.label}</span>
           <h4>${card.title}</h4>
           ${card.source ? `<span class="knowledge-source">${card.source}</span>` : ""}
         </div>
-        <div class="knowledge-body">
-          ${(card.body || []).map((paragraph) => `<p>${protectInlineMath(paragraph)}</p>`).join("")}
-          ${card.formula ? `<div class="formula-box">$$${escapeMathSource(card.formula)}$$</div>` : ""}
-          ${card.bullets ? `<ul class="knowledge-bullets">${card.bullets.map((item) => `<li>${protectInlineMath(item)}</li>`).join("")}</ul>` : ""}
-          ${card.note ? `<div class="card-callout">${protectInlineMath(card.note)}</div>` : ""}
-          ${card.example ? renderExample(card.example) : ""}
+        <div class="knowledge-card__content">
+          ${linkedFigures.length ? `
+            <div class="knowledge-card__figures">
+              ${linkedFigures.map((figure) => `
+                <button class="linked-figure" type="button"
+                  data-figure-src="${escapeAttribute(figure.src)}"
+                  data-figure-title="${escapeAttribute(figure.title)}"
+                  data-figure-caption="${escapeAttribute(figure.caption || "")}"
+                  aria-label="放大查看：${escapeAttribute(figure.title)}">
+                  <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy">
+                  <span>${figure.title}</span>
+                </button>
+              `).join("")}
+            </div>
+          ` : ""}
+          <div class="knowledge-body">
+            ${(card.body || []).map((paragraph) => `<p>${protectInlineMath(paragraph)}</p>`).join("")}
+            ${card.formula ? `<div class="formula-box">$$${escapeMathSource(card.formula)}$$</div>` : ""}
+            ${card.bullets ? `<ul class="knowledge-bullets">${card.bullets.map((item) => `<li>${protectInlineMath(item)}</li>`).join("")}</ul>` : ""}
+            ${card.note ? `<div class="card-callout">${protectInlineMath(card.note)}</div>` : ""}
+            ${card.example ? renderExample(card.example) : ""}
+          </div>
         </div>
         <button class="mastery-button" type="button" data-card="${card.id}" aria-pressed="false">标记掌握</button>
       </article>
@@ -319,7 +337,7 @@
 
   function setupFigureModal() {
     const modal = document.getElementById("figureModal");
-    document.querySelectorAll(".figure-card").forEach((button) => {
+    document.querySelectorAll(".figure-card, .linked-figure").forEach((button) => {
       button.addEventListener("click", () => openFigureModal(button));
     });
     document.getElementById("figureModalClose").addEventListener("click", closeFigureModal);

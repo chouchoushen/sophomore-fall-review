@@ -119,6 +119,7 @@ window.ANALOG_COURSE = {
               id: "constant-drop-model",
               type: "formula",
               title: "恒压降模型",
+              figures: [{ src: "./assets/figures/diode-models.webp", title: "二极管等效模型", caption: "对照理想、恒压降与折线模型。" }],
               body: [
                 "导通后认为二极管端电压近似不变。未说明材料时通常按硅管处理。"
               ],
@@ -170,6 +171,7 @@ n\approx1,\quad U_T\approx26\,\mathrm{mV}`
               id: "rectifier",
               type: "application",
               title: "二极管整流",
+              figures: [{ src: "./assets/figures/diode-waveforms.webp", title: "整流波形与二极管状态", caption: "输入半周、导通状态与输出波形对应。" }],
               body: [
                 "输入正半周时二极管导通，输出跟随输入；负半周截止，输出接近 0。",
                 "这正是二极管把交流变成单向脉动电压的基础。"
@@ -197,6 +199,7 @@ n\approx1,\quad U_T\approx26\,\mathrm{mV}`
               id: "zener",
               type: "property",
               title: "稳压管",
+              figures: [{ src: "./assets/figures/zener-regulator.webp", title: "稳压管稳压电路", caption: "限流电阻、稳压管和负载的位置关系。" }],
               body: [
                 "稳压管工作在反向击穿区，只要反向电流受到限制，端电压就能保持近似稳定。",
                 "必须与负载并联，并串联限流电阻，既保证稳压管有工作电流，又避免烧毁。"
@@ -319,6 +322,7 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "bjt-output-regions",
               type: "judgment",
               title: "输出特性的三个区域",
+              figures: [{ src: "./assets/figures/transistor-curves.webp", title: "三极管输出特性", caption: "放大、饱和、截止和安全工作区。" }],
               body: [
                 "<strong>放大区</strong>：发射结正偏、集电结反偏，$i_C=\\beta i_B$。",
                 "<strong>饱和区</strong>：两个结均正偏，$i_C$ 不再由 $\\beta i_B$ 决定；硅管饱和压降约 0.3 V。",
@@ -496,6 +500,7 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "static-estimate",
               type: "formula",
               title: "静态工作点估算",
+              figures: [{ src: "./assets/figures/static-load-line.webp", title: "直流负载线与 Q 点", caption: "用输出负载线定位静态工作点。" }],
               formula: String.raw`I_{BQ}\approx\frac{V_{CC}-U_{BEQ}}{R_b},
 \qquad
 I_{CQ}=\beta I_{BQ},
@@ -522,6 +527,7 @@ U_{CEQ}=V_{CC}-I_{CQ}R_c`
               id: "ce-waveform",
               type: "property",
               title: "共射电路的倒相作用",
+              figures: [{ src: "./assets/figures/amplifier-waveforms.webp", title: "共射电路各点波形", caption: "输入与输出的反相关系。" }],
               body: [
                 "$u_i$ 增大使 $i_B,i_C$ 增大，而 $u_o=u_{CE}=V_{CC}-i_C R_c$ 减小。",
                 "因此共射电路输出与输入反相。"
@@ -531,6 +537,7 @@ U_{CEQ}=V_{CC}-I_{CQ}R_c`
               id: "h-parameters",
               type: "formula",
               title: "三极管简化 h 参数模型",
+              figures: [{ src: "./assets/figures/h-parameter-equivalent.webp", title: "h 参数小信号模型", caption: "输入电阻 rbe 与受控电流源 βib 的连接。" }],
               formula: String.raw`u_{be}=r_{be}i_b,
 \qquad
 i_c=\beta i_b`
@@ -567,6 +574,7 @@ R_o\approx R_c`
               id: "emitter-resistor",
               type: "formula",
               title: "发射极电阻 Re 的影响",
+              figures: [{ src: "./assets/figures/emitter-resistor-circuit.webp", title: "带发射极电阻的共射电路", caption: "观察反馈电阻的连接位置。" }],
               body: [
                 "$R_e$ 引入电流负反馈，降低电压增益，但能提高输入电阻、稳定工作点。"
               ],
@@ -577,6 +585,7 @@ R_o\approx R_c`
               id: "divider-bias",
               type: "property",
               title: "分压式偏置与工作点稳定",
+              figures: [{ src: "./assets/figures/stable-bias-circuit.webp", title: "分压式稳定偏置电路", caption: "R_e 与旁路电容的连接关系。" }],
               body: [
                 "温度升高使 $I_C$ 增大时，$R_e$ 上的压降增大，发射结电压减小，从而抑制 $I_C$ 继续增加。",
                 "旁路电容 $C_e$ 在交流通路中短路 $R_e$，使交流增益不被过度降低。"
@@ -695,6 +704,7 @@ R_o\approx R_c`
               id: "multistage-gain",
               type: "formula",
               title: "多级电压放大倍数",
+              figures: [{ src: "./assets/figures/multistage-amplifier.webp", title: "多级放大电路", caption: "级间连接与逐级加载关系。" }],
               formula: String.raw`\dot A_u=\dot A_{u1}\dot A_{u2}\cdots\dot A_{un}`
             },
             {
@@ -904,6 +914,7 @@ f_\beta<f_T<f_\alpha`
               id: "hybrid-pi",
               type: "definition",
               title: "混合 π 等效电路",
+              figures: [{ src: "./assets/figures/hybrid-pi-model.webp", title: "混合 π 高频模型", caption: "结电容与受控源的高频连接。" }],
               body: [
                 "用基区体电阻、发射结电阻、结电容和受控电流源描述晶体管的高频小信号行为。",
                 "基极与发射极之间的电容 $C_{\\pi}$ 和集电结电容 $C_{\\mu}$ 是限制高频增益的主要因素。"
@@ -955,6 +966,7 @@ K=\frac{\dot U_{ce}}{\dot U_{b'e}}`
               id: "low-frequency",
               type: "property",
               title: "低频段",
+              figures: [{ src: "./assets/figures/single-stage-bode.webp", title: "低频等效电路", caption: "耦合电容对应的高通环节。" }],
               body: [
                 "耦合电容的容抗增大，分走一部分输入电压，导致增益下降。",
                 "输入耦合电容和输出耦合电容分别形成 RC 高通环节；实际下限频率由更靠近中频、数值更高的那个转折频率决定。",

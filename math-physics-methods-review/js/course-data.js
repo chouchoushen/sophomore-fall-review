@@ -523,6 +523,7 @@ a_n=\frac{f^{(n)}(z_0)}{n!}`
               id: "laurent-series",
               type: "formula",
               title: "洛朗级数",
+              figures: [{ src: "./assets/source/complex-analysis-outline.jpg", title: "洛朗展开结构", caption: "主要部分、解析部分与奇点分类。" }],
               body: [
                 "在圆环 $R_1<|z-z_0|<R_2$ 内解析的函数可展开为含正、负次幂的洛朗级数。",
                 "负次幂部分称为主要部分，正次幂部分称为解析部分；系数由沿环形区域内闭合路径的积分给出。"
@@ -600,6 +601,7 @@ a_n=\frac1{2\pi i}
               id: "pole",
               type: "property",
               title: "极点",
+              figures: [{ src: "./assets/source/isolated-singularities-slide.jpg", title: "极点与主要部分", caption: "洛朗级数负次幂项与极点阶数。" }],
               body: [
                 "洛朗展开的主要部分只有有限多个负次幂项，最高负幂为 $z-z_0$ 的 $m$ 次，则称为 $m$ 阶极点。",
                 "$m$ 阶极点在局部展开中的最负项为 $a_{-m}(z-z_0)^{-m}$，并且 $z\\to z_0$ 时 $|f(z)|\\to\\infty$。"
@@ -678,6 +680,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "simple-pole",
               type: "formula",
               title: "简单极点留数",
+              figures: [{ src: "./assets/source/residue-theory-notes.jpg", title: "简单极点留数公式", caption: "留数定义和极限计算法。" }],
               body: [
                 "若 $z_0$ 是一阶极点，则可直接用根式乘回主部取极限。",
                 "若 $f=P/Q$，且 $Q(z_0)=0$、$Q'(z_0)\\ne0$，常用 $P(z_0)/Q'(z_0)$。"
@@ -704,6 +707,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "higher-residue-example",
               type: "example",
               title: "例题：三阶极点与二阶极点",
+              figures: [{ src: "./assets/source/residue-examples.jpg", title: "高阶极点留数例题", caption: "cos z/z³ 与 sin z/z³ 的局部展开。" }],
               body: [
                 "分别计算 $f_1(z)=\\dfrac{\\cos z}{4z^3}$ 与 $f_2(z)=\\dfrac{\\sin z}{4z^3}$ 在 $z=0$ 的留数。",
                 "先看分子在 $z=0$ 的行为：$\\cos z$ 不取零，$\\sin z$ 有一阶零点。"
@@ -780,6 +784,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "real-line-integral",
               type: "formula",
               title: "实轴上的有理积分",
+              figures: [{ src: "./assets/source/residue-theory-notes.jpg", title: "实积分留数法", caption: "上半平面闭合路径与留数和。" }],
               body: [
                 "若 $f(x)$ 在实轴无奇点，在上半平面只有有限个孤立奇点，并且在大半圆上满足使弧积分趋于零的条件，则实轴积分等于上半平面留数和的 $2\\pi i$ 倍。",
                 "常见条件是 $|z f(z)|\\to0$ 一致；具体题目要先说明补成大回路的弧积分消失。"
@@ -801,6 +806,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "residue-circle-example",
               type: "example",
               title: "例题：圆内留数积分",
+              figures: [{ src: "./assets/source/residue-examples.jpg", title: "圆内闭合积分例题", caption: "|z|=2 内两个极点的留数计算。" }],
               body: [
                 "计算 $I=\\displaystyle\\oint_{|z|=2}\\frac{e^z}{z(z-1)^2}\\,\\mathrm dz$。",
                 "$z=0$ 是简单极点，$z=1$ 是二阶极点，二者都在 $|z|=2$ 内。"
@@ -897,6 +903,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "wave-equation-model",
               type: "formula",
               title: "弦振动方程：描述传播与振荡",
+              figures: [{ src: "./assets/source/pde-definition-notes.jpg", title: "弦振动方程", caption: "张力、线密度、微小横振动与波速。" }],
               body: [
                 "细长柔软弦作小幅横振动时，可以只研究横向位移 $u(x,t)$。对小振幅、小斜率且张力近似恒定，得到一维波动方程。",
                 "$a$ 是波速：$a^2=T/\\rho$；$T$ 为张力，$\\rho$ 为线密度。$f$ 表示单位质量所受外力折算后的强迫项。",
@@ -922,6 +929,7 @@ f=\frac{F}{\rho}`
               id: "heat-equation-model",
               type: "formula",
               title: "热传导方程：描述扩散与趋于均匀",
+              figures: [{ src: "./assets/source/pde-definition-notes.jpg", title: "热传导方程", caption: "温度梯度、热流与热源项。" }],
               body: [
                 "均匀细杆侧面绝热、温度只沿长度方向变化时，温度 $u(x,t)$ 由热传导方程描述。",
                 "热量总是从高温区流向低温区，因此温度曲线的凹性决定该点温度升高还是降低；这体现扩散、平滑效应。",
@@ -943,6 +951,7 @@ f=\frac{F}{\rho c_p}`
               id: "poisson-equation",
               type: "formula",
               title: "泊松方程：描述稳态场",
+              figures: [{ src: "./assets/source/pde-examples-figures.jpg", title: "泊松方程推导", caption: "闭合曲面积分与电荷密度。" }],
               body: [
                 "在介电常数为 $\\varepsilon$ 的空间中，由电荷体密度 $\\rho_e$ 产生静电场，电势 $V$ 满足泊松方程。",
                 "该方程没有时间导数，描述的是已经稳定的电势分布，而不是随时间演化的过程。",
@@ -1106,6 +1115,7 @@ u(l,t)=\mu_2(t)`
               id: "wave-well-posed-example",
               type: "example",
               title: "完整例子：两端固定的弦",
+              figures: [{ src: "./assets/source/pde-examples-figures.jpg", title: "弦振动初始条件", caption: "初始形状、初始速度与固定端条件。" }],
               body: [
                 "长度 $l$ 的弦两端固定，给初始形状和初始速度，求 $u(x,t)$。",
                 "这里 PDE 描述弦内部振动，两个空间端点的边界条件描述固定端，两个初始条件描述 $t=0$ 的状态。"
@@ -1129,6 +1139,7 @@ u(x,0)=\varphi(x),\quad u_t(x,0)=\psi(x), & 0\le x\le l.
               id: "heat-well-posed-example",
               type: "example",
               title: "完整例子：两端温度固定的细杆",
+              figures: [{ src: "./assets/source/pde-examples-figures.jpg", title: "热传导初始条件", caption: "初始温度分布与端点温度。" }],
               body: [
                 "细杆 $0<x<l$，两端温度分别维持在 $T_1,T_2$，初始温度为 $\\varphi(x)$。"
               ],

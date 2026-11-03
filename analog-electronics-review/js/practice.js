@@ -1,10 +1,14 @@
 (function () {
   "use strict";
 
-  const QUIZ = window.ANALOG_QUIZ;
-  if (!QUIZ) {
+  const BASE_QUIZ = window.ANALOG_QUIZ;
+  if (!BASE_QUIZ) {
     throw new Error("Analog electronics quiz data was not loaded.");
   }
+  const QUIZ = window.buildWeeklyQuiz
+    ? window.buildWeeklyQuiz(BASE_QUIZ)
+    : BASE_QUIZ;
+  const WEEK_KEY = QUIZ.weekKey || "";
 
   const STORAGE_KEY = "analog-electronics-review.quiz.v2";
   const root = document.getElementById("quizPanel");
@@ -20,10 +24,20 @@
   const quizNav = document.querySelector(".quiz-card__nav");
 
   let state = restoreState();
+  if (state.weekKey !== WEEK_KEY) {
+    state = {
+      chapter: state.chapter || "all",
+      answers: {},
+      currentIndex: 0,
+      completed: false,
+      weekKey: WEEK_KEY
+    };
+  }
   let filteredQuestions = getFilteredQuestions();
   let currentIndex = Math.min(state.currentIndex || 0, filteredQuestions.length - 1);
 
   renderChapterFilter();
+  renderWeekBadge();
   render();
 
   chapterFilter.addEventListener("change", () => {
@@ -38,7 +52,7 @@
 
   restartButton.addEventListener("click", () => {
     const chapter = state.chapter;
-    state = { chapter, answers: {}, currentIndex: 0, completed: false };
+    state = { chapter, answers: {}, currentIndex: 0, completed: false, weekKey: WEEK_KEY };
     filteredQuestions = getFilteredQuestions();
     currentIndex = 0;
     persist();
@@ -77,6 +91,17 @@
         })
         .join("");
     chapterFilter.value = state.chapter || "all";
+  }
+
+  function renderWeekBadge() {
+    if (document.getElementById("quizWeekLabel")) return;
+    const top = document.querySelector(".quiz-card__top");
+    if (!top) return;
+    const badge = document.createElement("span");
+    badge.id = "quizWeekLabel";
+    badge.className = "quiz-week-label";
+    badge.textContent = QUIZ.weekLabel || "本周题组";
+    top.insertBefore(badge, restartButton);
   }
 
   function getFilteredQuestions() {
@@ -268,10 +293,11 @@
         chapter: saved.chapter || "all",
         answers: saved.answers || {},
         currentIndex: Number.isInteger(saved.currentIndex) ? saved.currentIndex : 0,
-        completed: Boolean(saved.completed)
+        completed: Boolean(saved.completed),
+        weekKey: saved.weekKey || ""
       };
     } catch {
-      return { chapter: "all", answers: {}, currentIndex: 0, completed: false };
+      return { chapter: "all", answers: {}, currentIndex: 0, completed: false, weekKey: "" };
     }
   }
 
