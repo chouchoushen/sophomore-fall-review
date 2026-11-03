@@ -327,6 +327,7 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "kmap-rules",
               type: "property",
               title: "画圈规则",
+              figures: [{ src: "./assets/source/logic-kmap-figures.jpg", title: "卡诺图合并示例", caption: "对照四个变量卡诺图的画圈与跨边界合并。" }],
               bullets: [
                 "所有为 1 的最小项都必须至少被一个圈覆盖。",
                 "圈尽可能大、数量尽可能少，允许重叠和跨越边界。",
@@ -426,6 +427,7 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "analysis-example",
               type: "example",
               title: "例题：从逻辑图反推功能",
+              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "逻辑图分析例题", caption: "逻辑图、中间表达式与真值表对应。" }],
               body: [
                 "某电路第一级输出 $X=\\overline A\\,\\overline B$、$Y=AB$，最终输出 $Z=\\overline{X+Y}$。",
                 "先把两级代入，再用德摩根定律和最小项判别功能。"
@@ -479,6 +481,7 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "design-majority-example",
               type: "example",
               title: "例题：三人表决器",
+              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "组合逻辑设计方法", caption: "从真值表到最简逻辑图的课堂过程。" }],
               body: [
                 "三人各投一票，输入为 $A,B,C$，至少两人同意时输出 $F=1$。",
                 "真值表为 011、101、110、111 四个组合，写最小项后圈卡诺图。"
@@ -636,6 +639,7 @@ C_o=AB+AC_i+BC_i`
               id: "binary-encoder",
               type: "formula",
               title: "8 线–3 线二进制编码器",
+              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "3 位二进制编码器", caption: "输入有效位与 Y₂Y₁Y₀ 编码表。" }],
               body: [
                 "若最高位输入为 $I_7$、最低位为 $I_0$，正常工作时只有一个输入为 1。",
                 "每个输出都收集对应二进制位为 1 的输入。"
@@ -668,6 +672,7 @@ Y_0=I_1+I_3+I_5+I_7`
               id: "binary-decoder",
               type: "formula",
               title: "3 线–8 线二进制译码器",
+              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "3 位二进制译码器", caption: "译码真值表、输出方程和逻辑图。" }],
               body: [
                 "高有效输出时，$Y_i$ 等于对应输入最小项；低有效输出时还要整体取反。",
                 "使能端无效时，所有有效输出会被强制为非有效电平。"
@@ -705,6 +710,7 @@ i=0,1,\ldots,7`
               id: "four-to-one-mux",
               type: "formula",
               title: "4 选 1 数据选择器",
+              figures: [{ src: "./assets/source/combinational-circuit-figures.jpg", title: "数据选择器逻辑图", caption: "选择控制端与四路数据输入的连接。" }],
               formula: String.raw`Y=\overline{A_1}\,\overline{A_0}D_0
 +\overline{A_1}A_0D_1
 +A_1\overline{A_0}D_2
@@ -751,6 +757,7 @@ Y_3=A_1A_0D`
               id: "rom-structure",
               type: "definition",
               title: "ROM 的基本结构",
+              figures: [{ src: "./assets/source/combinational-circuit-figures.jpg", title: "ROM 结构图", caption: "地址译码、字线和存储阵列。" }],
               body: [
                 "ROM 由地址译码器、字线和存储阵列组成；地址选中某条字线，读出该地址对应的数据字。",
                 "从逻辑函数角度看，ROM 就是按每个地址预存对应输出值的查找表。"
@@ -833,6 +840,7 @@ A<B=\overline AB`
               id: "consensus-hazard",
               type: "formula",
               title: "用冗余项消除静态 1 冒险",
+              figures: [{ src: "./assets/source/combinational-circuit-figures.jpg", title: "竞争冒险电路举例", caption: "不同路径延迟在电路中的来源。" }],
               body: [
                 "当函数化简为 $AB+\\overline AC$ 时，$A$ 改变而 $B=C=1$ 的两条路径可能存在暂态空档。",
                 "加入一致性项 $BC$ 可以覆盖这个空档，使输出保持稳定。"

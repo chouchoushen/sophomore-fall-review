@@ -53,10 +53,18 @@
   let query = "";
   let progress = readProgress();
 
+  renderWeeklyLabel();
   renderProgress();
   renderResume();
   bindNavigation();
   bindSearch();
+
+  function renderWeeklyLabel() {
+    const label = document.getElementById("weeklyUpdateLabel");
+    if (!label || typeof window.getQuizWeekInfo !== "function") return;
+    const week = window.getQuizWeekInfo();
+    label.textContent = `${week.key} 教学周题组`;
+  }
 
   function readProgress() {
     return SITES.map((site) => {

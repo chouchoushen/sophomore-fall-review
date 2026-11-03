@@ -61,6 +61,7 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "electric-field-definition",
               type: "definition",
               title: "电场强度",
+              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "电场与电势图示", caption: "点电荷、带电直线和球面的电场图像。" }],
               body: [
                 "电场是电荷周围空间中的特殊物质，对场中电荷施力。",
                 "电场强度定义为单位正检验电荷所受的力，方向与该正电荷所受电场力方向相同。",
@@ -201,6 +202,7 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "spherical-shell-field",
               type: "judgment",
               title: "均匀带电球面",
+              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "带电球面场强", caption: "球内外电场结论与高斯面对应。" }],
               body: [
                 "球面内部各点场强为零，外部等效于电荷全部集中在球心的点电荷。",
                 "均匀带电实心球内部，由半径 $r$ 外的球壳贡献相抵消，只受半径 $r$ 内电荷影响。"
@@ -226,6 +228,7 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "infinite-line-field",
               type: "formula",
               title: "无限长均匀带电直线",
+              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "无限长直线电场", caption: "同轴圆柱高斯面与径向电场。" }],
               body: [
                 "取半径为 $r$、高为 $h$ 的同轴闭合圆柱面；上下底面通量为零，只剩侧面通量。",
                 "电场方向沿垂直直线的径向，大小只与到轴线的距离有关。"
@@ -248,6 +251,7 @@ E_\parallel=\frac{k\lambda}{a}(\cos\alpha-\cos\beta)`
               id: "infinite-plane-field",
               type: "formula",
               title: "无限大均匀带电平面",
+              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "无限大平面电场", caption: "对称盒形高斯面与两侧场强。" }],
               body: [
                 "均匀平面两侧的电场垂直于平面、方向背离正电荷或指向负电荷。",
                 "场强大小与离平面距离无关；这是无限大理想模型的结论。"
@@ -350,6 +354,7 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
               id: "charged-sphere-potential",
               type: "formula",
               title: "均匀带电球面的电势",
+              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "带电球面各点电势", caption: "球内等势、球外按 1/r 下降。" }],
               formula: String.raw`V(r)=
 \begin{cases}
 \dfrac{Q}{4\pi\varepsilon_0R}, & r\le R\\[5pt]
@@ -403,6 +408,7 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
               id: "surface-field",
               type: "formula",
               title: "导体表面场强与面电荷密度",
+              figures: [{ src: "./assets/source/electrostatics-notes.jpg", title: "导体表面电荷分布", caption: "表面场强、面电荷密度与静电平衡。" }],
               body: [
                 "在表面取一个很小的扁盒形高斯面，只有外侧通量，得到 $E=\\sigma/\\varepsilon_0$。",
                 "该式中的 $\\sigma$ 是当地局部面电荷密度；曲率较大处电荷更密集、附近场强更强。"
@@ -464,6 +470,7 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
               id: "cavity-induced-charge",
               type: "formula",
               title: "空腔内有电荷时的感应电荷",
+              figures: [{ src: "./assets/source/electrostatics-notes.jpg", title: "空腔导体电荷分布", caption: "内表面与外表面的感应电荷关系。" }],
               body: [
                 "腔内放电荷 $+q$，空腔内表面感应出 $-q$；根据导体总电荷守恒，外表面还会出现相应的 $+q$ 变化。",
                 "若外表面总面积分布复杂，应写“外表面总电荷增加 $q$”，而不是断言每一点都增加同一面密度。"
@@ -530,6 +537,7 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "dielectric-field",
               type: "formula",
               title: "介质中的电场",
+              figures: [{ src: "./assets/source/electrostatics-notes.jpg", title: "电介质极化", caption: "极化电荷产生的附加场削弱原电场。" }],
               body: [
                 "均匀介质完全充满原本真空的场区时，极化电荷产生反向附加场，使合场减弱。",
                 "该简化关系要求介质均匀、线性、各向同性，并且几何填充条件适用。"
@@ -721,6 +729,7 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "parallel-plate-capacitor",
               type: "formula",
               title: "平行板电容器",
+              figures: [{ src: "./assets/source/capacitor-examples.jpg", title: "平行板电容器", caption: "极板间电场、电势差与电容公式。" }],
               body: [
                 "忽略边缘效应，两板间场强 $E=\\sigma/\\varepsilon$，电势差 $U=Ed$。",
                 "介质必须完全、均匀填充板间场区时，公式才可直接使用。"
@@ -732,6 +741,7 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "cylindrical-capacitor",
               type: "formula",
               title: "圆柱形电容器",
+              figures: [{ src: "./assets/source/capacitor-examples.jpg", title: "圆柱形电容器", caption: "同轴圆柱的电场、电势与电容。" }],
               body: [
                 "同轴圆柱半径分别为 $R_1<R_2$，长度为 $L$，且 $L$ 远大于半径差。",
                 "由圆柱形高斯面得 $E(r)=\\lambda/(2\\pi\\varepsilon r)$，再从 $R_1$ 积分到 $R_2$。"
@@ -743,6 +753,7 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "spherical-capacitor",
               type: "formula",
               title: "球形电容器",
+              figures: [{ src: "./assets/source/capacitor-examples.jpg", title: "球形电容器", caption: "同心球面的电场、电势与电容。" }],
               body: [
                 "由内外两个同心导体球面构成，内外半径为 $R_1<R_2$。",
                 "介质填满两球之间的区域时，场强仍按径向 $1/r^2$ 变化。"
