@@ -36,6 +36,13 @@
       href: "../math-physics-methods-review/",
       total: 88,
       key: "math-physics-methods-review.mastered.v1"
+    },
+    {
+      id: "cet4",
+      name: "英语四级",
+      href: "../cet4-review/",
+      total: 46,
+      key: "cet4-review.mastered.v1"
     }
   ];
 
