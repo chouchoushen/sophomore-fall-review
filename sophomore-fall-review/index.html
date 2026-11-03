@@ -20,7 +20,7 @@
         <span>大二上复习资料</span>
       </a>
       <div class="topbar__links">
-        <a href="#library">五门课程</a>
+        <a href="#library">六门课程</a>
         <a href="#overview">本周总览</a>
       </div>
       <span class="topbar__term">2026 · FALL</span>
@@ -31,7 +31,7 @@
         <p class="eyebrow">FIVE SUBJECTS · ONE REVIEW DESK</p>
         <h1>大二上<span>复习资料</span></h1>
         <p class="hero__lead">
-          五门课程独立成站，统一从这里进入。知识卡、公式、自测和原始笔记都保存在本地，复习进度也由你掌控。
+          六门课程独立成站，统一从这里进入。知识卡、公式、自测和每日英语文章都保存在同一入口，复习进度也由你掌控。
         </p>
         <div class="hero__actions">
           <button class="button button--primary" id="continueButton" type="button">从概率论开始</button>
@@ -78,9 +78,9 @@
     </div>
 
     <div class="hero__stats" aria-label="复习资料统计">
-      <div><strong>5</strong><span>门独立课程站</span></div>
-      <div><strong id="totalCards">396</strong><span>个知识卡</span></div>
-      <div><strong>78</strong><span>道通关自测</span></div>
+      <div><strong>6</strong><span>门独立课程站</span></div>
+      <div><strong id="totalCards">442</strong><span>个知识卡</span></div>
+      <div><strong>106</strong><span>道通关自测</span></div>
       <div><strong>36</strong><span>组资料图</span></div>
     </div>
   </header>
@@ -90,7 +90,7 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">COURSE LIBRARY</p>
-          <h2 id="libraryTitle">五门课程，各走各的主线</h2>
+          <h2 id="libraryTitle">六门课程，各走各的主线</h2>
         </div>
         <p>选择一个站点进入。每门课的知识点、自测和原始笔记彼此独立，不会混在一起。</p>
       </div>
@@ -102,10 +102,11 @@
           <button id="clearSearch" type="button" hidden>清除</button>
         </label>
         <div class="filters" role="group" aria-label="课程分类">
-          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 5</button>
+          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 6</button>
           <button type="button" data-filter="electronics" aria-pressed="false">电类 2</button>
           <button type="button" data-filter="science" aria-pressed="false">数理 2</button>
           <button type="button" data-filter="statistics" aria-pressed="false">统计 1</button>
+          <button type="button" data-filter="language" aria-pressed="false">语言 1</button>
         </div>
       </div>
       <div class="weekly-update-note">
@@ -253,6 +254,34 @@
           </div>
           <span class="course-card__enter">进入课程 <b>→</b></span>
         </a>
+
+        <a
+          class="course-card course-card--english"
+          href="../cet4-review/"
+          data-site="cet4"
+          data-category="language"
+          data-search="英语四级 CET4 CET-4 英语 单词 词汇 阅读 听力 翻译 写作 历年真题"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">C4</span>
+            <span class="course-index">06 / ENGLISH</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">CET-4 ENGLISH</p>
+            <h3>英语四级</h3>
+            <p>每日 200 词文章、高频词卡、四年阅读与听力题库。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>46 个词卡</span>
+            <span>10 篇每日文章</span>
+            <span>28 道题目</span>
+          </div>
+          <div class="course-progress">
+            <div><span>词卡进度</span><strong data-progress-label="cet4">0 / 46</strong></div>
+            <i><span data-progress-bar="cet4"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
       </div>
 
       <p id="emptyState" class="empty-state" hidden>没有找到匹配课程，换个关键词或选择“全部”。</p>
@@ -292,7 +321,7 @@
         <div>
           <span>01</span>
           <strong>课程彼此独立</strong>
-          <p>五门课使用各自的章节、题型和公式体系，不在一个页面里混杂。</p>
+          <p>六门课使用各自的章节、题型和学习体系，不在一个页面里混杂。</p>
         </div>
         <div>
           <span>02</span>

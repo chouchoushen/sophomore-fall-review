@@ -561,6 +561,11 @@ main {
   --card-accent-soft: rgba(141, 118, 181, .11);
 }
 
+.course-card--english {
+  --card-accent: #3c67e8;
+  --card-accent-soft: rgba(60, 103, 232, .1);
+}
+
 .course-card__top {
   display: flex;
   align-items: center;
@@ -857,9 +862,6 @@ footer p {
     grid-column: span 1;
   }
 
-  .course-card:last-child {
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 720px) {
