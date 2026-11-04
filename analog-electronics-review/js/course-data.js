@@ -1268,13 +1268,6 @@ R_o=R_c\parallel r_{cb}\approx R_c`
           id: "frequency-basics",
           title: "频率响应与 Bode 图",
           summary: "放大倍数不仅有大小，还有随频率变化的相位。",
-          figures: [
-            {
-              src: "./assets/figures/full-bode-plot.webp",
-              title: "完整频率响应与波特图",
-              caption: "照片笔记：中频增益、上下限频率和相频特性"
-            }
-          ],
           cards: [
             {
               id: "frequency-response",
@@ -1316,12 +1309,26 @@ R_o=R_c\parallel r_{cb}\approx R_c`
               id: "decibel",
               type: "formula",
               title: "分贝与对数频率特性",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/bode-decibel-table.jpg",
+                  title: "增益与分贝的对应关系",
+                  caption: "课堂幻灯片表 3-1：幅值取倒数、减半、0.707、1、√2 与整数倍时对应的分贝值。"
+                }
+              ],
               formula: String.raw`A(\mathrm{dB})=20\lg|A|`
             },
             {
               id: "bode",
               type: "definition",
               title: "Bode 图",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/bode-slope-examples.jpg",
+                  title: "幅频折线综合判读",
+                  caption: "课堂例题图：由中频平台、转折频率和 ±20 dB/十倍频斜率读出完整幅频特性。"
+                }
+              ],
               body: [
                 "Bode 图是横轴取对数频率的幅频、相频折线图。",
                 "一阶 RC 电路在远离转折频率时可用 20 dB/十倍频的渐近直线近似。"
@@ -1333,23 +1340,22 @@ R_o=R_c\parallel r_{cb}\approx R_c`
           id: "rc-frequency",
           title: "RC 高通与低通电路",
           summary: "高通决定下限频率，低通决定上限频率；两者是一阶系统 Bode 图的原型。",
-          figures: [
-            {
-              src: "./assets/figures/rc-high-pass.webp",
-              title: "RC 高通电路与波特图",
-              caption: "照片笔记：高通传输函数、幅频折线、相频和近似误差"
-            },
-            {
-              src: "./assets/figures/rc-low-pass.webp",
-              title: "RC 低通电路与波特图",
-              caption: "照片笔记：低通传输函数和幅频、相频近似"
-            }
-          ],
           cards: [
             {
               id: "rc-high-pass",
               type: "formula",
               title: "RC 高通传输函数",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/rc-high-pass-model.jpg",
+                  title: "RC 高通电路与传输函数",
+                  caption: "课堂幻灯片图 3.1.2：输入接串联 C、R，输出取自 R；下限截止频率 f_L=1/(2πRC)。"
+                }
+              ],
+              body: [
+                "电容 C 与电阻 R 串联，输出电压取自 R。高频时电容接近短路，增益趋近 1；低频时容抗增大，输出明显减小。",
+                "因此 RC 高通的转折频率对应放大电路的下限频率 $f_L$，也是低频增益下降的根源。"
+              ],
               formula: String.raw`\dot A_u=\frac{1}{1-\mathrm j f_L/f},
 \qquad
 f_L=\frac1{2\pi RC}`
@@ -1358,6 +1364,18 @@ f_L=\frac1{2\pi RC}`
               id: "rc-high-magnitude",
               type: "property",
               title: "RC 高通幅频与相频",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/rc-high-pass-magnitude.jpg",
+                  title: "RC 高通实际幅频特性",
+                  caption: "课堂幻灯片图 3.1.4(a)：实际曲线在 f_L 处比折线近似低 3 dB。"
+                },
+                {
+                  src: "./assets/source/frequency-response/rc-high-pass-phase.jpg",
+                  title: "RC 高通相频特性",
+                  caption: "课堂幻灯片图 3.1.4(b)：低频段产生 0°～90° 的超前相移，折线在 0.1f_L 与 10f_L 处误差约 5.71°。"
+                }
+              ],
               bullets: [
                 "$f\\gg f_L$：增益约为 0 dB，相位约为 0°。",
                 "$f=f_L$：增益约为 -3 dB，相位约为 +45°。",
@@ -1368,6 +1386,17 @@ f_L=\frac1{2\pi RC}`
               id: "rc-low-pass",
               type: "formula",
               title: "RC 低通传输函数",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/rc-low-pass-model.jpg",
+                  title: "RC 低通电路与传输函数",
+                  caption: "课堂幻灯片图 3.1.5：输入接串联 R、C，输出取自 C；上限截止频率 f_H=1/(2πRC)。"
+                }
+              ],
+              body: [
+                "电阻 R 与电容 C 串联，输出电压取自 C。低频时电容接近开路，增益趋近 1；高频时容抗减小，输出被旁路。",
+                "所以 RC 低通的转折频率对应放大电路的上限频率 $f_H$，也是高频增益下降的根源。"
+              ],
               formula: String.raw`\dot A_u=\frac{1}{1+\mathrm j f/f_H},
 \qquad
 f_H=\frac1{2\pi RC}`
@@ -1376,6 +1405,13 @@ f_H=\frac1{2\pi RC}`
               id: "rc-low-magnitude",
               type: "property",
               title: "RC 低通幅频与相频",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/rc-low-pass-bode.jpg",
+                  title: "RC 低通幅频与相频特性",
+                  caption: "课堂幻灯片图 3.1.6：幅频在 f_H 处下降 3 dB，高频段以 -20 dB/十倍频下降并产生 0°～-90° 滞后相移。"
+                }
+              ],
               bullets: [
                 "$f\\ll f_H$：增益约为 0 dB，相位约为 0°。",
                 "$f=f_H$：增益约为 -3 dB，相位约为 -45°。",
@@ -1397,18 +1433,18 @@ f_H=\frac1{2\pi RC}`
           id: "transistor-frequency",
           title: "晶体管高频参数与混合 π 模型",
           summary: "结电容使三极管的电流放大能力随频率下降，密勒效应进一步恶化输入高频响应。",
-          figures: [
-            {
-              src: "./assets/figures/hybrid-pi-model.webp",
-              title: "混合 π 等效电路",
-              caption: "照片笔记：晶体管结构示意与高频混合 π 等效电路"
-            }
-          ],
           cards: [
             {
               id: "beta-frequency",
               type: "formula",
               title: "共射电流放大系数随频率变化",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/transistor-beta-bode.jpg",
+                  title: "β 的对数幅频与相频特性",
+                  caption: "课堂幻灯片图 3.2.1：低于 fβ 时 β 近似不变，高于 fβ 后以 -20 dB/十倍频下降。"
+                }
+              ],
               formula: String.raw`\dot\beta(f)=\frac{\beta_0}{1+\mathrm j f/f_\beta}`
             },
             {
@@ -1430,7 +1466,13 @@ f_\beta<f_T<f_\alpha`
               id: "hybrid-pi",
               type: "definition",
               title: "混合 π 等效电路",
-              figures: [{ src: "./assets/figures/hybrid-pi-model.webp", title: "混合 π 高频模型", caption: "结电容与受控源的高频连接。" }],
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/hybrid-pi-equivalent.jpg",
+                  title: "晶体管混合 π 型等效电路",
+                  caption: "课堂幻灯片图 3.3.1：基区体电阻、发射结电阻、结电容和受控电流源共同构成高频小信号模型。"
+                }
+              ],
               body: [
                 "用基区体电阻、发射结电阻、结电容和受控电流源描述晶体管的高频小信号行为。",
                 "基极与发射极之间的电容 $C_{\\pi}$ 和集电结电容 $C_{\\mu}$ 是限制高频增益的主要因素。"
@@ -1463,9 +1505,9 @@ K=\frac{\dot U_{ce}}{\dot U_{b'e}}`
           summary: "中频看增益，低频看耦合电容，高频看结电容与密勒电容。",
           figures: [
             {
-              src: "./assets/figures/single-stage-bode.webp",
-              title: "阻容耦合共射电路的分频段模型",
-              caption: "照片笔记：中频、低频、高频等效电路与完整波特图"
+              src: "./assets/source/frequency-response/rc-coupled-common-emitter.jpg",
+              title: "阻容耦合单管共射放大电路",
+              caption: "课堂幻灯片图 3.3.5：C1 为输入耦合电容，C2 与下级输入电阻共同决定输出侧高通环节。"
             }
           ],
           cards: [
@@ -1473,6 +1515,13 @@ K=\frac{\dot U_{ce}}{\dot U_{b'e}}`
               id: "midband",
               type: "property",
               title: "中频段",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/midband-equivalent.jpg",
+                  title: "中频段等效电路",
+                  caption: "课堂幻灯片图 3.3.6：C1 视为交流短路，极间电容视为交流断路，得到中频增益模型。"
+                }
+              ],
               body: [
                 "耦合电容容抗很小，可视为短路；结电容容抗很大，可视为开路。",
                 "中频电压增益近似不随频率变化。"
@@ -1482,7 +1531,13 @@ K=\frac{\dot U_{ce}}{\dot U_{b'e}}`
               id: "low-frequency",
               type: "property",
               title: "低频段",
-              figures: [{ src: "./assets/figures/single-stage-bode.webp", title: "低频等效电路", caption: "耦合电容对应的高通环节。" }],
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/low-frequency-equivalent.jpg",
+                  title: "低频段等效电路",
+                  caption: "课堂幻灯片图 3.3.7：保留输入耦合电容 C1，它与 Rs、Ri 构成 RC 高通环节。"
+                }
+              ],
               body: [
                 "耦合电容的容抗增大，分走一部分输入电压，导致增益下降。",
                 "输入耦合电容和输出耦合电容分别形成 RC 高通环节；实际下限频率由更靠近中频、数值更高的那个转折频率决定。",
@@ -1498,6 +1553,13 @@ f_L\approx\max(f_{L1},f_{L2})`
               id: "high-frequency",
               type: "property",
               title: "高频段",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/high-frequency-equivalent.jpg",
+                  title: "高频段等效电路",
+                  caption: "课堂幻灯片图 3.3.9：考虑极间电容，并用戴维南定理化简为输入侧 RC 低通网络。"
+                }
+              ],
               body: [
                 "晶体管结电容和密勒等效电容使基极电流不能完全跟随输入电压变化，导致增益下降。",
                 "高频响应可等效为 RC 低通网络。"
@@ -1508,6 +1570,18 @@ f_L\approx\max(f_{L1},f_{L2})`
               id: "bode-drawing",
               type: "judgment",
               title: "完整 Bode 图的画法",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/complete-bode-construction.jpg",
+                  title: "完整 Bode 图的绘制步骤",
+                  caption: "课堂幻灯片：先求中频增益、f_L 和 f_H；幅频用三段直线，相频用五段直线近似。"
+                },
+                {
+                  src: "./assets/source/frequency-response/complete-bode-plot.jpg",
+                  title: "完整幅频与相频 Bode 图",
+                  caption: "课堂幻灯片图 3.3.10：中频平台位于 f_L 与 f_H 之间，两侧分别以 ±20 dB/十倍频变化。"
+                }
+              ],
               bullets: [
                 "先求中频增益、下限频率和上限频率。",
                 "幅频：中频为水平线；向低频以 +20 dB/十倍频延伸；向高频以 -20 dB/十倍频下降。",
@@ -1527,6 +1601,13 @@ f_L\approx\max(f_{L1},f_{L2})`
               id: "frequency-bode-example",
               type: "example",
               title: "例题：由 Bode 图反写频率特性",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/bode-response-example.jpg",
+                  title: "由 Bode 图反写频率特性",
+                  caption: "课堂例题原图：中频增益 40 dB、f_L=100 Hz、f_H=10⁵ Hz，中频段相移为 -180°。"
+                }
+              ],
               body: [
                 "某放大电路的中频增益为 $40\\,\\mathrm{dB}$，即 $|A_{um}|=100$；下限频率为 $100\\,\\mathrm{Hz}$，上限频率为 $100\\,\\mathrm{kHz}$，中频段附加相移为 $-180^\\circ$。",
                 "低频段按高通因子处理，高频段按低通因子处理，最后把 $\\pm180^\\circ$ 的反相与两个 RC 转折项的相移合并。"
@@ -1549,18 +1630,18 @@ f_L\approx\max(f_{L1},f_{L2})`
           id: "multistage-frequency",
           title: "多级与直接耦合放大电路的频率响应",
           summary: "多级增益相乘，对数幅频相加、相位相加；总通频带必然变窄。",
-          figures: [
-            {
-              src: "./assets/figures/multistage-bode.webp",
-              title: "多级放大电路波特图",
-              caption: "照片笔记：多级幅频、相频叠加与总通频带变窄"
-            }
-          ],
           cards: [
             {
               id: "multistage-gain-log",
               type: "formula",
               title: "多级增益与对数增益",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/multistage-magnitude.jpg",
+                  title: "两级放大电路的幅频特性",
+                  caption: "课堂幻灯片图 3.4.1：各级幅频折线相加，级联后上下限频率同时向中频收缩。"
+                }
+              ],
               formula: String.raw`\dot A_u=\prod_i\dot A_{ui},
 \qquad
 20\lg|A_u|=\sum_i20\lg|A_{ui}|`
@@ -1569,6 +1650,13 @@ f_L\approx\max(f_{L1},f_{L2})`
               id: "multistage-phase",
               type: "formula",
               title: "多级总相位移",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/multistage-phase.jpg",
+                  title: "两级放大电路的相频特性",
+                  caption: "课堂幻灯片：多级相移逐级相加，级联后的总相移范围扩大。"
+                }
+              ],
               formula: String.raw`\varphi=\sum_i\varphi_i`
             },
             {
@@ -1591,6 +1679,13 @@ f_L\approx1.1\sqrt{f_{L1}^2+f_{L2}^2+\cdots}`
               id: "direct-coupled-frequency",
               type: "property",
               title: "直接耦合的低频响应",
+              figures: [
+                {
+                  src: "./assets/source/frequency-response/direct-coupled-response.jpg",
+                  title: "直接耦合共射电路的频率响应",
+                  caption: "课堂幻灯片图 3.3.13：没有耦合电容的低频限制，幅频只有高频端的上限频率转折。"
+                }
+              ],
               body: [
                 "直接耦合没有级间耦合电容，因此低频增益不会因耦合电容下降，下限频率可以接近 0。",
                 "其频率限制主要来自晶体管结电容和电路寄生电容。"
