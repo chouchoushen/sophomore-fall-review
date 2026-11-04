@@ -9,8 +9,8 @@ window.ANALOG_COURSE = {
       title: "半导体器件",
       english: "Semiconductor Devices",
       accent: "indigo",
-      summary: "从载流子运动理解 PN 结与二极管，再建立三极管的结构、偏置和特性曲线。",
-      examFocus: ["二极管模型", "限幅与钳位", "稳压管", "三极管结构", "输出特性"],
+      summary: "从 PN 结和二极管伏安特性出发，走通模型分析、图解法及整流、限幅、钳位、稳压应用，再建立三极管的载流子运动、输出特性与安全工作区。",
+      examFocus: ["二极管模型", "图解法", "限幅与钳位", "稳压管", "三极管输出特性", "安全工作区"],
       themes: [
         {
           id: "semiconductor-basics",
@@ -18,9 +18,9 @@ window.ANALOG_COURSE = {
           summary: "载流子的扩散、漂移和复合构成二极管单向导电性的物理基础。",
           figures: [
             {
-              src: "./assets/figures/diode-characteristic.webp",
-              title: "二极管伏安特性与方程",
-              caption: "照片笔记：正向特性、反向特性、击穿与 PN 结电流方程"
+              src: "./assets/source/semiconductor-devices/diode-iv-characteristic.jpg",
+              title: "二极管伏安特性",
+              caption: "教材图：正向特性、死区电压、反向特性与反向击穿"
             }
           ],
           cards: [
@@ -59,6 +59,13 @@ window.ANALOG_COURSE = {
               id: "diode-vi",
               type: "property",
               title: "二极管伏安特性",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-iv-characteristic.jpg",
+                  title: "二极管的正向与反向特性",
+                  caption: "正向电压超过死区电压后电流快速上升；反向区先保持很小的反向电流，达到击穿电压后急剧增大。"
+                }
+              ],
               body: [
                 "正向电压超过死区电压后，正向电流近似指数增长；导通后端电压变化较小。",
                 "反向电压较小时反向电流近似恒定；超过反向击穿电压后电流急剧增加。击穿不等于立即损坏。"
@@ -90,19 +97,19 @@ window.ANALOG_COURSE = {
           summary: "先判断导通状态，再用理想模型、恒压降模型或图解法计算。",
           figures: [
             {
-              src: "./assets/figures/diode-models.webp",
-              title: "二极管等效模型",
-              caption: "照片笔记：理想模型、恒压降模型、折线模型与图解分析"
+              src: "./assets/source/semiconductor-devices/diode-static-models-example.jpg",
+              title: "二极管静态工作情况分析",
+              caption: "第 1 章例 1.2.1：同一电路分别用理想模型和恒压降模型计算"
             },
             {
-              src: "./assets/figures/diode-waveforms.webp",
-              title: "二极管应用波形",
-              caption: "照片笔记：整流、限幅和钳位电路的输出波形"
+              src: "./assets/source/semiconductor-devices/diode-graphical-example.jpg",
+              title: "二极管图解分析",
+              caption: "第 1 章例 1.2.2：器件伏安特性与负载线的交点确定工作点"
             },
             {
-              src: "./assets/figures/zener-regulator.webp",
-              title: "稳压管与稳压电路",
-              caption: "照片笔记：稳压管特性、限流电阻与稳压电路"
+              src: "./assets/source/semiconductor-devices/zener-design-problem.jpg",
+              title: "稳压管限流电阻设计",
+              caption: "第 1 章例 1.2.6：已知输入、负载和稳压管电流范围，选择限流电阻"
             }
           ],
           cards: [
@@ -119,7 +126,13 @@ window.ANALOG_COURSE = {
               id: "constant-drop-model",
               type: "formula",
               title: "恒压降模型",
-              figures: [{ src: "./assets/figures/diode-models.webp", title: "二极管等效模型", caption: "对照理想、恒压降与折线模型。" }],
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-static-models-example.jpg",
+                  title: "理想模型与恒压降模型",
+                  caption: "例 1.2.1 的三种等效电路与计算结果。"
+                }
+              ],
               body: [
                 "导通后认为二极管端电压近似不变。未说明材料时通常按硅管处理。"
               ],
@@ -153,53 +166,107 @@ n\approx1,\quad U_T\approx26\,\mathrm{mV}`
               id: "diode-graphical",
               type: "formula",
               title: "图解法与负载线",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-graphical-example.jpg",
+                  title: "图解法确定静态工作点",
+                  caption: "例 1.2.2：伏安特性曲线与 $i_D=(V_{DD}-u_D)/R$ 的交点为 Q 点。"
+                }
+              ],
               body: [
                 "把二极管的伏安特性与外部电路方程画在同一坐标中，两条曲线的交点就是工作点。"
               ],
               formula: String.raw`i_D=\frac{V_{DD}-u_D}{R}`
             },
             {
+              id: "diode-graphical-example",
+              type: "example",
+              title: "图解法例题：1.5 V 电源与 1 kΩ 电阻",
+              body: [
+                "由电路约束可写出 $I_D=(1.5-U_D)/1$，其中电流以 mA 为单位。把这条负载线与二极管实际伏安特性画在同一坐标中，交点就是工作点。",
+                "由图可得 $U_D\\approx0.7\\,\\mathrm V$、$I_D\\approx0.8\\,\\mathrm{mA}$。图解法保留器件的非线性，不把二极管强行替换成固定压降。"
+              ],
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-graphical-example.jpg",
+                  title: "二极管图解法例题",
+                  caption: "例 1.2.2：负载线与二极管伏安特性的交点 Q 给出电压和电流。"
+                }
+              ],
+              source: "据第 1 章例 1.2.2 整理"
+            },
+            {
               id: "diode-model-example",
               type: "example",
               title: "20 V 电源、10 kΩ 电阻与硅二极管",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-static-models-example.jpg",
+                  title: "二极管静态分析例题",
+                  caption: "例 1.2.1：原电路、理想模型电路和恒压降模型电路。"
+                }
+              ],
               body: [
                 "理想模型：$U_D=0$，所以 $I_D=20/10=2\\,\\mathrm{mA}$。",
                 "恒压降模型：$U_D=0.7\\,\\mathrm V$，所以 $I_D=(20-0.7)/10=1.93\\,\\mathrm{mA}$。"
-              ]
+              ],
+              source: "据第 1 章例 1.2.1 整理"
             },
             {
               id: "rectifier",
               type: "application",
               title: "二极管整流",
-              figures: [{ src: "./assets/figures/diode-waveforms.webp", title: "整流波形与二极管状态", caption: "输入半周、导通状态与输出波形对应。" }],
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-rectifier-example.jpg",
+                  title: "二极管半波整流电路与波形",
+                  caption: "例 1.2.3：正半周导通、负半周截止，输出为单向脉动电压。"
+                }
+              ],
               body: [
                 "输入正半周时二极管导通，输出跟随输入；负半周截止，输出接近 0。",
                 "这正是二极管把交流变成单向脉动电压的基础。"
-              ]
+              ],
+              source: "据第 1 章例 1.2.3 整理"
             },
             {
               id: "limiter",
               type: "application",
               title: "限幅电路",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-limiter-example.jpg",
+                  title: "二极管限幅电路与输出波形",
+                  caption: "例 1.2.4：输入超过 8 V 时二极管导通，输出被限制在 8 V。"
+                }
+              ],
               body: [
                 "当输入超过参考电压使二极管导通时，输出被钳在导通电压附近；未导通时输出跟随输入。",
                 "分析关键是先确认阴极、阳极和参考电压，再判断输入达到多少时二极管状态发生改变。"
-              ]
+              ],
+              source: "据第 1 章例 1.2.4 整理"
             },
             {
               id: "clamper",
               type: "application",
               title: "钳位电路",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/diode-clamp-example.jpg",
+                  title: "二极管钳位与多管状态判断",
+                  caption: "第 1 章例 1.2.5：先假设全部二极管断开，再判断哪个二极管优先导通。"
+                }
+              ],
               body: [
-                "利用二极管和电容改变波形的直流基准。二极管先导通时给电容快速充电，随后改变输出的上下边界。",
-                "多个二极管同时存在时，要判断哪个先导通，因为先导通者会改变其余二极管的端电压。"
-              ]
+                "本题中两个二极管先按断开处理，可得 $V_{D1}=5\\,\\mathrm V$、$V_{D2}=2\\,\\mathrm V$，因此 $D_1$ 先导通，并把输出节点钳在 $V_0=0\\,\\mathrm V$。",
+                "此后 $D_2$ 承受反向电压而截止。这里 $D_1$ 起钳位作用，$D_2$ 起隔离作用；判断多管电路时必须先比较各管正偏程度，再回代检查状态。"
+              ],
+              source: "据第 1 章例 1.2.5 整理"
             },
             {
               id: "zener",
               type: "property",
               title: "稳压管",
-              figures: [{ src: "./assets/figures/zener-regulator.webp", title: "稳压管稳压电路", caption: "限流电阻、稳压管和负载的位置关系。" }],
               body: [
                 "稳压管工作在反向击穿区，只要反向电流受到限制，端电压就能保持近似稳定。",
                 "必须与负载并联，并串联限流电阻，既保证稳压管有工作电流，又避免烧毁。"
@@ -229,13 +296,26 @@ I_Z=I_R-I_L`
               id: "zener-design-example",
               type: "example",
               title: "例题：选择稳压管的限流电阻",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/zener-design-problem.jpg",
+                  title: "稳压管限流电阻设计题",
+                  caption: "例 1.2.6：求稳压管动态电阻并选择限流电阻。"
+                },
+                {
+                  src: "./assets/source/semiconductor-devices/zener-design-solution.jpg",
+                  title: "稳压管限流电阻计算过程",
+                  caption: "例 1.2.6 解答：动态电阻、稳压管电流和限流电阻上下限。"
+                }
+              ],
               body: [
-                "输入在 $10\\sim15\\,\\mathrm V$ 间变化，负载在 $600\\,\\Omega\\sim1\\,\\mathrm{k\\Omega}$ 间变化；$U_Z=6\\,\\mathrm V$，$I_{Z\\min}=5\\,\\mathrm{mA}$，$I_{Z\\max}=50\\,\\mathrm{mA}$。",
+                "输入在 $10\\sim15\\,\\mathrm V$ 间变化，负载在 $600\\,\\Omega\\sim1\\,\\mathrm{k\\Omega}$ 间变化；$U_Z=6\\,\\mathrm V$，$I_{Z\\min}=5\\,\\mathrm{mA}$，$I_{Z\\max}=50\\,\\mathrm{mA}$，$\\Delta U_Z=0.3\\,\\mathrm V$。",
                 "取 $R$ 的最小值保证最大输入、最小负载电流时稳压管电流不超限；取 $R$ 的最大值保证最小输入、最大负载电流时稳压管仍能工作。"
               ],
               example: {
                 title: "展开计算",
                 body: [
+                  "$\\Delta I_Z=50-5=45\\,\\mathrm{mA}$，动态电阻 $r_Z=\\Delta U_Z/\\Delta I_Z\\approx6.7\\,\\Omega$。",
                   "$I_{L\\min}=6\\,\\mathrm V/1\\,\\mathrm{k\\Omega}=6\\,\\mathrm{mA}$，故 $R_{\\min}=(15-6)/(50+6)=161\\,\\Omega$。",
                   "$I_{L\\max}=6\\,\\mathrm V/600\\,\\Omega=10\\,\\mathrm{mA}$，故 $R_{\\max}=(10-6)/(5+10)=267\\,\\Omega$。",
                   "可选 $200\\,\\Omega$ 标准电阻，并核对额定功耗；若 $R_{\\min}>R_{\\max}$，说明给定电流与负载范围不能同时满足。"
@@ -245,6 +325,23 @@ I_Z=I_R-I_L`
 R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               },
               source: "据第 1 章稳压管例题重算"
+            },
+            {
+              id: "zener-series-example",
+              type: "example",
+              title: "例题：两只稳压管串联可得到几种电压",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/zener-series-example.jpg",
+                  title: "两只稳压管串联的四种接法",
+                  caption: "例 1.2.7：分别按反向稳压和正向导通组合计算四个输出电压。"
+                }
+              ],
+              body: [
+                "已知 $U_{Z1}=6\\,\\mathrm V$、$U_{Z2}=8\\,\\mathrm V$，两只稳压管的正向导通压降均为 $U_D=0.6\\,\\mathrm V$。两只器件串联时，各自可能处于反向稳压状态或正向导通状态。",
+                "四种组合分别为：$U_Z=6+8=14\\,\\mathrm V$；$U_Z=0.6+0.6=1.2\\,\\mathrm V$；$U_Z=6+0.6=6.6\\,\\mathrm V$；$U_Z=0.6+8=8.6\\,\\mathrm V$。"
+              ],
+              source: "据第 1 章例 1.2.7 整理"
             }
           ]
         },
@@ -254,14 +351,19 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
           summary: "三极管通过基极电流控制集电极电流，结构和偏置共同决定是否具有放大作用。",
           figures: [
             {
-              src: "./assets/figures/transistor-structure.webp",
-              title: "三极管结构与载流子运动",
-              caption: "照片笔记：NPN/PNP 结构、发射结与集电结、内部载流子运动"
+              src: "./assets/source/semiconductor-devices/bjt-carrier-motion.jpg",
+              title: "三极管内部载流子运动",
+              caption: "第 1 章：发射区发射电子、基区输运与复合、集电区收集载流子"
             },
             {
-              src: "./assets/figures/transistor-curves.webp",
-              title: "三极管输出特性与安全工作区",
-              caption: "照片笔记：放大区、饱和区、截止区及极限参数"
+              src: "./assets/source/semiconductor-devices/bjt-output-characteristic.jpg",
+              title: "三极管输出特性",
+              caption: "第 1 章：饱和区、放大区、截止区及饱和压降"
+            },
+            {
+              src: "./assets/source/semiconductor-devices/bjt-safe-operating-area.jpg",
+              title: "三极管安全工作区",
+              caption: "第 1 章：由 $P_{CM}$、$I_{CM}$ 与 $U_{(BR)CEO}$ 确定过损耗、过电流和击穿区"
             }
           ],
           cards: [
@@ -278,6 +380,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "bjt-internal-condition",
               type: "property",
               title: "放大的内部条件",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/bjt-carrier-motion.jpg",
+                  title: "三极管内部载流子输运",
+                  caption: "发射结正偏发射电子，大部分电子穿过薄基区后被反偏集电结收集。"
+                }
+              ],
               body: [
                 "发射区掺杂浓度高，便于发射载流子。",
                 "基区很薄、掺杂浓度低，使大部分载流子能继续扩散到集电区。",
@@ -322,7 +431,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "bjt-output-regions",
               type: "judgment",
               title: "输出特性的三个区域",
-              figures: [{ src: "./assets/figures/transistor-curves.webp", title: "三极管输出特性", caption: "放大、饱和、截止和安全工作区。" }],
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/bjt-output-characteristic.jpg",
+                  title: "三极管输出特性的三个区域",
+                  caption: "饱和区、放大区和截止区的偏置条件与电流关系。"
+                }
+              ],
               body: [
                 "<strong>放大区</strong>：发射结正偏、集电结反偏，$i_C=\\beta i_B$。",
                 "<strong>饱和区</strong>：两个结均正偏，$i_C$ 不再由 $\\beta i_B$ 决定；硅管饱和压降约 0.3 V。",
@@ -340,6 +455,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "bjt-safety",
               type: "warning",
               title: "三极管的安全工作区",
+              figures: [
+                {
+                  src: "./assets/source/semiconductor-devices/bjt-safe-operating-area.jpg",
+                  title: "三极管安全工作区",
+                  caption: "$I_{CM}$、$P_{CM}$ 和 $U_{(BR)CEO}$ 共同给出安全工作边界。"
+                }
+              ],
               body: [
                 "$I_{CM}$、$P_{CM}$ 和 $U_{(BR)CEO}$ 共同限定安全工作区。",
                 "使用时不能超过最大集电极电流、最大耗散功率或集射反向击穿电压。"
