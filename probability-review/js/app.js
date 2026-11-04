@@ -41,8 +41,16 @@
       theme.cards.map((card) => ({ chapter, theme, card }))
     )
   );
+  const allExamples = allCards
+    .map(({ card }) => card.example)
+    .filter(Boolean);
+  const allDiagrams = allExamples.flatMap((example) => example.figures || []);
 
   document.getElementById("totalKnowledge").textContent = allCards.length;
+  const totalExamples = document.getElementById("totalExamples");
+  const totalDiagrams = document.getElementById("totalDiagrams");
+  if (totalExamples) totalExamples.textContent = allExamples.length;
+  if (totalDiagrams) totalDiagrams.textContent = allDiagrams.length;
 
   buildSidebar();
   buildTypeFilters();
@@ -238,7 +246,13 @@
         stripSearchMarkup(card.formula || ""),
         stripSearchMarkup((card.bullets || []).join(" ")),
         stripSearchMarkup(card.note || ""),
-        stripSearchMarkup(card.example ? `${card.example.title} ${(card.example.body || []).join(" ")}` : "")
+        stripSearchMarkup(card.example ? [
+          card.example.title,
+          ...(card.example.body || []),
+          ...(card.example.figures || []).map(
+            (figure) => `${figure.title} ${figure.caption || ""}`
+          )
+        ].join(" ") : "")
       ].join(" ")
     );
 
@@ -268,6 +282,19 @@
         <div class="example-content">
           ${(example.body || []).map((paragraph) => `<p>${protectInlineMath(paragraph)}</p>`).join("")}
           ${example.formula ? `<div class="formula-box">$$${escapeMathSource(example.formula)}$$</div>` : ""}
+          ${example.figures?.length ? `
+            <div class="example-figures">
+              ${example.figures.map((figure) => `
+                <figure class="example-diagram">
+                  ${figure.svg}
+                  <figcaption>
+                    <strong>${figure.title}</strong>
+                    ${figure.caption ? `<span>${figure.caption}</span>` : ""}
+                  </figcaption>
+                </figure>
+              `).join("")}
+            </div>
+          ` : ""}
         </div>
       </details>
     `;

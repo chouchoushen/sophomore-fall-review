@@ -969,6 +969,132 @@ a {
   list-style: none;
 }
 
+.example-figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 12px;
+  margin: 18px 0 4px;
+}
+
+.example-diagram {
+  margin: 0;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(42, 82, 79, 0.18);
+  border-radius: 10px;
+  background:
+    linear-gradient(rgba(42, 82, 79, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(42, 82, 79, 0.035) 1px, transparent 1px),
+    #fbfaf5;
+  background-size: 22px 22px;
+}
+
+.example-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.example-diagram figcaption {
+  display: grid;
+  gap: 3px;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(42, 82, 79, 0.12);
+  color: var(--ink);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.example-diagram figcaption span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.example-diagram .diagram-axis,
+.example-diagram .diagram-guide,
+.example-diagram .diagram-arrow {
+  fill: none;
+  stroke: #587772;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.example-diagram .diagram-guide {
+  stroke-width: 1;
+  stroke-dasharray: 5 6;
+  opacity: 0.72;
+}
+
+.example-diagram .diagram-curve {
+  fill: none;
+  stroke: #b24f35;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.example-diagram .diagram-curve--teal {
+  stroke: #1f6f66;
+}
+
+.example-diagram .diagram-curve--blue {
+  stroke: #456ba8;
+}
+
+.example-diagram .diagram-curve--gold {
+  stroke: #bc842b;
+}
+
+.example-diagram .diagram-area {
+  fill: rgba(31, 111, 102, 0.16);
+  stroke: #1f6f66;
+  stroke-width: 1.5;
+}
+
+.example-diagram .diagram-point {
+  fill: #b24f35;
+  stroke: #fbfaf5;
+  stroke-width: 2;
+}
+
+.example-diagram .diagram-grid-line {
+  fill: none;
+  stroke: #dce3dc;
+  stroke-width: 1;
+}
+
+.example-diagram .diagram-text {
+  fill: #263d39;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 13px;
+}
+
+.example-diagram .diagram-text--small {
+  fill: #6f817d;
+  font-size: 11px;
+}
+
+.example-diagram .diagram-text--strong {
+  fill: #7f3829;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.example-diagram .diagram-math {
+  fill: #1f544e;
+  font-family: "Cambria Math", "STIX Two Math", serif;
+  font-size: 15px;
+  font-style: italic;
+}
+
+.example-diagram .diagram-node {
+  fill: #f9f6ee;
+  stroke: #738e88;
+  stroke-width: 1.5;
+}
+
 .example-details summary::-webkit-details-marker {
   display: none;
 }
