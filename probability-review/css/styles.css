@@ -1011,6 +1011,151 @@ a {
   font-size: 0.78rem;
 }
 
+.example-diagram figcaption em {
+  display: block;
+  width: fit-content;
+  margin-top: 2px;
+  color: var(--card-color);
+  font: normal 700 0.68rem/1.4 var(--sans);
+}
+
+.example-diagram--photo {
+  display: flex;
+  flex-direction: column;
+}
+
+.example-diagram__trigger,
+.chapter-introduction-figure__trigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  cursor: zoom-in;
+}
+
+.example-diagram__trigger img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 620px;
+  background: #fff;
+  object-fit: contain;
+}
+
+.chapter-introduction-figure {
+  margin: 1rem 0 1.4rem;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 11px;
+  background: var(--surface-muted);
+}
+
+.chapter-introduction-figure__trigger {
+  position: relative;
+  cursor: zoom-in;
+}
+
+.chapter-introduction-figure__trigger img {
+  display: block;
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.chapter-introduction-figure__hint {
+  position: absolute;
+  right: .7rem;
+  bottom: .7rem;
+  padding: .3rem .55rem;
+  border-radius: 99px;
+  background: rgba(34, 33, 30, .82);
+  color: #fff;
+  font: 700 .66rem/1.3 var(--sans);
+}
+
+.chapter-introduction-figure figcaption {
+  display: grid;
+  gap: .2rem;
+  padding: .72rem .85rem .82rem;
+  border-top: 1px solid var(--rule);
+}
+
+.chapter-introduction-figure figcaption strong {
+  font: 700 .79rem/1.4 var(--sans);
+}
+
+.chapter-introduction-figure figcaption span {
+  color: var(--muted);
+  font-size: .74rem;
+  line-height: 1.6;
+}
+
+body.modal-open {
+  overflow: hidden;
+}
+
+.figure-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: rgba(25, 23, 20, .88);
+  backdrop-filter: blur(8px);
+}
+
+.figure-modal__body {
+  display: grid;
+  gap: .7rem;
+  width: min(1500px, 96vw);
+  max-height: 92vh;
+}
+
+.figure-modal__body img {
+  display: block;
+  width: 100%;
+  max-height: 82vh;
+  border-radius: 7px;
+  background: #fff;
+  object-fit: contain;
+}
+
+.figure-modal__caption {
+  color: #fff;
+  text-align: center;
+}
+
+.figure-modal__caption strong {
+  display: block;
+  font: 700 .9rem/1.45 var(--sans);
+}
+
+.figure-modal__caption p {
+  margin: .2rem 0 0;
+  color: rgba(255, 255, 255, .76);
+  font-size: .74rem;
+}
+
+.figure-modal__close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, .32);
+  border-radius: 50%;
+  background: rgba(34, 33, 30, .78);
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
 .example-diagram .diagram-axis,
 .example-diagram .diagram-guide,
 .example-diagram .diagram-arrow {
@@ -1383,6 +1528,18 @@ a {
   .legend {
     font-size: .68rem;
   }
+
+  .chapter-introduction-figure__trigger img {
+    height: 260px;
+  }
+
+  .example-diagram__trigger img {
+    max-height: none;
+  }
+
+  .figure-modal {
+    padding: 2.8rem .7rem .8rem;
+  }
 }
 
 @media print {
@@ -1397,6 +1554,7 @@ a {
   .legend,
   .chapter__side,
   .mastery-button,
+  .figure-modal,
   .footer {
     display: none !important;
   }
@@ -1421,6 +1579,11 @@ a {
   }
 
   .example-details {
+    break-inside: avoid;
+  }
+
+  .chapter-introduction-figure,
+  .example-diagram {
     break-inside: avoid;
   }
 }

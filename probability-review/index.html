@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="概率论知识点互动复习站：随机事件与概率、随机变量及其分布、多维随机变量及其分布。">
+  <meta name="description" content="概率论知识点互动复习站：随机事件、随机变量、多维分布与随机变量的数字特征。">
   <title>概率论知识主线</title>
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="./css/styles.css?v=20261104-examples">
+  <link rel="stylesheet" href="./css/styles.css?v=20261104-characteristics">
 </head>
 <body>
   <a class="skip-link" href="#courseContent">跳到知识内容</a>
@@ -17,10 +17,10 @@
         <p class="eyebrow">PROBABILITY NOTES · 2026</p>
         <h1>概率论<span>知识主线</span></h1>
         <p class="hero__lead">
-          从事件语言到随机变量，再到多维联合规律。先选章节，展开后查看按类型整理的知识点。
+          从事件语言、随机变量和多维联合规律，再到期望、方差、协方差与相关系数。先选章节，展开后查看按类型整理的知识点。
         </p>
         <div class="hero__stats" aria-label="站点统计">
-          <span><strong>3</strong> 个章节</span>
+          <span><strong id="totalChapters">0</strong> 个章节</span>
           <span><strong id="totalKnowledge">0</strong> 个知识点</span>
           <span><strong id="totalExamples">0</strong> 组课堂例题</span>
           <span><strong id="totalDiagrams">0</strong> 张结构图</span>
@@ -99,6 +99,17 @@
     </main>
   </div>
 
+  <div id="figureModal" class="figure-modal" role="dialog" aria-modal="true" aria-labelledby="figureModalTitle" hidden>
+    <button id="figureModalClose" class="figure-modal__close" type="button" aria-label="关闭图片">×</button>
+    <div class="figure-modal__body">
+      <img id="figureModalImage" src="" alt="">
+      <div class="figure-modal__caption">
+        <strong id="figureModalTitle"></strong>
+        <p id="figureModalCaption"></p>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
     <p>概率论互动复习站 · 课堂例题与结构图已归入对应知识点</p>
     <p>不保留原始拍摄图片 · 公式离线渲染 · 进度仅保存在当前浏览器</p>
@@ -108,6 +119,7 @@
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
   <script defer src="./js/course-data.js?v=20261101-notes2"></script>
   <script defer src="./js/example-enhancements.js?v=20261104-examples"></script>
-  <script defer src="./js/app.js?v=20261104-examples"></script>
+  <script defer src="./js/numerical-characteristics-data.js?v=20261104-characteristics"></script>
+  <script defer src="./js/app.js?v=20261104-characteristics"></script>
 </body>
 </html>

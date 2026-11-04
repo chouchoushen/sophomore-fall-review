@@ -44,9 +44,15 @@
   const allExamples = allCards
     .map(({ card }) => card.example)
     .filter(Boolean);
-  const allDiagrams = allExamples.flatMap((example) => example.figures || []);
+  const chapterIntroductions = COURSE.chapters
+    .map((chapter) => chapter.introFigure)
+    .filter(Boolean);
+  const allDiagrams = chapterIntroductions.concat(
+    allExamples.flatMap((example) => example.figures || [])
+  );
 
   document.getElementById("totalKnowledge").textContent = allCards.length;
+  document.getElementById("totalChapters").textContent = COURSE.chapters.length;
   const totalExamples = document.getElementById("totalExamples");
   const totalDiagrams = document.getElementById("totalDiagrams");
   if (totalExamples) totalExamples.textContent = allExamples.length;
@@ -114,6 +120,18 @@
       applyFilters();
       searchInput.blur();
     }
+    if (event.key === "Escape" && !document.getElementById("figureModal").hidden) {
+      closeFigureModal();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    const trigger = event.target.closest("[data-figure-src]");
+    if (trigger) openFigureModal(trigger);
+  });
+  document.getElementById("figureModalClose").addEventListener("click", closeFigureModal);
+  document.getElementById("figureModal").addEventListener("click", (event) => {
+    if (event.target === document.getElementById("figureModal")) closeFigureModal();
   });
 
   function buildSidebar() {
@@ -210,6 +228,7 @@
               ${chapter.examFocus.map((item) => `<span>${item}</span>`).join("")}
             </div>
           </div>
+          ${chapter.introFigure ? renderChapterFigure(chapter.introFigure) : ""}
           ${chapter.themes.map((theme) => renderTheme(chapter, theme)).join("")}
         </div>
       </section>
@@ -285,11 +304,20 @@
           ${example.figures?.length ? `
             <div class="example-figures">
               ${example.figures.map((figure) => `
-                <figure class="example-diagram">
-                  ${figure.svg}
+                <figure class="example-diagram${figure.src ? " example-diagram--photo" : ""}">
+                  ${figure.src ? `
+                    <button class="example-diagram__trigger" type="button"
+                      data-figure-src="${escapeAttribute(figure.src)}"
+                      data-figure-title="${escapeAttribute(figure.title)}"
+                      data-figure-caption="${escapeAttribute(figure.caption || "")}"
+                      aria-label="放大查看：${escapeAttribute(figure.title)}">
+                      <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy" decoding="async">
+                    </button>
+                  ` : figure.svg}
                   <figcaption>
                     <strong>${figure.title}</strong>
                     ${figure.caption ? `<span>${figure.caption}</span>` : ""}
+                    ${figure.src ? `<em>点击放大</em>` : ""}
                   </figcaption>
                 </figure>
               `).join("")}
@@ -298,6 +326,45 @@
         </div>
       </details>
     `;
+  }
+
+  function renderChapterFigure(figure) {
+    return `
+      <figure class="chapter-introduction-figure">
+        <button class="chapter-introduction-figure__trigger" type="button"
+          data-figure-src="${escapeAttribute(figure.src)}"
+          data-figure-title="${escapeAttribute(figure.title)}"
+          data-figure-caption="${escapeAttribute(figure.caption || "")}"
+          aria-label="放大查看：${escapeAttribute(figure.title)}">
+          <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy" decoding="async">
+          <span class="chapter-introduction-figure__hint">章节总览 · 点击放大</span>
+        </button>
+        <figcaption>
+          <strong>${figure.title}</strong>
+          <span>${figure.caption}</span>
+        </figcaption>
+      </figure>
+    `;
+  }
+
+  function openFigureModal(button) {
+    const modal = document.getElementById("figureModal");
+    const image = document.getElementById("figureModalImage");
+    image.src = button.dataset.figureSrc;
+    image.alt = button.dataset.figureTitle;
+    document.getElementById("figureModalTitle").textContent = button.dataset.figureTitle;
+    document.getElementById("figureModalCaption").textContent =
+      button.dataset.figureCaption || "";
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    document.getElementById("figureModalClose").focus();
+  }
+
+  function closeFigureModal() {
+    const modal = document.getElementById("figureModal");
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+    document.getElementById("figureModalImage").removeAttribute("src");
   }
 
   function setChapterOpen(chapter, open, persist = true) {

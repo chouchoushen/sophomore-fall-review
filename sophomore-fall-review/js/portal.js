@@ -6,7 +6,7 @@
       id: "probability",
       name: "概率论",
       href: "../probability-review/",
-      total: 76,
+      total: 90,
       key: "probability-review.mastered.v1"
     },
     {
