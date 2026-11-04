@@ -13,6 +13,9 @@
   let wordQuery = "";
   let wordPos = "all";
   let currentArticle = null;
+  let articleReader = null;
+  let examReaders = [];
+  let activeReader = null;
 
   const now = new Date();
   const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -29,6 +32,7 @@
     const articleIndex = (dayIndex + articleOffset) % DATA.articles.length;
     const article = DATA.articles[articleIndex];
     currentArticle = article;
+    articleReader?.destroy();
 
     document.getElementById("articleDate").textContent = articleOffset
       ? `复习文章 · ${dateKey}`
@@ -36,7 +40,6 @@
     document.getElementById("articleTopic").textContent = article.topic;
     document.getElementById("articleWordCount").textContent = `${countWords(article.body)} words`;
     document.getElementById("articleTitle").textContent = article.title;
-    document.getElementById("articleBody").innerHTML = renderHighlightedArticle(article);
     document.getElementById("articleSummary").textContent = article.summaryZh;
     document.getElementById("articleWords").innerHTML = article.words
       .map((word) => {
@@ -47,40 +50,262 @@
       })
       .join("");
 
+    articleReader = createSpeechReader({
+      body: document.getElementById("articleBody"),
+      toolbar: document.getElementById("articleReaderToolbar"),
+      text: article.body,
+      targetWords: article.words,
+      label: "今日文章"
+    });
+
     document.querySelectorAll("#articleBody mark, #articleWords [data-word]").forEach((button) => {
       button.addEventListener("click", () => openWord(button.dataset.word));
     });
   }
 
-  function renderHighlightedArticle(article) {
+  function createSpeechReader({ body, toolbar, text, targetWords = [], label }) {
+    const rendered = renderReadableText(text, targetWords);
+    body.innerHTML = rendered.html;
+    const tokens = rendered.tokens.map((token) => ({
+      ...token,
+      element: body.querySelector(`[data-reader-index="${token.index}"]`)
+    }));
+    const lastIndex = Math.max(0, tokens.length - 1);
+
+    toolbar.innerHTML = `
+      <div class="reader-toolbar" role="group" aria-label="${escapeAttr(label)}朗读进度">
+        <button class="reader-play" type="button">▶ 播放朗读</button>
+        <button class="reader-stop" type="button" disabled>停止</button>
+        <input class="reader-progress" type="range" min="0" max="${lastIndex}" value="0" step="1"
+          aria-label="调整${escapeAttr(label)}阅读进度">
+        <output class="reader-position" aria-label="当前朗读到第几个单词">1 / ${tokens.length}</output>
+      </div>
+    `;
+
+    const playButton = toolbar.querySelector(".reader-play");
+    const stopButton = toolbar.querySelector(".reader-stop");
+    const range = toolbar.querySelector(".reader-progress");
+    const position = toolbar.querySelector(".reader-position");
+    let currentIndex = 0;
+    let mode = "idle";
+    let session = 0;
+    let utterance = null;
+    let hasReadPosition = false;
+
+    function findWordAt(charIndex) {
+      let low = 0;
+      let high = tokens.length - 1;
+      while (low <= high) {
+        const middle = Math.floor((low + high) / 2);
+        const token = tokens[middle];
+        if (charIndex < token.start) high = middle - 1;
+        else if (charIndex >= token.end) low = middle + 1;
+        else return middle;
+      }
+      return Math.min(low, lastIndex);
+    }
+
+    function updateVisual(index, shouldScroll = false, showReadingPosition = true) {
+      currentIndex = Math.max(0, Math.min(Number(index) || 0, lastIndex));
+      if (showReadingPosition) hasReadPosition = true;
+      tokens.forEach((token, tokenIndex) => {
+        token.element?.classList.toggle(
+          "is-reading",
+          hasReadPosition && tokenIndex === currentIndex
+        );
+      });
+      range.value = String(currentIndex);
+      range.style.setProperty(
+        "--reader-progress",
+        `${tokens.length > 1 ? (currentIndex / lastIndex) * 100 : 100}%`
+      );
+      position.textContent = tokens.length
+        ? `${currentIndex + 1} / ${tokens.length}`
+        : "0 / 0";
+
+      playButton.textContent =
+        mode === "speaking"
+          ? "⏸ 暂停"
+          : mode === "paused"
+            ? "▶ 继续"
+            : mode === "finished"
+              ? "↻ 重新朗读"
+              : "▶ 播放朗读";
+      stopButton.disabled = mode === "idle" || mode === "finished";
+
+      if (shouldScroll) {
+        tokens[currentIndex]?.element?.scrollIntoView({
+          block: "center",
+          behavior: "smooth"
+        });
+      }
+    }
+
+    function cancelSpeech() {
+      session += 1;
+      utterance = null;
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    }
+
+    function startFrom(index = currentIndex) {
+      if (!tokens.length || !("speechSynthesis" in window)) {
+        window.alert("当前浏览器不支持语音朗读。");
+        return;
+      }
+
+      if (activeReader && activeReader !== reader) activeReader.stop();
+      cancelSpeech();
+      const sourceStart = tokens[Math.max(0, Math.min(index, lastIndex))].start;
+      updateVisual(index, false);
+      const voiceSession = session;
+      utterance = new SpeechSynthesisUtterance(text.slice(sourceStart));
+      utterance.lang = "en-US";
+      utterance.rate = 0.88;
+      utterance.pitch = 1;
+
+      utterance.onstart = () => {
+        if (voiceSession !== session) return;
+        activeReader = reader;
+        mode = "speaking";
+        updateVisual(currentIndex, true);
+      };
+      utterance.onboundary = (event) => {
+        if (voiceSession !== session || typeof event.charIndex !== "number") return;
+        updateVisual(findWordAt(sourceStart + event.charIndex), true);
+      };
+      utterance.onend = () => {
+        if (voiceSession !== session) return;
+        mode = "finished";
+        activeReader = null;
+        updateVisual(lastIndex, false);
+      };
+      utterance.onerror = (event) => {
+        if (voiceSession !== session || ["canceled", "interrupted"].includes(event.error)) {
+          return;
+        }
+        mode = "idle";
+        activeReader = null;
+        updateVisual(currentIndex, false);
+      };
+
+      mode = "speaking";
+      activeReader = reader;
+      updateVisual(currentIndex, false);
+      window.speechSynthesis.speak(utterance);
+    }
+
+    const reader = {
+      start() {
+        if (mode === "paused" && "speechSynthesis" in window) {
+          window.speechSynthesis.resume();
+          mode = "speaking";
+          updateVisual(currentIndex, false);
+          return;
+        }
+        if (mode === "finished") currentIndex = 0;
+        startFrom(currentIndex);
+      },
+      pause() {
+        if (mode !== "speaking" || !("speechSynthesis" in window)) return;
+        window.speechSynthesis.pause();
+        mode = "paused";
+        updateVisual(currentIndex, false);
+      },
+      stop() {
+        cancelSpeech();
+        mode = "idle";
+        if (activeReader === reader) activeReader = null;
+        updateVisual(currentIndex, false);
+      },
+      searchFrom(index) {
+        updateVisual(index, true);
+      },
+      seek(index) {
+        const wasActive = mode === "speaking" || mode === "paused";
+        updateVisual(index, true);
+        if (wasActive) startFrom(currentIndex);
+      },
+      destroy() {
+        if (activeReader === reader) activeReader = null;
+        cancelSpeech();
+        mode = "idle";
+      },
+      get currentIndex() {
+        return currentIndex;
+      }
+    };
+
+    playButton.addEventListener("click", () => {
+      if (mode === "speaking") reader.pause();
+      else reader.start();
+    });
+    stopButton.addEventListener("click", () => reader.stop());
+    range.addEventListener("input", () => reader.searchFrom(Number(range.value)));
+    range.addEventListener("change", () => reader.seek(Number(range.value)));
+    updateVisual(0, false, false);
+    return reader;
+  }
+
+  function renderReadableText(text, targetWords) {
+    const formToWord = createTargetWordMap(targetWords);
+    const tokens = [];
+    const paragraphs = [];
+    let paragraphStart = 0;
+
+    for (const separator of text.matchAll(/\n+/g)) {
+      paragraphs.push({
+        text: text.slice(paragraphStart, separator.index),
+        start: paragraphStart
+      });
+      paragraphStart = separator.index + separator[0].length;
+    }
+    paragraphs.push({ text: text.slice(paragraphStart), start: paragraphStart });
+
+    const html = paragraphs
+      .filter((paragraph) => paragraph.text.length)
+      .map((paragraph) => {
+        const wordPattern = /\b[A-Za-z]+(?:['’–-][A-Za-z]+)*\b/g;
+        let cursor = 0;
+        let paragraphHtml = "";
+        for (const match of paragraph.text.matchAll(wordPattern)) {
+          paragraphHtml += escapeHtml(paragraph.text.slice(cursor, match.index));
+          const wordKey = formToWord.get(match[0].toLowerCase());
+          const marked = wordKey
+            ? `<mark data-word="${escapeAttr(wordKey)}">${escapeHtml(match[0])}</mark>`
+            : escapeHtml(match[0]);
+          const index = tokens.length;
+          tokens.push({
+            index,
+            start: paragraph.start + match.index,
+            end: paragraph.start + match.index + match[0].length
+          });
+          paragraphHtml += `<span class="read-token${wordKey ? " read-token--target" : ""}" data-reader-index="${index}">${marked}</span>`;
+          cursor = match.index + match[0].length;
+        }
+        paragraphHtml += escapeHtml(paragraph.text.slice(cursor));
+        return `<p>${paragraphHtml}</p>`;
+      })
+      .join("");
+
+    return { html, tokens };
+  }
+
+  function createTargetWordMap(targetWords) {
     const formToWord = new Map();
-    article.words.forEach((key) => {
+    targetWords.forEach((key) => {
       const word = wordMap.get(key);
       if (!word) return;
       formToWord.set(word.word.toLowerCase(), key);
       Object.values(word.forms || {}).forEach((form) => {
         if (form) formToWord.set(String(form).toLowerCase(), key);
       });
-      if (word.part.includes("v.")) {
+      if ((word.part || []).includes("v.")) {
         inflectedVerbForms(word.word).forEach((form) =>
           formToWord.set(form.toLowerCase(), key)
         );
       }
     });
-
-    const forms = [...formToWord.keys()].sort((a, b) => b.length - a.length);
-    const pattern = new RegExp(`\\b(${forms.map(escapeRegExp).join("|")})\\b`, "gi");
-
-    return article.body
-      .split(/\n\n/)
-      .map((paragraph) => {
-        const html = escapeHtml(paragraph).replace(pattern, (match) => {
-          const key = formToWord.get(match.toLowerCase());
-          return `<mark data-word="${escapeAttr(key)}">${match}</mark>`;
-        });
-        return `<p>${html}</p>`;
-      })
-      .join("");
+    return formToWord;
   }
 
   function renderWordList() {
@@ -202,6 +427,8 @@
   }
 
   function renderExam() {
+    examReaders.forEach((reader) => reader.destroy());
+    examReaders = [];
     const exam = EXAMS.find((item) => item.year === activeExamYear);
     const root = document.getElementById("examContent");
     if (!exam) {
@@ -218,34 +445,38 @@
     root.querySelectorAll("[data-submit-exam]").forEach((button) =>
       button.addEventListener("click", () => submitExam(button.dataset.submitExam))
     );
-    root.querySelectorAll("[data-play-script]").forEach((button) =>
-      button.addEventListener("click", () => speak(button.dataset.playScript))
-    );
-    root.querySelectorAll("[data-stop-speech]").forEach((button) =>
-      button.addEventListener("click", stopSpeaking)
-    );
+
+    root.querySelectorAll(".exam-panel").forEach((panel) => {
+      const listening = panel.dataset.examKind === "listening";
+      const content = listening ? exam.listening : exam.reading;
+      examReaders.push(
+        createSpeechReader({
+          body: panel.querySelector("[data-reader-body]"),
+          toolbar: panel.querySelector("[data-reader-toolbar]"),
+          text: listening ? content.script : content.passage,
+          label: listening ? `${exam.year} 模拟听力原文` : `${exam.year} 阅读文章`
+        })
+      );
+    });
   }
 
   function renderExamPanel(content, type, panelId, listening) {
     return `
-      <section class="exam-panel" id="${escapeAttr(panelId)}">
+      <section class="exam-panel" id="${escapeAttr(panelId)}" data-exam-kind="${listening ? "listening" : "reading"}">
         <div class="exam-panel__head">
           <h3>${escapeHtml(content.title)}</h3>
           <span class="exam-type">${type} · 原创改编</span>
         </div>
+        <div data-reader-toolbar></div>
         ${
           listening
             ? `
-              <div class="listen-tools">
-                <button type="button" data-play-script="${escapeAttr(content.script.replaceAll("\n", " "))}">▶ 播放听力</button>
-                <button type="button" data-stop-speech>停止</button>
-              </div>
-              <details class="transcript">
-                <summary>显示 / 隐藏听力原文</summary>
-                <pre>${escapeHtml(content.script)}</pre>
+              <details class="transcript" open>
+                <summary>听力原文 · 播放时逐词高亮</summary>
+                <div class="exam-passage transcript-copy" data-reader-body></div>
               </details>
             `
-            : `<div class="exam-passage">${content.passage.split(/\n\n/).map((p) => `<p>${escapeHtml(p)}</p>`).join("")}</div>`
+            : `<div class="exam-passage" data-reader-body></div>`
         }
         <div class="exam-questions">
           ${content.questions.map((question, index) => renderQuestion(question, panelId, index)).join("")}
@@ -296,13 +527,10 @@
   }
 
   function bindEvents() {
-    document.getElementById("articleSpeak").addEventListener("click", () =>
-      currentArticle && speak(currentArticle.body.replace(/\n/g, " "))
-    );
-    document.getElementById("heroSpeak").addEventListener("click", () =>
-      currentArticle && speak(currentArticle.body.replace(/\n/g, " "))
-    );
-    document.getElementById("articleStop").addEventListener("click", stopSpeaking);
+    document.getElementById("heroSpeak").addEventListener("click", () => {
+      document.getElementById("dailyArticle").scrollIntoView({ behavior: "smooth" });
+      articleReader?.start();
+    });
     document.getElementById("nextArticle").addEventListener("click", () => {
       articleOffset = (articleOffset + 1) % DATA.articles.length;
       renderDailyArticle();
@@ -349,6 +577,8 @@
       window.alert("当前浏览器不支持语音朗读。");
       return;
     }
+    activeReader?.stop();
+    activeReader = null;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
@@ -357,7 +587,12 @@
   }
 
   function stopSpeaking() {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    if (activeReader) {
+      activeReader.stop();
+      activeReader = null;
+    } else if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
   }
 
   function partLabel(pos) {
