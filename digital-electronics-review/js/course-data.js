@@ -1,7 +1,7 @@
 window.ANALOG_COURSE = {
   title: "数字电子技术",
   subtitle: "逻辑代数 · 组合逻辑 · 常用数字器件",
-  updatedAt: "2026-11-01",
+  updatedAt: "2026-11-04",
   chapters: [
     {
       id: "logic-algebra",
@@ -16,13 +16,6 @@ window.ANALOG_COURSE = {
           id: "number-systems",
           title: "数制与转换",
           summary: "数字电路用二进制表达状态，八进制和十六进制只是便于书写的压缩方式。",
-          figures: [
-            {
-              src: "./assets/source/logic-algebra-notes.jpg",
-              title: "逻辑代数笔记",
-              caption: "笔记：数制转换、基本逻辑、公式、三大规则、最小项和卡诺图"
-            }
-          ],
           cards: [
             {
               id: "digital-characteristics",
@@ -297,13 +290,6 @@ AB+\overline AC+BC=AB+\overline AC`
           id: "karnaugh-map",
           title: "卡诺图化简",
           summary: "卡诺图把真值表按 Gray 码排列，让相邻格只相差一个变量。",
-          figures: [
-            {
-              src: "./assets/source/logic-kmap-figures.jpg",
-              title: "四变量卡诺图与合并",
-              caption: "教材截图：逻辑符号、最小项合并与四变量卡诺图圈法"
-            }
-          ],
           cards: [
             {
               id: "kmap-layout",
@@ -318,6 +304,13 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "kmap-adjacency",
               type: "judgment",
               title: "相邻与合并",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/kmap-eight-minterms.jpg",
+                  title: "8 个最小项的合并",
+                  caption: "教材图 1.2.5：上下两行各 4 格合成 8 格组，分别消去三个变量得到 B 或 B̄。"
+                }
+              ],
               body: [
                 "两个相邻 1 格合并消去一个变量；4 个一组消去两个变量；8 个一组消去三个变量。",
                 "可合并的格数必须是 $2^k$，圈内每个变量都应能以原、反形式成对出现。"
@@ -327,7 +320,13 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "kmap-rules",
               type: "property",
               title: "画圈规则",
-              figures: [{ src: "./assets/source/logic-kmap-figures.jpg", title: "卡诺图合并示例", caption: "对照四个变量卡诺图的画圈与跨边界合并。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/kmap-pair-quad-groups.jpg",
+                  title: "两个与四个最小项的合并",
+                  caption: "教材图 1.2.3：横向、纵向、边界与四角相邻都能组成 2 格或 4 格圈。"
+                }
+              ],
               bullets: [
                 "所有为 1 的最小项都必须至少被一个圈覆盖。",
                 "圈尽可能大、数量尽可能少，允许重叠和跨越边界。",
@@ -386,21 +385,26 @@ AB+\overline AC+BC=AB+\overline AC`
           id: "logic-analysis",
           title: "逻辑门与组合逻辑分析",
           summary: "从电路输入开始逐级写中间函数，最后整理成真值表或最简表达式。",
-          figures: [
-            {
-              src: "./assets/source/combinational-methods-figures.jpg",
-              title: "组合逻辑分析方法与设计方法",
-              caption: "课堂图片：逻辑图化简、真值表、编码器和译码器"
-            }
-          ],
           cards: [
             {
               id: "logic-gates",
               type: "definition",
               title: "基本逻辑门符号",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/logic-gate-symbols.jpg",
+                  title: "七种逻辑运算的符号",
+                  caption: "教材图 1.1.2：与、或、非、与非、或非、异或和同或的国际符号、曾用符号及特定外形符号。"
+                },
+                {
+                  src: "./assets/source/combinational-logic/logic-diagram-simplified-symbols.jpg",
+                  title: "逻辑图的简化画法",
+                  caption: "教材图 4.7.3：中大规模集成电路中与门、或门和缓冲器的简化符号。"
+                }
+              ],
               body: [
                 "与门、或门、非门是基本门；与非门、或非门、异或门和同或门由基本运算组合得到。",
-                "看图时先确认输入端的反相小圈，再判断是“与非”还是“与”。"
+                "看图时先确认输入端的反相小圈，再判断是“与非”还是“与”。国际符号与教材曾用符号表达同一逻辑功能，不能把外形不同误认为逻辑不同。"
               ]
             },
             {
@@ -427,18 +431,34 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "analysis-example",
               type: "example",
               title: "例题：从逻辑图反推功能",
-              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "逻辑图分析例题", caption: "逻辑图、中间表达式与真值表对应。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/analysis-parity-circuit.jpg",
+                  title: "电路分析与中间表达式",
+                  caption: "课堂例 4.1.1：每一级由与非门组成异或结构，逐级得到 W、X、Y 的表达式。"
+                },
+                {
+                  src: "./assets/source/combinational-logic/analysis-parity-output.jpg",
+                  title: "输出函数 Y 的展开",
+                  caption: "课堂例 4.1.1：从 X 和 D 得到 Y 的八个最小项，可进一步分析四变量奇偶性。"
+                },
+                {
+                  src: "./assets/source/combinational-logic/analysis-parity-truth-table.jpg",
+                  title: "四变量奇偶检验真值表",
+                  caption: "课堂例 4.1.1：输入 A、B、C、D 中 1 的个数为奇数时 Y=1，否则 Y=0。"
+                }
+              ],
               body: [
-                "某电路第一级输出 $X=\\overline A\\,\\overline B$、$Y=AB$，最终输出 $Z=\\overline{X+Y}$。",
-                "先把两级代入，再用德摩根定律和最小项判别功能。"
+                "输入为四位二进制代码 $A,B,C,D$。逐级把相邻两位送入异或结构：$W=A\\oplus B$，$X=W\\oplus C$，最终 $Y=X\\oplus D$。",
+                "异或满足交换律和结合律，所以 $Y=A\\oplus B\\oplus C\\oplus D$；逐个扫描真值表可知，输入中 1 的个数为奇数时输出 1。"
               ],
               example: {
-                title: "展开",
+                title: "功能与结论",
                 body: [
-                  "$Z=\\overline{\\overline A\\,\\overline B+AB}$，括号内正好是 $A\\odot B$（同或）。",
-                  "所以 $Z=A\\oplus B$，该电路实现异或。"
+                  "$Y=1$ 表示四位输入中 1 的个数为奇数，因此该电路实现奇校验位生成。",
+                  "异或树把逐级比较展开成多输入奇偶判断；交换输入顺序不会改变最终函数。"
                 ],
-                formula: String.raw`Z=\overline{\overline A\,\overline B+AB}=A\oplus B`
+                formula: String.raw`Y=A\oplus B\oplus C\oplus D`
               }
             },
             {
@@ -481,7 +501,18 @@ AB+\overline AC+BC=AB+\overline AC`
               id: "design-majority-example",
               type: "example",
               title: "例题：三人表决器",
-              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "组合逻辑设计方法", caption: "从真值表到最简逻辑图的课堂过程。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/design-majority-setup.jpg",
+                  title: "三人表决器的变量与状态赋值",
+                  caption: "课堂例 4.1.2：输入 A、B、C 用 1 表示高电平；输出 Y 表示三者中的多数电平。"
+                },
+                {
+                  src: "./assets/source/combinational-logic/design-majority-simplification.jpg",
+                  title: "表决器真值表、化简与与非实现",
+                  caption: "课堂例 4.1.2：四个 1 最小项合并成 BC+AC+AB，再用双重反演转成与非–与非结构。"
+                }
+              ],
               body: [
                 "三人各投一票，输入为 $A,B,C$，至少两人同意时输出 $F=1$。",
                 "真值表为 011、101、110、111 四个组合，写最小项后圈卡诺图。"
@@ -618,13 +649,6 @@ C_o=AB+AC_i+BC_i`
           id: "encoders-decoders",
           title: "编码器与译码器",
           summary: "编码器把有效输入压缩成二进制码，译码器把二进制码展开成单个有效输出。",
-          figures: [
-            {
-              src: "./assets/source/combinational-circuit-figures.jpg",
-              title: "编码器、译码器与 ROM 图示",
-              caption: "教材与课堂图片：优先编码器、译码器、ROM 结构和竞争冒险"
-            }
-          ],
           cards: [
             {
               id: "encoder-definition",
@@ -639,7 +663,13 @@ C_o=AB+AC_i+BC_i`
               id: "binary-encoder",
               type: "formula",
               title: "8 线–3 线二进制编码器",
-              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "3 位二进制编码器", caption: "输入有效位与 Y₂Y₁Y₀ 编码表。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/binary-encoder-table.jpg",
+                  title: "8 线–3 线普通编码器编码表",
+                  caption: "普通编码器要求同一时刻只有一个输入有效；I0～I7 分别对应 000～111。"
+                }
+              ],
               body: [
                 "若最高位输入为 $I_7$、最低位为 $I_0$，正常工作时只有一个输入为 1。",
                 "每个输出都收集对应二进制位为 1 的输入。"
@@ -654,6 +684,13 @@ Y_0=I_1+I_3+I_5+I_7`
               id: "priority-encoder",
               type: "definition",
               title: "优先编码器",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/priority-encoder-table.jpg",
+                  title: "8 线–3 线优先编码器",
+                  caption: "课堂图片：优先顺序为 I7→I0，高位有效后低位可用 ×（无关项）表示。"
+                }
+              ],
               body: [
                 "优先级编码器允许多个输入同时有效，但只编码优先级最高的一个。",
                 "最高优先输入会屏蔽其他输入；商用芯片常带输入使能、输出使能和扩展端。"
@@ -672,7 +709,13 @@ Y_0=I_1+I_3+I_5+I_7`
               id: "binary-decoder",
               type: "formula",
               title: "3 线–8 线二进制译码器",
-              figures: [{ src: "./assets/source/combinational-methods-figures.jpg", title: "3 位二进制译码器", caption: "译码真值表、输出方程和逻辑图。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/binary-decoder-table.jpg",
+                  title: "3 线–8 线译码器真值表与函数式",
+                  caption: "课堂图片：输入 A2A1A0 的每个组合只使对应输出 Yi 为 1，输出函数正好是一个最小项。"
+                }
+              ],
               body: [
                 "高有效输出时，$Y_i$ 等于对应输入最小项；低有效输出时还要整体取反。",
                 "使能端无效时，所有有效输出会被强制为非有效电平。"
@@ -710,7 +753,6 @@ i=0,1,\ldots,7`
               id: "four-to-one-mux",
               type: "formula",
               title: "4 选 1 数据选择器",
-              figures: [{ src: "./assets/source/combinational-circuit-figures.jpg", title: "数据选择器逻辑图", caption: "选择控制端与四路数据输入的连接。" }],
               formula: String.raw`Y=\overline{A_1}\,\overline{A_0}D_0
 +\overline{A_1}A_0D_1
 +A_1\overline{A_0}D_2
@@ -720,9 +762,16 @@ i=0,1,\ldots,7`
               id: "mux-function",
               type: "application",
               title: "用数据选择器实现组合逻辑",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/mux-logic-example.jpg",
+                  title: "用 4 选 1 数据选择器实现多数函数",
+                  caption: "课堂例 4.6.1：把 A、B 接地址端，配置 D0=0、D1=D2=C、D3=1，实现 F=AB+BC+AC。"
+                }
+              ],
               body: [
                 "把函数变量端接到选择控制端，将真值表每个地址对应的输出值接到数据端，可把一个函数值表直接变成 MUX 实现。",
-                "若变量多于选择端，可将某些变量接在数据端，构成“数据端函数”。"
+                "若变量多于选择端，可将某些变量接在数据端，构成“数据端函数”。本例用 74LS153 的一半，把多数表决函数压缩到三个不同数据端取值。"
               ]
             },
             {
@@ -757,16 +806,35 @@ Y_3=A_1A_0D`
               id: "rom-structure",
               type: "definition",
               title: "ROM 的基本结构",
-              figures: [{ src: "./assets/source/combinational-circuit-figures.jpg", title: "ROM 结构图", caption: "地址译码、字线和存储阵列。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/rom-basic-structure.jpg",
+                  title: "ROM 的外部结构",
+                  caption: "教材图 4.7.1：n 位地址输入选择 2ⁿ 个存储单元，每个单元输出 b 位数据。"
+                },
+                {
+                  src: "./assets/source/combinational-logic/rom-internal-structure.jpg",
+                  title: "ROM 的内部结构",
+                  caption: "教材图 4.7.2：地址译码器产生字线，字线选中存储单元后由位线读出数据。"
+                }
+              ],
               body: [
                 "ROM 由地址译码器、字线和存储阵列组成；地址选中某条字线，读出该地址对应的数据字。",
                 "从逻辑函数角度看，ROM 就是按每个地址预存对应输出值的查找表。"
-              ]
+              ],
+              formula: String.raw`\text{容量}=2^n\times b\ \text{位}`
             },
             {
               id: "rom-function",
               type: "application",
               title: "ROM 与查找表",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/rom-logic-structure.jpg",
+                  title: "ROM 的逻辑结构",
+                  caption: "教材图 4.7.4：与阵列形成全部最小项，或阵列按需相加，得到多个输出的标准与或式。"
+                }
+              ],
               body: [
                 "输入的地址位可视为逻辑自变量，数据位就是对应函数值。",
                 "与阵列/或阵列可分别提供最小项选择和输出组合，适合实现多输出组合函数。"
@@ -776,10 +844,22 @@ Y_3=A_1A_0D`
               id: "parity-generator",
               type: "formula",
               title: "奇偶校验位",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/parity-check-basic.jpg",
+                  title: "两位输入的奇偶检验",
+                  caption: "课堂图片：F=P1⊕P2；输入中 1 的个数为奇数时 F=1，为偶数时 F=0。"
+                },
+                {
+                  src: "./assets/source/combinational-logic/parity-check-tree.jpg",
+                  title: "9 位奇偶检验的串联与树形结构",
+                  caption: "教材图 4.5.1：异或满足交换律和结合律，既可串联，也可组成树形结构缩短最长路径。"
+                }
+              ],
               body: [
                 "偶校验时，用数据位的异或和作为校验位，使加上校验位后的总 1 个数为偶数。",
                 "奇校验给偶校验位取反；接收端重新异或，偶校验结果 0 表示正常。",
-                "校验只能检测奇数个位错误，不能纠错。"
+                "校验只能检测奇数个位错误，不能纠错。位宽较大时可用树形异或结构，功能不变而级数更少。"
               ],
               formula: String.raw`P=d_1\oplus d_2\oplus\cdots\oplus d_n`
             },
@@ -796,6 +876,13 @@ Y_3=A_1A_0D`
               id: "one-bit-comparator",
               type: "formula",
               title: "一位数值比较器",
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/comparator-one-bit.jpg",
+                  title: "一位数值比较器的两种实现",
+                  caption: "教材图 4.5.4、4.5.5：输出 Li、Gi、Mi 分别表示小于、大于和相等，可用与非门与反相器实现。"
+                }
+              ],
               formula: String.raw`A>B=A\overline B,
 \qquad
 A=B=A\odot B,
@@ -840,10 +927,16 @@ A<B=\overline AB`
               id: "consensus-hazard",
               type: "formula",
               title: "用冗余项消除静态 1 冒险",
-              figures: [{ src: "./assets/source/combinational-circuit-figures.jpg", title: "竞争冒险电路举例", caption: "不同路径延迟在电路中的来源。" }],
+              figures: [
+                {
+                  src: "./assets/source/combinational-logic/decoder-hazard.jpg",
+                  title: "译码器中的竞争冒险",
+                  caption: "课堂图片：输入代码切换时，原变量与反变量路径延迟不同，输出端可能产生窄干扰脉冲。"
+                }
+              ],
               body: [
                 "当函数化简为 $AB+\\overline AC$ 时，$A$ 改变而 $B=C=1$ 的两条路径可能存在暂态空档。",
-                "加入一致性项 $BC$ 可以覆盖这个空档，使输出保持稳定。"
+                "加入一致性项 $BC$ 可以覆盖这个空档，使输出保持稳定。译码器地址切换时也可能因反相器延迟产生暂态尖峰，应结合时序和使能控制排查。"
               ],
               formula: String.raw`F=AB+\overline AC+BC`
             },
