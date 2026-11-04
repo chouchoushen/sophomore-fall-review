@@ -477,8 +477,8 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
       title: "放大电路基本原理",
       english: "Amplifier Fundamentals",
       accent: "forest",
-      summary: "围绕单管共射电路，掌握静态工作点、动态等效电路、三种组态和多级耦合。",
-      examFocus: ["静态工作点", "微变等效", "电压放大倍数", "输入输出电阻", "三种组态"],
+      summary: "从放大倍数和端口电阻出发，依次掌握共射电路、图解与微变等效分析、分压偏置稳定工作点、共集与共基组态，以及多级放大器的耦合和零点漂移。",
+      examFocus: ["静态工作点", "图解法", "微变等效", "分压偏置", "共射/共集/共基", "多级耦合"],
       themes: [
         {
           id: "amplifier-metrics",
@@ -486,9 +486,9 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
           summary: "放大的本质是直流电源能量受输入信号控制，而不是凭空产生能量。",
           figures: [
             {
-              src: "./assets/figures/amplifier-metrics.webp",
-              title: "放大电路技术指标",
-              caption: "照片笔记：放大倍数、输入电阻与输出电阻模型"
+              src: "./assets/source/amplifier-fundamentals/amplifier-metrics.jpg",
+              title: "放大电路技术指标测试模型",
+              caption: "第 2 章 2.2：电压、电流放大倍数及输入、输出电阻的定义模型"
             }
           ],
           cards: [
@@ -514,6 +514,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "gain",
               type: "formula",
               title: "电压与电流放大倍数",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/amplifier-metrics.jpg",
+                  title: "放大倍数与端口指标",
+                  caption: "输入量除以输入量、输出量除以输出量；增益均按相量定义。"
+                }
+              ],
               formula: String.raw`\dot A_u=\frac{\dot U_o}{\dot U_i},
 \qquad
 \dot A_i=\frac{\dot I_o}{\dot I_i}`
@@ -522,6 +529,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "input-resistance",
               type: "formula",
               title: "输入电阻",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/amplifier-metrics.jpg",
+                  title: "输入电阻与信号源分压",
+                  caption: "$R_i$ 把放大电路等效为信号源负载，影响实际输入电压。"
+                }
+              ],
               body: [
                 "输入电阻把放大电路等效为信号源的负载。电压源驱动时希望输入电阻大，以减少分压。"
               ],
@@ -533,6 +547,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "output-resistance",
               type: "formula",
               title: "输出电阻",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/amplifier-metrics.jpg",
+                  title: "输出电阻与负载效应",
+                  caption: "$R_o$ 把输出端等效为带内阻的电压源，影响带负载能力。"
+                }
+              ],
               body: [
                 "输出电阻把放大电路等效为带内阻的信号源。电压输出时希望输出电阻小，以增强带载能力。"
               ],
@@ -561,34 +582,49 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
           summary: "共射电路同时具有电压和电流放大作用，输出与输入反相。",
           figures: [
             {
-              src: "./assets/figures/common-emitter-circuit.webp",
-              title: "单管共射与阻容耦合电路",
-              caption: "照片笔记：共射原理电路、耦合电容与负载"
+              src: "./assets/source/amplifier-fundamentals/common-emitter-principle.jpg",
+              title: "单管共射放大电路的组成",
+              caption: "第 2 章 2.3.1：三极管、电源、集电极电阻和基极偏置的作用"
             },
             {
-              src: "./assets/figures/static-load-line.webp",
-              title: "图解法与静态工作点",
-              caption: "照片笔记：输入回路估算和输出回路直流负载线"
+              src: "./assets/source/amplifier-fundamentals/rc-coupled-common-emitter.jpg",
+              title: "阻容耦合单管共射电路",
+              caption: "第 2 章图 2.3.2：输入、输出耦合电容及负载电阻"
             },
             {
-              src: "./assets/figures/amplifier-waveforms.webp",
-              title: "共射放大电路波形",
-              caption: "照片笔记：交直流叠加、倒相和动态负载线"
+              src: "./assets/source/amplifier-fundamentals/dc-load-line.jpg",
+              title: "直流负载线与静态工作点",
+              caption: "第 2 章图 2.4.3：输出特性与直流负载线相交得到 Q 点"
             },
             {
-              src: "./assets/figures/h-parameter-equivalent.webp",
-              title: "h 参数与微变等效电路",
-              caption: "照片笔记：三极管简化参数模型和放大电路交流等效"
+              src: "./assets/source/amplifier-fundamentals/graphical-waveform-method.jpg",
+              title: "共射电路的图解波形分析",
+              caption: "第 2 章：输入、输出特性上的工作点移动，以及反相和最大不失真幅度"
             },
             {
-              src: "./assets/figures/emitter-resistor-circuit.webp",
-              title: "发射极电阻与负反馈",
-              caption: "照片笔记：接发射极电阻时的增益、输入电阻和输出电阻"
+              src: "./assets/source/amplifier-fundamentals/ce-voltage-current-waveforms.jpg",
+              title: "共射电路电压电流波形",
+              caption: "第 2 章图 2.4.6：交直流并存、电压放大和输出倒相"
             },
             {
-              src: "./assets/figures/stable-bias-circuit.webp",
+              src: "./assets/source/amplifier-fundamentals/simplified-h-model.jpg",
+              title: "晶体管简化 h 参数模型",
+              caption: "第 2 章图 2.4.11：用 $r_{be}$ 与受控电流源表示晶体管"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/ac-micro-equivalent-circuit.jpg",
+              title: "共射电路的交流通路与微变等效",
+              caption: "第 2 章：原电路、交流通路和微变等效电路的对应关系"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/emitter-resistor-example.jpg",
+              title: "带发射极电阻的共射电路",
+              caption: "第 2 章图 2.4.14：$R_e$ 对增益和输入、输出电阻的影响"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/divider-bias-circuit.jpg",
               title: "分压式工作点稳定电路",
-              caption: "照片笔记：基极分压、射极电阻和旁路电容"
+              caption: "第 2 章图 2.5.2：$R_{b1}$、$R_{b2}$、$R_e$ 与旁路电容"
             }
           ],
           cards: [
@@ -596,6 +632,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "simple-ce",
               type: "definition",
               title: "基本共射放大电路",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-emitter-principle.jpg",
+                  title: "基本共射电路的组成",
+                  caption: "VT 是放大元件，$V_{CC}$ 提供能量，$R_c$ 完成电流到电压的转换。"
+                }
+              ],
               body: [
                 "$V_{BB}+R_b$ 为发射结提供正向偏置，$V_{CC}+R_c$ 使集电结反偏并把集电极电流变化转换为电压变化。",
                 "缺点是使用双电源，且输入、输出存在直流耦合。"
@@ -605,6 +648,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "rc-coupling",
               type: "definition",
               title: "阻容耦合",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/rc-coupled-common-emitter.jpg",
+                  title: "阻容耦合共射电路",
+                  caption: "$C_1$、$C_2$ 隔直通交，$R_L$ 为负载电阻。"
+                }
+              ],
               body: [
                 "耦合电容隔断直流，防止信号源和负载改变静态工作点；对交流信号近似短路。"
               ]
@@ -613,6 +663,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "dc-ac-path",
               type: "judgment",
               title: "直流通路与交流通路",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/ac-micro-equivalent-circuit.jpg",
+                  title: "从原电路到微变等效电路",
+                  caption: "先画交流通路，再把晶体管替换为简化 h 参数模型。"
+                }
+              ],
               body: [
                 "画直流通路时，大电容视为开路，交流信号源置零。",
                 "画交流通路时，大电容和理想直流电压源视为短路，理想电流源视为开路。"
@@ -622,7 +679,13 @@ R_{\max}=\frac{U_{I\min}-U_Z}{I_{Z\min}+I_{L\max}}`
               id: "static-estimate",
               type: "formula",
               title: "静态工作点估算",
-              figures: [{ src: "./assets/figures/static-load-line.webp", title: "直流负载线与 Q 点", caption: "用输出负载线定位静态工作点。" }],
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/qpoint-graphical-example.jpg",
+                  title: "图解确定静态工作点",
+                  caption: "第 2 章例题：由 $I_{BQ}$ 选定特性曲线，再由负载线交点得到 $I_{CQ}$、$U_{CEQ}$。"
+                }
+              ],
               formula: String.raw`I_{BQ}\approx\frac{V_{CC}-U_{BEQ}}{R_b},
 \qquad
 I_{CQ}=\beta I_{BQ},
@@ -633,12 +696,26 @@ U_{CEQ}=V_{CC}-I_{CQ}R_c`
               id: "dc-load-line",
               type: "formula",
               title: "直流负载线",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/dc-load-line.jpg",
+                  title: "直流负载线的两个截距",
+                  caption: "$i_C=0$ 时 $u_{CE}=V_{CC}$；$u_{CE}=0$ 时 $i_C=V_{CC}/R_c$。"
+                }
+              ],
               formula: String.raw`U_{CE}=V_{CC}-I_C R_c`
             },
             {
               id: "dynamic-load-line",
               type: "formula",
               title: "交流负载线",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/graphical-gain-example.jpg",
+                  title: "用图解法求电压放大倍数",
+                  caption: "例：由输入、输出特性上的变化量之比计算 $A_u$。"
+                }
+              ],
               body: [
                 "交流输出端负载为 $R_c\\parallel R_L$，交流负载线经过静态工作点，斜率为 $-1/R_L'$。"
               ],
@@ -649,7 +726,18 @@ U_{CEQ}=V_{CC}-I_{CQ}R_c`
               id: "ce-waveform",
               type: "property",
               title: "共射电路的倒相作用",
-              figures: [{ src: "./assets/figures/amplifier-waveforms.webp", title: "共射电路各点波形", caption: "输入与输出的反相关系。" }],
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/ce-voltage-current-waveforms.jpg",
+                  title: "共射电路各点波形",
+                  caption: "$u_i$ 与 $u_o$ 反相，$i_B$、$i_C$ 与 $u_{CE}$ 均在静态值上叠加交流量。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/graphical-waveform-method.jpg",
+                  title: "图解波形与最大不失真幅度",
+                  caption: "输入信号推动 Q 点在特性曲线上移动，可读出输出波形、反相和失真边界。"
+                }
+              ],
               body: [
                 "$u_i$ 增大使 $i_B,i_C$ 增大，而 $u_o=u_{CE}=V_{CC}-i_C R_c$ 减小。",
                 "因此共射电路输出与输入反相。"
@@ -659,7 +747,13 @@ U_{CEQ}=V_{CC}-I_{CQ}R_c`
               id: "h-parameters",
               type: "formula",
               title: "三极管简化 h 参数模型",
-              figures: [{ src: "./assets/figures/h-parameter-equivalent.webp", title: "h 参数小信号模型", caption: "输入电阻 rbe 与受控电流源 βib 的连接。" }],
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/simplified-h-model.jpg",
+                  title: "简化 h 参数等效电路",
+                  caption: "输入侧用 $r_{be}$，输出侧用受控电流源 $\\beta\\Delta i_B$。"
+                }
+              ],
               formula: String.raw`u_{be}=r_{be}i_b,
 \qquad
 i_c=\beta i_b`
@@ -696,7 +790,23 @@ R_o\approx R_c`
               id: "emitter-resistor",
               type: "formula",
               title: "发射极电阻 Re 的影响",
-              figures: [{ src: "./assets/figures/emitter-resistor-circuit.webp", title: "带发射极电阻的共射电路", caption: "观察反馈电阻的连接位置。" }],
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/emitter-resistor-example.jpg",
+                  title: "带发射极电阻的共射电路",
+                  caption: "先画微变等效电路，再把 $R_e$ 上的电流影响计入输入回路。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/emitter-resistor-gain.jpg",
+                  title: "发射极电阻对电压增益的影响",
+                  caption: "$(1+\\beta)R_e$ 进入增益分母，使 $|A_u|$ 降低。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/emitter-resistor-ports.jpg",
+                  title: "发射极电阻对输入、输出电阻的影响",
+                  caption: "$R_i$ 明显增大，$R_o$ 仍近似等于 $R_c$。"
+                }
+              ],
               body: [
                 "$R_e$ 引入电流负反馈，降低电压增益，但能提高输入电阻、稳定工作点。"
               ],
@@ -707,7 +817,13 @@ R_o\approx R_c`
               id: "divider-bias",
               type: "property",
               title: "分压式偏置与工作点稳定",
-              figures: [{ src: "./assets/figures/stable-bias-circuit.webp", title: "分压式稳定偏置电路", caption: "R_e 与旁路电容的连接关系。" }],
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/divider-bias-circuit.jpg",
+                  title: "分压式偏置电路",
+                  caption: "$R_{b1}$、$R_{b2}$ 固定基极电位，$R_e$ 把 $I_E$ 的变化转化为负反馈；$C_e$ 在交流中旁路 $R_e$。"
+                }
+              ],
               body: [
                 "温度升高使 $I_C$ 增大时，$R_e$ 上的压降增大，发射结电压减小，从而抑制 $I_C$ 继续增加。",
                 "旁路电容 $C_e$ 在交流通路中短路 $R_e$，使交流增益不被过度降低。"
@@ -720,22 +836,52 @@ I_{CQ}\approx I_{EQ}\approx\frac{U_{BQ}-U_{BEQ}}{R_e}`
               id: "ce-design-example",
               type: "example",
               title: "例题：共射电路的 Q 点、增益与端口电阻",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/qpoint-graphical-example.jpg",
+                  title: "共射电路 Q 点图解法",
+                  caption: "$R_b=280\\,\\mathrm{k\\Omega}$、$R_c=3\\,\\mathrm{k\\Omega}$、$V_{CC}=12\\,\\mathrm V$。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/graphical-gain-example.jpg",
+                  title: "由特性曲线求电压放大倍数",
+                  caption: "$R_L=3\\,\\mathrm{k\\Omega}$ 时交流负载电阻为 $1.5\\,\\mathrm{k\\Omega}$。"
+                }
+              ],
               body: [
-                "基本共射电路取 $V_{CC}=12\\,\\mathrm V$，$R_b=300\\,\\mathrm{k\\Omega}$，$R_c=3\\,\\mathrm{k\\Omega}$，$R_L=6\\,\\mathrm{k\\Omega}$，$\\beta=50$，取 $U_{BEQ}=0.7\\,\\mathrm V$、$r_{bb'}=300\\,\\Omega$。",
-                "先求 Q 点，再令 $R_L'=R_c\\parallel R_L=2\\,\\mathrm{k\\Omega}$，最后计算 $A_u$、$R_i$、$R_o$。"
+                "基本共射电路取 $V_{CC}=12\\,\\mathrm V$，$R_b=280\\,\\mathrm{k\\Omega}$，$R_c=3\\,\\mathrm{k\\Omega}$，$R_L=3\\,\\mathrm{k\\Omega}$，$\\beta=50$，取 $U_{BEQ}=0.7\\,\\mathrm V$、$r_{bb'}=300\\,\\Omega$。",
+                "先用图解法或公式估算 Q 点，再令 $R_L'=R_c\\parallel R_L=1.5\\,\\mathrm{k\\Omega}$，最后计算 $A_u$、$R_i$、$R_o$。"
               ],
               example: {
                 title: "展开完整计算",
                 body: [
-                  "$I_{BQ}=(12-0.7)/300\\,\\mathrm{k\\Omega}\\approx37.7\\,\\mu\\mathrm A$，所以 $I_{CQ}\\approx1.88\\,\\mathrm{mA}$，$U_{CEQ}\\approx6.35\\,\\mathrm V$，说明工作在放大区。",
-                  "$r_{be}\\approx300\\,\\Omega+(1+50)\\times26\\,\\mathrm{mV}/1.88\\,\\mathrm{mA}\\approx1.01\\,\\mathrm{k\\Omega}$。",
-                  "$A_u\\approx-50\\times2\\,\\mathrm{k\\Omega}/1.01\\,\\mathrm{k\\Omega}\\approx-99$；$R_i\\approx R_b\\parallel r_{be}\\approx1.0\\,\\mathrm{k\\Omega}$，$R_o\\approx R_c=3\\,\\mathrm{k\\Omega}$。"
+                  "$I_{BQ}=(12-0.7)/280\\,\\mathrm{k\\Omega}\\approx40\\,\\mu\\mathrm A$，所以 $I_{CQ}\\approx2\\,\\mathrm{mA}$，$U_{CEQ}\\approx6\\,\\mathrm V$，说明工作在放大区。",
+                  "$r_{be}\\approx300\\,\\Omega+(1+50)\\times26\\,\\mathrm{mV}/2\\,\\mathrm{mA}\\approx0.963\\,\\mathrm{k\\Omega}$。",
+                  "$A_u\\approx-50\\times1.5\\,\\mathrm{k\\Omega}/0.963\\,\\mathrm{k\\Omega}\\approx-78$，与图解法约 $-75$ 一致；$R_i\\approx0.96\\,\\mathrm{k\\Omega}$，$R_o\\approx3\\,\\mathrm{k\\Omega}$。"
                 ],
-                formula: String.raw`I_{CQ}\approx1.88\,\mathrm{mA},
-\qquad U_{CEQ}\approx6.35\,\mathrm V,
-\qquad \dot A_u\approx-99`
+                formula: String.raw`I_{CQ}\approx2\,\mathrm{mA},
+\qquad U_{CEQ}\approx6\,\mathrm V,
+\qquad \dot A_u\approx-78`
               },
-              source: "据第 2 章课堂例题重算"
+              source: "据第 2 章图 2.4.3 与图解法例题重算"
+            },
+            {
+              id: "equivalent-method-steps",
+              type: "judgment",
+              title: "微变等效电路法的步骤",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/equivalent-method-steps.jpg",
+                  title: "等效电路法的四个步骤",
+                  caption: "先求静态工作点，再确定微变参数、画等效电路并列方程。"
+                }
+              ],
+              bullets: [
+                "先用图解法或近似估算法确定 Q 点。",
+                "求出工作点处的 $\\beta$ 与 $r_{be}$。",
+                "先画三极管微变模型，再补齐交流通路中的其余元件。",
+                "列电路方程，根据定义求 $A_u$、$R_i$ 和 $R_o$。"
+              ]
             }
           ]
         },
@@ -745,9 +891,14 @@ I_{CQ}\approx I_{EQ}\approx\frac{U_{BQ}-U_{BEQ}}{R_e}`
           summary: "三种组态都可用同一套晶体管微变模型分析，差别主要集中在公共端、相位、端口电阻和用途。",
           figures: [
             {
-              src: "./assets/figures/three-configurations.webp",
-              title: "三种基本放大组态",
-              caption: "照片笔记：共射、共集和共基放大电路及等效电路"
+              src: "./assets/source/amplifier-fundamentals/common-collector-circuit.jpg",
+              title: "共集电极放大电路",
+              caption: "第 2 章 2.6.1：基极输入、发射极输出、集电极交流接地"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/common-base-circuit.jpg",
+              title: "共基极放大电路",
+              caption: "第 2 章 2.6.2：发射极输入、集电极输出、基极交流接地"
             }
           ],
           cards: [
@@ -764,6 +915,13 @@ I_{CQ}\approx I_{EQ}\approx\frac{U_{BQ}-U_{BEQ}}{R_e}`
               id: "cc-config",
               type: "property",
               title: "共集电极与射极跟随器",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-collector-circuit.jpg",
+                  title: "共集电极电路与等效电路",
+                  caption: "基极输入、发射极输出，集电极是交流公共端。"
+                }
+              ],
               body: [
                 "基极输入、发射极输出、集电极交流接地。",
                 "电压增益略小于 1 且同相，输入电阻大、输出电阻小，适合电压跟随和带负载。"
@@ -775,9 +933,91 @@ R_i\approx R_b\parallel\left[r_{be}+(1+\beta)(R_e\parallel R_L)\right],
 R_o\approx R_e\parallel\frac{r_{be}+(R_s\parallel R_b)}{1+\beta}`
             },
             {
+              id: "cc-qpoint",
+              type: "formula",
+              title: "共集电极电路的静态工作点",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-collector-qpoint.jpg",
+                  title: "共集电极电路直流通路与 Q 点",
+                  caption: "直流通路中电容开路，$R_e$ 上同时有 $I_B$ 与 $I_C$。"
+                }
+              ],
+              body: [
+                "从基极回路看，发射极电流在 $R_e$ 上产生的压降会折算到基极，因此基极回路的等效电阻包含 $(1+\\beta)R_e$。",
+                "求得 $I_{BQ}$ 后继续计算 $I_{CQ}$ 与 $U_{CEQ}$。"
+              ],
+              formula: String.raw`I_{BQ}=\frac{V_{CC}-U_{BEQ}}{R_b+(1+\beta)R_e},
+\qquad I_{CQ}\approx\beta I_{BQ},
+\qquad U_{CEQ}\approx V_{CC}-I_{CQ}R_e`
+            },
+            {
+              id: "cc-dynamic",
+              type: "judgment",
+              title: "共集电极电路的交流通路",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-collector-dynamic.jpg",
+                  title: "共集电极电路动态分析",
+                  caption: "耦合电容短路、直流电源接地后，输入在基极、输出在发射极。"
+                }
+              ],
+              body: [
+                "交流通路中，$R_e$ 与负载 $R_L$ 并联形成发射极等效负载 $R_e'=R_e\\parallel R_L$。",
+                "输出取自发射极，因此 $U_o=I_eR_e'$；它与输入电压同相。"
+              ]
+            },
+            {
+              id: "cc-gain",
+              type: "formula",
+              title: "共集电极电路的增益",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-collector-gain.jpg",
+                  title: "共集电极电路的电流与电压增益",
+                  caption: "输出电流方向与输入电流相反，因此电流增益为 $- (1+\\beta)$。"
+                }
+              ],
+              body: [
+                "输入电压由 $r_{be}$ 上的电压和发射极等效电阻上的电压串联组成，所以电压增益小于 1 但接近 1。",
+                "$A_i$ 的幅值约为 $1+\\beta$，说明射极跟随器具有明显的电流放大作用。"
+              ],
+              formula: String.raw`\dot A_i=-(1+\beta),
+\qquad
+\dot A_u=\frac{(1+\beta)R_e'}{r_{be}+(1+\beta)R_e'}\approx1,
+\qquad R_e'=R_e\parallel R_L`
+            },
+            {
+              id: "cc-resistance",
+              type: "formula",
+              title: "共集电极电路的输入、输出电阻",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-collector-input-resistance.jpg",
+                  title: "共集电极电路的输入电阻",
+                  caption: "$R_e'$ 通过 $(1+\\beta)$ 倍折算到基极，因此输入电阻很大。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-collector-output-resistance.jpg",
+                  title: "共集电极电路的输出电阻",
+                  caption: "从发射极看入时，基极回路电阻被 $(1+\\beta)$ 除小，因此输出电阻很小。"
+                }
+              ],
+              formula: String.raw`R_i=R_b\parallel\left[r_{be}+(1+\beta)(R_e\parallel R_L)\right],
+\qquad
+R_o=R_e\parallel\frac{r_{be}+(R_s\parallel R_b)}{1+\beta}`
+            },
+            {
               id: "cb-config",
               type: "property",
               title: "共基极组态",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-circuit.jpg",
+                  title: "共基极原理电路与实际电路",
+                  caption: "发射极输入、集电极输出、基极交流接地。"
+                }
+              ],
               body: [
                 "发射极输入、集电极输出、基极交流接地。",
                 "没有电流放大作用，但有电压放大作用，输出与输入同相，输入电阻小、输出电阻大。"
@@ -787,6 +1027,90 @@ R_o\approx R_e\parallel\frac{r_{be}+(R_s\parallel R_b)}{1+\beta}`
 R_i\approx R_e\parallel\frac{r_{be}}{1+\beta},
 \qquad
 R_o\approx R_c`
+            },
+            {
+              id: "cb-qpoint",
+              type: "formula",
+              title: "共基极电路的静态工作点",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-qpoint.jpg",
+                  title: "共基极实际电路与直流通路",
+                  caption: "基极由 $R_{b1}$、$R_{b2}$ 分压固定，发射极电流主要由 $R_e$ 决定。"
+                }
+              ],
+              body: [
+                "用分压近似得到基极直流电位，再减去发射结压降得到 $R_e$ 两端电压。",
+                "集电极电位由 $R_c$ 上的压降决定；$I_{BQ}$ 再由 $I_{EQ}/(1+\\beta)$ 得到。"
+              ],
+              formula: String.raw`I_{EQ}\approx\frac{U_{BQ}-U_{BEQ}}{R_e},
+\qquad I_{BQ}=\frac{I_{EQ}}{1+\beta},
+\qquad U_{CEQ}\approx V_{CC}-I_{CQ}R_c-I_{EQ}R_e`
+            },
+            {
+              id: "cb-dynamic",
+              type: "judgment",
+              title: "共基极电路的交流通路",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-dynamic.jpg",
+                  title: "共基极电路动态分析",
+                  caption: "交流通路与微变等效电路中，基极是输入输出的公共端。"
+                }
+              ],
+              body: [
+                "从发射极输入、从集电极输出。输入电流 $I_i=-I_e$，输出电流 $I_o=I_c$。",
+                "输出电压与输入电压同相，这一点与共射组态相反。"
+              ]
+            },
+            {
+              id: "cb-current-gain",
+              type: "formula",
+              title: "共基极电流放大倍数",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-current-gain.jpg",
+                  title: "共基极电流放大倍数",
+                  caption: "$A_i=I_o/I_i=I_c/(-I_e)=-\\alpha$，幅值略小于 1。"
+                }
+              ],
+              formula: String.raw`\dot A_i=-\alpha,
+\qquad \alpha=\frac{\beta}{1+\beta}<1`
+            },
+            {
+              id: "cb-voltage-gain",
+              type: "formula",
+              title: "共基极电压放大倍数",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-voltage-gain.jpg",
+                  title: "共基极电压放大倍数",
+                  caption: "电压增益为正，说明输入与输出同相。"
+                }
+              ],
+              formula: String.raw`\dot A_u=\frac{\dot U_o}{\dot U_i}
+\approx+\frac{\beta R_L'}{r_{be}},
+\qquad R_L'=R_c\parallel R_L`
+            },
+            {
+              id: "cb-resistance",
+              type: "formula",
+              title: "共基极输入、输出电阻",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-input-resistance.jpg",
+                  title: "共基极输入电阻",
+                  caption: "$r_{be}$ 从发射极看入时被 $(1+\\beta)$ 除小，因此输入电阻很低。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/common-base-output-resistance.jpg",
+                  title: "共基极输出电阻",
+                  caption: "考虑集电极负载时 $R_o=R_c\\parallel r_{cb}\\approx R_c$，输出电阻较大。"
+                }
+              ],
+              formula: String.raw`R_i=R_e\parallel\frac{r_{be}}{1+\beta},
+\qquad
+R_o=R_c\parallel r_{cb}\approx R_c`
             },
             {
               id: "config-compare",
@@ -806,9 +1130,24 @@ R_o\approx R_c`
           summary: "多级电路提高总增益，但级间耦合会影响静态工作点、低频响应和零点漂移。",
           figures: [
             {
-              src: "./assets/figures/multistage-amplifier.webp",
-              title: "多级放大与差分电路",
-              caption: "照片笔记：阻容耦合、直接耦合、零点漂移与差分放大"
+              src: "./assets/source/amplifier-fundamentals/rc-coupled-multistage.jpg",
+              title: "阻容耦合多级放大电路",
+              caption: "第 2 章图 2.8.1：两级共射电路通过耦合电容连接"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/direct-coupled-multistage.jpg",
+              title: "直接耦合多级放大电路",
+              caption: "第 2 章图 2.8.2：能放大直流和缓变信号，但存在 Q 点牵连与零漂"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/direct-coupling-level-shift.jpg",
+              title: "直接耦合的电平移动措施",
+              caption: "第 2 章：发射极电阻、稳压管和二极管等方式调整后级静态电位"
+            },
+            {
+              src: "./assets/source/amplifier-fundamentals/zero-drift-compensation.jpg",
+              title: "零点漂移的抑制",
+              caption: "第 2 章图 2.8.6：直流负反馈、热敏元件补偿和差分放大"
             }
           ],
           cards: [
@@ -816,6 +1155,13 @@ R_o\approx R_c`
               id: "coupling-types",
               type: "definition",
               title: "三种级间耦合方式",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/rc-coupled-multistage.jpg",
+                  title: "阻容耦合多级放大器",
+                  caption: "级间电容隔断直流，因此各级 Q 点相互独立。"
+                }
+              ],
               body: [
                 "阻容耦合隔离各级直流工作点，但不能放大直流和极低频信号。",
                 "直接耦合能放大直流和变化缓慢的信号，便于集成，但存在级间静态工作点牵连与零点漂移。",
@@ -826,13 +1172,31 @@ R_o\approx R_c`
               id: "multistage-gain",
               type: "formula",
               title: "多级电压放大倍数",
-              figures: [{ src: "./assets/figures/multistage-amplifier.webp", title: "多级放大电路", caption: "级间连接与逐级加载关系。" }],
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/rc-coupled-multistage.jpg",
+                  title: "两级阻容耦合放大电路",
+                  caption: "后一级输入电阻作为前一级负载，增益需逐级计算。"
+                }
+              ],
               formula: String.raw`\dot A_u=\dot A_{u1}\dot A_{u2}\cdots\dot A_{un}`
             },
             {
               id: "direct-coupling",
               type: "warning",
               title: "直接耦合的静态工作点问题",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/direct-coupled-multistage.jpg",
+                  title: "两级直接耦合放大电路",
+                  caption: "前级集电极直接连接后级基极，静态电位和温度漂移会逐级传递。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/direct-coupling-level-shift.jpg",
+                  title: "直接耦合的电平移动措施",
+                  caption: "通过发射极电阻、稳压管或二极管调整后级基极电位。"
+                }
+              ],
               body: [
                 "前一级集电极电位会影响下一级基极电位，级数越多，电位配置越困难。",
                 "可用发射极电阻、稳压管或二极管等电平移动措施，但要权衡增益损失、动态范围和噪声。"
@@ -842,9 +1206,39 @@ R_o\approx R_c`
               id: "zero-drift",
               type: "warning",
               title: "零点漂移",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/zero-drift-compensation.jpg",
+                  title: "热敏元件补偿零漂",
+                  caption: "利用温度敏感元件反向补偿晶体管参数随温度的变化。"
+                }
+              ],
               body: [
                 "输入为零时，直接耦合放大电路的输出仍可能随时间缓慢变化。温度变化引起的漂移称为温漂。",
                 "可通过直流负反馈、热敏元件补偿或差分放大电路抑制。"
+              ]
+            },
+            {
+              id: "direct-coupling-design",
+              type: "judgment",
+              title: "直接耦合的电平配置",
+              figures: [
+                {
+                  src: "./assets/source/amplifier-fundamentals/direct-coupling-level-shift.jpg",
+                  title: "直接耦合的几种电平移动电路",
+                  caption: "比较发射极电阻、稳压管和二极管方案对静态电位、增益和动态范围的影响。"
+                },
+                {
+                  src: "./assets/source/amplifier-fundamentals/direct-coupling-fixes.jpg",
+                  title: "直接耦合实例与改进电路",
+                  caption: "用稳压管或发射极电阻降低后级集电极静态电位，同时尽量保留增益。"
+                }
+              ],
+              bullets: [
+                "直接级联时，前级集电极电压成为后级基极输入偏置。",
+                "$R_{e2}$ 可保证后级有合适工作点，但会降低后级增益。",
+                "稳压管方案动态电阻较小、增益损失较小，但会增加噪声并缩小输出动态范围。",
+                "实际电路要综合静态电位、增益、动态范围、噪声与集成难度选择电平移动方式。"
               ]
             },
             {
