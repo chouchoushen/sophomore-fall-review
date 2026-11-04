@@ -7,7 +7,7 @@
   <title>数学物理方法 · 复变与方程</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="./css/styles.css?v=20261103-weekly">
+  <link rel="stylesheet" href="./css/styles.css?v=20261104-examples">
 </head>
 <body>
   <a class="skip-link" href="#courseContent">跳到知识内容</a>
@@ -23,14 +23,13 @@
         <div class="hero__stats" aria-label="站点统计">
           <span><strong>4</strong> 个章节</span>
           <span><strong id="totalKnowledge">0</strong> 个知识点</span>
-          <span><strong id="totalFigures">0</strong> 张资料图</span>
-          <span><strong>8</strong> 份原始笔记</span>
+          <span><strong id="totalFigures">0</strong> 张例题与图示</span>
           <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
         </div>
         <div class="hero__actions" aria-label="快速入口">
           <a class="hero__action hero__action--primary" href="#assessment">开始通关自测</a>
           <a class="hero__action" href="#formulaSheet">打开公式速查</a>
-          <a class="hero__action" href="#sources">查看原始笔记</a>
+          <a class="hero__action" href="#chapterRoot">浏览例题与图示</a>
         </div>
       </div>
 
@@ -360,50 +359,6 @@
 
       <div id="chapterRoot" class="chapters"></div>
 
-      <section class="source-library" id="sources" aria-labelledby="sourcesTitle">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">SOURCE LIBRARY</p>
-            <h2 id="sourcesTitle">原始笔记与课堂图片</h2>
-          </div>
-          <p>网站内容以这八份材料为边界；点击图片可放大对照原笔记。</p>
-        </div>
-        <div class="figure-gallery source-gallery">
-          <button class="figure-card" type="button" data-figure-src="./assets/source/residue-theory-notes.jpg" data-figure-title="留数理论笔记" data-figure-caption="留数定义、定理、无穷远点与实积分">
-            <span class="figure-card__media"><img src="./assets/source/residue-theory-notes.jpg" alt="留数理论笔记" loading="lazy"></span>
-            <span class="figure-card__text"><strong>留数理论笔记</strong><small>定义、计算方法与实积分</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/residue-examples.jpg" data-figure-title="留数计算例题" data-figure-caption="课堂例题：高阶极点和闭合积分">
-            <span class="figure-card__media"><img src="./assets/source/residue-examples.jpg" alt="留数计算例题" loading="lazy"></span>
-            <span class="figure-card__text"><strong>留数计算例题</strong><small>三阶极点、二阶极点和围道积分</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/complex-analysis-outline.jpg" data-figure-title="复变函数论提纲" data-figure-caption="级数、泰勒展开、洛朗展开与孤立奇点">
-            <span class="figure-card__media"><img src="./assets/source/complex-analysis-outline.jpg" alt="复变函数论提纲" loading="lazy"></span>
-            <span class="figure-card__text"><strong>复变函数论提纲</strong><small>级数、展开和奇点分类</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/isolated-singularities-slide.jpg" data-figure-title="孤立奇点定义与分类" data-figure-caption="课堂幻灯片：可去奇点、m 阶极点和本性奇点">
-            <span class="figure-card__media"><img src="./assets/source/isolated-singularities-slide.jpg" alt="孤立奇点定义与分类" loading="lazy"></span>
-            <span class="figure-card__text"><strong>孤立奇点分类</strong><small>洛朗级数主要部分</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/complex-analysis-notes.jpg" data-figure-title="复变函数基础笔记" data-figure-caption="复数、极限、连续性、导数、解析函数和初等函数">
-            <span class="figure-card__media"><img src="./assets/source/complex-analysis-notes.jpg" alt="复变函数基础笔记" loading="lazy"></span>
-            <span class="figure-card__text"><strong>复变函数基础</strong><small>复数、解析函数和初等函数</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/analytic-functions-figures.jpg" data-figure-title="解析函数图示" data-figure-caption="课堂与笔记图片：极限、解析函数、积分与导数桥接">
-            <span class="figure-card__media"><img src="./assets/source/analytic-functions-figures.jpg" alt="解析函数图示" loading="lazy"></span>
-            <span class="figure-card__text"><strong>解析函数图示</strong><small>课堂例题与知识结构图</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/pde-definition-notes.jpg" data-figure-title="定解问题物理内容笔记" data-figure-caption="弦振动、热传导、泊松方程、初始条件与边界条件">
-            <span class="figure-card__media"><img src="./assets/source/pde-definition-notes.jpg" alt="定解问题物理内容笔记" loading="lazy"></span>
-            <span class="figure-card__text"><strong>三类方程与定解条件</strong><small>波动、传热、稳态场与边界类型</small></span>
-          </button>
-          <button class="figure-card" type="button" data-figure-src="./assets/source/pde-examples-figures.jpg" data-figure-title="数学物理方程图示" data-figure-caption="课堂图片：弦振动、热传导、泊松方程和初始条件">
-            <span class="figure-card__media"><img src="./assets/source/pde-examples-figures.jpg" alt="数学物理方程图示" loading="lazy"></span>
-            <span class="figure-card__text"><strong>方程推导与例题图</strong><small>物理模型到数学方程</small></span>
-          </button>
-        </div>
-      </section>
-
       <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
     </main>
   </div>
@@ -421,16 +376,16 @@
 
   <footer class="footer">
     <p>数学物理方法互动复习站 · 复变函数、留数、数学物理方程与定解条件</p>
-    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 原始笔记入口</p>
+    <p>知识卡 · 24 题通关自测 · 公式速查 · 课堂例题与图示</p>
   </footer>
 
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
-  <script defer src="../weekly-quiz.js?v=20261103-weekly"></script>
-  <script defer src="./js/course-data.js?v=20261103-weekly"></script>
-  <script defer src="./js/quiz-data.js?v=20261103-weekly"></script>
-  <script defer src="./js/weekly-variants.js?v=20261103-weekly"></script>
-  <script defer src="./js/app.js?v=20261103-weekly"></script>
-  <script defer src="./js/practice.js?v=20261103-weekly"></script>
+  <script defer src="../weekly-quiz.js?v=20261104-examples"></script>
+  <script defer src="./js/course-data.js?v=20261104-examples"></script>
+  <script defer src="./js/quiz-data.js?v=20261104-examples"></script>
+  <script defer src="./js/weekly-variants.js?v=20261104-examples"></script>
+  <script defer src="./js/app.js?v=20261104-examples"></script>
+  <script defer src="./js/practice.js?v=20261104-examples"></script>
 </body>
 </html>

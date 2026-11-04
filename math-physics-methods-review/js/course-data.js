@@ -70,6 +70,7 @@ z\overline z=|z|^2`
               id: "polar-form",
               type: "formula",
               title: "三角形式与指数形式",
+              figures: [{ src: "./assets/examples/polar-exponential-example.jpg", title: "把复数化为三角形式与指数形式", caption: "课堂例题：先由实部、虚部确定模与辐角，再写出两种表示。" }],
               body: [
                 "$r=|z|$，$\\theta$ 可取任意一个辐角。乘法时模相乘、辐角相加；除法时模相除、辐角相减。"
               ],
@@ -79,6 +80,7 @@ z\overline z=|z|^2`
               id: "euler-formula",
               type: "formula",
               title: "欧拉公式",
+              figures: [{ src: "./assets/examples/complex-division-example.jpg", title: "用指数形式完成复数除法", caption: "把分子、分母化为指数形式后直接相除，并用单位圆核对辐角。" }],
               formula: String.raw`e^{i\theta}=\cos\theta+i\sin\theta,
 \qquad
 \cos\theta=\frac{e^{i\theta}+e^{-i\theta}}2,
@@ -206,6 +208,7 @@ e^{z+2\pi i}=e^z`
               id: "complex-limit",
               type: "formula",
               title: "复变函数的极限",
+              figures: [{ src: "./assets/examples/complex-limit-rules.jpg", title: "复极限的四则运算", caption: "加减、乘、除的极限运算法则与实函数保持一致，但必须先保证各极限存在。" }],
               body: [
                 "若 $z$ 从任意方向趋近 $z_0$ 时，$f(z)$ 都趋近同一个复数 $A$，才记作极限为 $A$。",
                 "复极限存在当且仅当实部、虚部的二元函数极限分别存在。"
@@ -227,6 +230,7 @@ e^{z+2\pi i}=e^z`
               id: "complex-continuity",
               type: "definition",
               title: "连续性",
+              figures: [{ src: "./assets/examples/derivative-continuity-graph.jpg", title: "连续与可导的关系", caption: "曲线连续但可能在尖点处不可导；复可导同样能推出连续，反之不成立。" }],
               body: [
                 "$f(z)$ 在 $z_0$ 连续需要：函数在 $z_0$ 有定义、极限存在且两者相等。",
                 "复变函数可以写成 $f(z)=u(x,y)+iv(x,y)$；连续等价于 $u,v$ 在该点同时连续。"
@@ -237,6 +241,7 @@ e^{z+2\pi i}=e^z`
               id: "limit-path-warning",
               type: "warning",
               title: "路径检验",
+              figures: [{ src: "./assets/examples/complex-limit-path-example.jpg", title: "路径趋近导致极限不存在", caption: "沿实轴、虚轴或不同射线趋近得到不同结果，可据此判断二重极限或复极限不存在。" }],
               body: [
                 "如果沿两条不同路径趋近得到不同极限，就能判定极限不存在。",
                 "只验证一条路径相等不能证明复极限存在；必须证明所有趋近方式。"
@@ -264,6 +269,7 @@ e^{z+2\pi i}=e^z`
               id: "complex-derivative",
               type: "definition",
               title: "复导数",
+              figures: [{ src: "./assets/examples/complex-derivative-z2-example.jpg", title: "用定义求 z² 的导数", caption: "课堂例题：展开差商、约去 Δz，再令 Δz→0。" }],
               body: [
                 "若差商在 $z_0$ 的极限存在，且与 $\\Delta z$ 的趋近方向无关，则复导数存在。",
                 "复可导比实二元函数可微更强，不能只检查偏导是否分别存在。"
@@ -295,6 +301,7 @@ u_y=-v_x`
               id: "analytic-definition",
               type: "definition",
               title: "解析函数",
+              figures: [{ src: "./assets/examples/modulus-square-analyticity-example.jpg", title: "研究 |z|² 的可导性与解析性", caption: "课堂例题展示：函数可在一点可导，却不代表在邻域内解析。" }],
               body: [
                 "若 $f$ 在 $z_0$ 的某邻域内处处可导，则称 $f$ 在 $z_0$ 解析。",
                 "单点复可导不等于在该点解析；解析是邻域性质。整个平面处处解析的函数称为整函数。"
@@ -313,6 +320,10 @@ u_y=-v_x`
               id: "harmonic-function",
               type: "formula",
               title: "解析函数的实部与虚部",
+              figures: [
+                { src: "./assets/examples/orthogonal-level-curves.jpg", title: "两组正交的等值曲线", caption: "解析函数的实部与虚部的等值线正交，对应两组相互垂直的曲线族。" },
+                { src: "./assets/examples/electrostatic-potential-example.jpg", title: "用解析函数描述无源平面静电场", caption: "实部或虚部可解释为静电势，另一组的等值线对应电场线。" }
+              ],
               body: [
                 "解析函数的实部和虚部都是调和函数，并互为共轭调和函数。",
                 "反过来，在单连通区域内，若 $u$ 调和，可求虚部 $v$ 使 $u+iv$ 解析。"
@@ -325,6 +336,7 @@ u_y=-v_x`
               id: "harmonic-conjugate",
               type: "formula",
               title: "由实部求共轭虚部",
+              figures: [{ src: "./assets/examples/harmonic-conjugate-path-example.jpg", title: "曲线积分法求共轭虚部", caption: "利用全微分与路径无关性，选择折线路径从已知点积分到目标点。" }],
               body: [
                 "先由 $v_y=u_x$ 对 $y$ 积分，再利用 $v_x=-u_y$ 确定关于 $x$ 的待定函数。"
               ],
@@ -346,13 +358,6 @@ u_y=-v_x`
           id: "complex-integrals",
           title: "复积分、柯西定理与积分公式",
           summary: "解析函数沿闭合路径的积分为零；积分公式把函数值变成边界积分。",
-          figures: [
-            {
-              src: "./assets/source/analytic-functions-figures.jpg",
-              title: "解析函数与复积分图示",
-              caption: "课堂与笔记图片：复数运算、极限、解析函数和积分桥接图"
-            }
-          ],
           cards: [
             {
               id: "complex-contour-integral",
@@ -370,6 +375,7 @@ u_y=-v_x`
               id: "integral-properties",
               type: "property",
               title: "复积分的基本性质",
+              figures: [{ src: "./assets/examples/complex-integral-properties.jpg", title: "复积分的线性、方向和估值性质", caption: "课堂图示强调分段积分、路径反向变号，以及用模长上界估计积分。" }],
               bullets: [
                 "线性性：$\\int_\\gamma(\\alpha f+\\beta g)\\,\\mathrm dz=\\alpha\\int_\\gamma f\\,\\mathrm dz+\\beta\\int_\\gamma g\\,\\mathrm dz$。",
                 "换向会改变符号：$\\int_{-\\gamma}f\\,\\mathrm dz=-\\int_\\gamma f\\,\\mathrm dz$。",
@@ -438,13 +444,6 @@ u_y=-v_x`
           id: "series-laurent",
           title: "复数项级数、泰勒级数与洛朗级数",
           summary: "圆盘内用泰勒级数，去心圆环内用洛朗级数；负次幂是判断奇点的关键。",
-          figures: [
-            {
-              src: "./assets/source/complex-analysis-outline.jpg",
-              title: "复变函数论提纲",
-              caption: "笔记：级数、泰勒展开、洛朗展开、孤立奇点与留数"
-            }
-          ],
           cards: [
             {
               id: "complex-series",
@@ -523,7 +522,6 @@ a_n=\frac{f^{(n)}(z_0)}{n!}`
               id: "laurent-series",
               type: "formula",
               title: "洛朗级数",
-              figures: [{ src: "./assets/source/complex-analysis-outline.jpg", title: "洛朗展开结构", caption: "主要部分、解析部分与奇点分类。" }],
               body: [
                 "在圆环 $R_1<|z-z_0|<R_2$ 内解析的函数可展开为含正、负次幂的洛朗级数。",
                 "负次幂部分称为主要部分，正次幂部分称为解析部分；系数由沿环形区域内闭合路径的积分给出。"
@@ -568,18 +566,12 @@ a_n=\frac1{2\pi i}
           id: "singularity-types",
           title: "孤立奇点与分类",
           summary: "奇点类型由去心邻域内洛朗级数的主要部分决定。",
-          figures: [
-            {
-              src: "./assets/source/isolated-singularities-slide.jpg",
-              title: "孤立奇点定义与分类",
-              caption: "课堂幻灯片：可去奇点、m 阶极点、本性奇点和洛朗级数主要部分"
-            }
-          ],
           cards: [
             {
               id: "isolated-singularity",
               type: "definition",
               title: "孤立奇点",
+              figures: [{ src: "./assets/examples/singularity-classification.jpg", title: "三类孤立奇点的洛朗级数判据", caption: "可去奇点、m 阶极点与本性奇点的主部分分别不含负幂、含有限个负幂或含无穷多个负幂项。" }],
               body: [
                 "若 $f(z)$ 在 $z_0$ 的某个去心邻域内解析，但在 $z_0$ 本身不解析，则 $z_0$ 是孤立奇点。",
                 "若奇点周围任意小邻域内都有其他奇点，就不是孤立奇点，不能直接套用留数公式。"
@@ -601,7 +593,6 @@ a_n=\frac1{2\pi i}
               id: "pole",
               type: "property",
               title: "极点",
-              figures: [{ src: "./assets/source/isolated-singularities-slide.jpg", title: "极点与主要部分", caption: "洛朗级数负次幂项与极点阶数。" }],
               body: [
                 "洛朗展开的主要部分只有有限多个负次幂项，最高负幂为 $z-z_0$ 的 $m$ 次，则称为 $m$ 阶极点。",
                 "$m$ 阶极点在局部展开中的最负项为 $a_{-m}(z-z_0)^{-m}$，并且 $z\\to z_0$ 时 $|f(z)|\\to\\infty$。"
@@ -658,13 +649,6 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
           id: "residue-calculations",
           title: "留数的定义与计算",
           summary: "留数就是局部洛朗展开中 $1/(z-z_0)$ 的系数；计算题优先判断极点阶数。",
-          figures: [
-            {
-              src: "./assets/source/residue-theory-notes.jpg",
-              title: "留数理论笔记",
-              caption: "笔记：留数定义、留数定理、无穷远点留数与实积分"
-            }
-          ],
           cards: [
             {
               id: "residue-definition",
@@ -680,7 +664,6 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "simple-pole",
               type: "formula",
               title: "简单极点留数",
-              figures: [{ src: "./assets/source/residue-theory-notes.jpg", title: "简单极点留数公式", caption: "留数定义和极限计算法。" }],
               body: [
                 "若 $z_0$ 是一阶极点，则可直接用根式乘回主部取极限。",
                 "若 $f=P/Q$，且 $Q(z_0)=0$、$Q'(z_0)\\ne0$，常用 $P(z_0)/Q'(z_0)$。"
@@ -707,7 +690,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "higher-residue-example",
               type: "example",
               title: "例题：三阶极点与二阶极点",
-              figures: [{ src: "./assets/source/residue-examples.jpg", title: "高阶极点留数例题", caption: "cos z/z³ 与 sin z/z³ 的局部展开。" }],
+              figures: [{ src: "./assets/examples/higher-pole-residue-examples.jpg", title: "高阶极点留数课堂例题", caption: "分别对三阶极点和二阶极点套用高阶极点留数公式，并核对结果。" }],
               body: [
                 "分别计算 $f_1(z)=\\dfrac{\\cos z}{4z^3}$ 与 $f_2(z)=\\dfrac{\\sin z}{4z^3}$ 在 $z=0$ 的留数。",
                 "先看分子在 $z=0$ 的行为：$\\cos z$ 不取零，$\\sin z$ 有一阶零点。"
@@ -772,19 +755,11 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
           id: "real-integral-applications",
           title: "用留数计算实积分",
           summary: "把实轴上的积分补成上半平面的大闭合路径，再只收集上半平面的留数。",
-          figures: [
-            {
-              src: "./assets/source/residue-examples.jpg",
-              title: "留数定理计算例题",
-              caption: "课堂例题：复合极点留数与闭合积分"
-            }
-          ],
           cards: [
             {
               id: "real-line-integral",
               type: "formula",
               title: "实轴上的有理积分",
-              figures: [{ src: "./assets/source/residue-theory-notes.jpg", title: "实积分留数法", caption: "上半平面闭合路径与留数和。" }],
               body: [
                 "若 $f(x)$ 在实轴无奇点，在上半平面只有有限个孤立奇点，并且在大半圆上满足使弧积分趋于零的条件，则实轴积分等于上半平面留数和的 $2\\pi i$ 倍。",
                 "常见条件是 $|z f(z)|\\to0$ 一致；具体题目要先说明补成大回路的弧积分消失。"
@@ -806,7 +781,7 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "residue-circle-example",
               type: "example",
               title: "例题：圆内留数积分",
-              figures: [{ src: "./assets/source/residue-examples.jpg", title: "圆内闭合积分例题", caption: "|z|=2 内两个极点的留数计算。" }],
+              figures: [{ src: "./assets/examples/residue-circle-example.jpg", title: "闭合路径内两个奇点的留数积分", caption: "课堂真题：分别判断一阶极点和二阶极点，再用留数定理求积分。" }],
               body: [
                 "计算 $I=\\displaystyle\\oint_{|z|=2}\\frac{e^z}{z(z-1)^2}\\,\\mathrm dz$。",
                 "$z=0$ 是简单极点，$z=1$ 是二阶极点，二者都在 $|z|=2$ 内。"
@@ -876,18 +851,6 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
           id: "pde-models",
           title: "三类典型数学物理方程",
           summary: "同一个未知函数 u 可以表示位移、温度或电势；偏微分方程描述它在空间和时间中怎样变化。",
-          figures: [
-            {
-              src: "./assets/source/pde-definition-notes.jpg",
-              title: "定解问题物理内容笔记",
-              caption: "笔记：弦振动、热传导、泊松方程以及初始条件和边界条件"
-            },
-            {
-              src: "./assets/source/pde-examples-figures.jpg",
-              title: "三类方程与初始条件图示",
-              caption: "课堂图片：弦振动、热传导、泊松方程和初始条件例题"
-            }
-          ],
           cards: [
             {
               id: "pde-definition",
@@ -903,7 +866,10 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
               id: "wave-equation-model",
               type: "formula",
               title: "弦振动方程：描述传播与振荡",
-              figures: [{ src: "./assets/source/pde-definition-notes.jpg", title: "弦振动方程", caption: "张力、线密度、微小横振动与波速。" }],
+              figures: [
+                { src: "./assets/examples/string-oscillation-model.jpg", title: "弦段受力与横振动模型", caption: "取任意小段弦，分别考虑张力在水平、竖直方向的分量与外力。" },
+                { src: "./assets/examples/string-equation-derivation.jpg", title: "从牛顿运动定律建立弦振动方程", caption: "由小段弦的竖直方向合力与加速度关系整理得到波动方程。" }
+              ],
               body: [
                 "细长柔软弦作小幅横振动时，可以只研究横向位移 $u(x,t)$。对小振幅、小斜率且张力近似恒定，得到一维波动方程。",
                 "$a$ 是波速：$a^2=T/\\rho$；$T$ 为张力，$\\rho$ 为线密度。$f$ 表示单位质量所受外力折算后的强迫项。",
@@ -929,7 +895,10 @@ f=\frac{F}{\rho}`
               id: "heat-equation-model",
               type: "formula",
               title: "热传导方程：描述扩散与趋于均匀",
-              figures: [{ src: "./assets/source/pde-definition-notes.jpg", title: "热传导方程", caption: "温度梯度、热流与热源项。" }],
+              figures: [
+                { src: "./assets/examples/heat-flow-balance.jpg", title: "小段细杆的热量守恒", caption: "流入热量、流出热量、热源产热与内能增量共同决定温度变化。" },
+                { src: "./assets/examples/heat-equation-derivation.jpg", title: "热传导方程的化简结果", caption: "由热量守恒与傅里叶定律整理得到一维热传导方程。" }
+              ],
               body: [
                 "均匀细杆侧面绝热、温度只沿长度方向变化时，温度 $u(x,t)$ 由热传导方程描述。",
                 "热量总是从高温区流向低温区，因此温度曲线的凹性决定该点温度升高还是降低；这体现扩散、平滑效应。",
@@ -951,7 +920,7 @@ f=\frac{F}{\rho c_p}`
               id: "poisson-equation",
               type: "formula",
               title: "泊松方程：描述稳态场",
-              figures: [{ src: "./assets/source/pde-examples-figures.jpg", title: "泊松方程推导", caption: "闭合曲面积分与电荷密度。" }],
+              figures: [{ src: "./assets/examples/poisson-gauss-law.jpg", title: "从高斯定理建立泊松方程", caption: "对闭合曲面的电通量与内部电荷量使用高斯定理，再整理为电势满足的方程。" }],
               body: [
                 "在介电常数为 $\\varepsilon$ 的空间中，由电荷体密度 $\\rho_e$ 产生静电场，电势 $V$ 满足泊松方程。",
                 "该方程没有时间导数，描述的是已经稳定的电势分布，而不是随时间演化的过程。",
@@ -1001,6 +970,7 @@ f=\frac{F}{\rho c_p}`
               id: "initial-condition-count",
               type: "judgment",
               title: "初始条件要写几个",
+              figures: [{ src: "./assets/examples/initial-condition-count.jpg", title: "按时间导数阶数配置初始条件", caption: "波动方程需要初始位移和初始速度，热传导方程只需初始温度，稳态方程不需要时间初值。" }],
               body: [
                 "如果方程对时间 $t$ 的最高阶导数是 $n$，就需要 $n$ 个独立的初始条件。",
                 "二阶时间导数需要初始函数值和初始一阶时间导数；一阶时间导数只需要初始函数值。",
@@ -1011,6 +981,7 @@ f=\frac{F}{\rho c_p}`
               id: "wave-initial",
               type: "formula",
               title: "波动方程：需要形状和速度",
+              figures: [{ src: "./assets/examples/string-initial-shape.jpg", title: "弦的初始形状例题", caption: "分段给出初始位移后，还要结合端点约束与初始速度共同构成波动方程的初始条件。" }],
               body: [
                 "$u(x,0)$ 给出弦一开始的形状；$u_t(x,0)$ 给出每一点一开始的竖直速度。",
                 "只给初始形状不够，因为相同的弯形可能正在向上、向下或静止运动。"
@@ -1115,7 +1086,6 @@ u(l,t)=\mu_2(t)`
               id: "wave-well-posed-example",
               type: "example",
               title: "完整例子：两端固定的弦",
-              figures: [{ src: "./assets/source/pde-examples-figures.jpg", title: "弦振动初始条件", caption: "初始形状、初始速度与固定端条件。" }],
               body: [
                 "长度 $l$ 的弦两端固定，给初始形状和初始速度，求 $u(x,t)$。",
                 "这里 PDE 描述弦内部振动，两个空间端点的边界条件描述固定端，两个初始条件描述 $t=0$ 的状态。"
@@ -1139,7 +1109,6 @@ u(x,0)=\varphi(x),\quad u_t(x,0)=\psi(x), & 0\le x\le l.
               id: "heat-well-posed-example",
               type: "example",
               title: "完整例子：两端温度固定的细杆",
-              figures: [{ src: "./assets/source/pde-examples-figures.jpg", title: "热传导初始条件", caption: "初始温度分布与端点温度。" }],
               body: [
                 "细杆 $0<x<l$，两端温度分别维持在 $T_1,T_2$，初始温度为 $\\varphi(x)$。"
               ],
