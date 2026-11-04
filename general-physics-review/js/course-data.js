@@ -1,7 +1,7 @@
 window.ANALOG_COURSE = {
   title: "普通物理学",
   subtitle: "静电场 · 导体与电介质 · 电容与电场能量",
-  updatedAt: "2026-11-01",
+  updatedAt: "2026-11-04",
   chapters: [
     {
       id: "field",
@@ -16,13 +16,6 @@ window.ANALOG_COURSE = {
           id: "charge-coulomb",
           title: "电荷、库仑定律与电场",
           summary: "先明确电荷和参考方向，再由单位检验电荷定义电场。",
-          figures: [
-            {
-              src: "./assets/source/electrostatics-outline.jpg",
-              title: "静电场知识提纲",
-              caption: "小米笔记：从 9-1 库仑定律到 9-7 等势面的完整提纲"
-            }
-          ],
           cards: [
             {
               id: "charge-basics",
@@ -61,7 +54,6 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "electric-field-definition",
               type: "definition",
               title: "电场强度",
-              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "电场与电势图示", caption: "点电荷、带电直线和球面的电场图像。" }],
               body: [
                 "电场是电荷周围空间中的特殊物质，对场中电荷施力。",
                 "电场强度定义为单位正检验电荷所受的力，方向与该正电荷所受电场力方向相同。",
@@ -109,13 +101,6 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
           id: "flux-gauss",
           title: "电通量与高斯定理",
           summary: "把“穿过曲面的电场线数量”写成通量，再根据对称性选高斯面。",
-          figures: [
-            {
-              src: "./assets/source/classroom-figures.jpg",
-              title: "课堂电磁学图示索引",
-              caption: "课堂照片索引：有限带电直线、高斯面、球面/平面与电势计算"
-            }
-          ],
           cards: [
             {
               id: "electric-flux",
@@ -162,6 +147,13 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "gauss-choice",
               type: "judgment",
               title: "怎样选择高斯面",
+              figures: [
+                {
+                  src: "./assets/examples/gauss-application-steps.jpg",
+                  title: "高斯定理应用步骤",
+                  caption: "先分析对称性，再选合适的高斯面，最后用高斯定理计算。"
+                }
+              ],
               bullets: [
                 "球对称：选同心球面，$\\vec E$ 沿径向且面上大小相等。",
                 "轴对称：选同轴圆柱面，只计算侧面通量。",
@@ -202,7 +194,13 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "spherical-shell-field",
               type: "judgment",
               title: "均匀带电球面",
-              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "带电球面场强", caption: "球内外电场结论与高斯面对应。" }],
+              figures: [
+                {
+                  src: "./assets/examples/charged-shell-field.jpg",
+                  title: "例题：均匀带电球面的场强",
+                  caption: "用同心球面高斯面分别讨论球内与球外，并对照 E-r 曲线。"
+                }
+              ],
               body: [
                 "球面内部各点场强为零，外部等效于电荷全部集中在球心的点电荷。",
                 "均匀带电实心球内部，由半径 $r$ 外的球壳贡献相抵消，只受半径 $r$ 内电荷影响。"
@@ -228,7 +226,18 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "infinite-line-field",
               type: "formula",
               title: "无限长均匀带电直线",
-              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "无限长直线电场", caption: "同轴圆柱高斯面与径向电场。" }],
+              figures: [
+                {
+                  src: "./assets/examples/infinite-line-gauss-setup.jpg",
+                  title: "例题：无限长均匀带电直线（建立高斯面）",
+                  caption: "由轴对称性选取同轴闭合圆柱面，上、下底面通量为零。"
+                },
+                {
+                  src: "./assets/examples/infinite-line-gauss-result.jpg",
+                  title: "例题：无限长均匀带电直线（完成计算）",
+                  caption: "只保留柱面通量，与圆柱内包围的电荷联立得到场强。"
+                }
+              ],
               body: [
                 "取半径为 $r$、高为 $h$ 的同轴闭合圆柱面；上下底面通量为零，只剩侧面通量。",
                 "电场方向沿垂直直线的径向，大小只与到轴线的距离有关。"
@@ -239,6 +248,13 @@ k=\frac1{4\pi\varepsilon_0}\approx8.99\times10^9\,\mathrm{N\cdot m^2/C^2}`
               id: "finite-line-field",
               type: "formula",
               title: "有限长均匀带电直线",
+              figures: [
+                {
+                  src: "./assets/examples/finite-line-field.jpg",
+                  title: "例题：有限长均匀带电直线的场强",
+                  caption: "取电荷元后分解 dx、dy 分量，利用两端角度的对称关系完成积分。"
+                }
+              ],
               body: [
                 "设场点到直线的垂足为原点，线密度为 $\\lambda$，垂距为 $a$；上、下端相对垂直方向的夹角大小为 $\\beta,\\alpha$。",
                 "垂直于直线分量直接相加，平行分量要看两端夹角差；对称时平行分量相互抵消。"
@@ -251,7 +267,13 @@ E_\parallel=\frac{k\lambda}{a}(\cos\alpha-\cos\beta)`
               id: "infinite-plane-field",
               type: "formula",
               title: "无限大均匀带电平面",
-              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "无限大平面电场", caption: "对称盒形高斯面与两侧场强。" }],
+              figures: [
+                {
+                  src: "./assets/examples/infinite-plane-field.jpg",
+                  title: "例题：无限大均匀带电平面的场强",
+                  caption: "利用平面对称性选取穿板柱面，两底面积各计一次通量。"
+                }
+              ],
               body: [
                 "均匀平面两侧的电场垂直于平面、方向背离正电荷或指向负电荷。",
                 "场强大小与离平面距离无关；这是无限大理想模型的结论。"
@@ -274,6 +296,13 @@ E_{\rm out}=0`
               id: "ring-disc-field",
               type: "formula",
               title: "圆环与圆盘轴线上的电场",
+              figures: [
+                {
+                  src: "./assets/examples/ring-field-from-potential.jpg",
+                  title: "例题：由电势求圆环轴线上的电场",
+                  caption: "先利用已知电势，再通过电势梯度求轴线上的电场分量。"
+                }
+              ],
               formula: String.raw`E_{\rm ring}
 =\frac{kQx}{(x^2+R^2)^{3/2}},
 \qquad
@@ -315,6 +344,18 @@ E_{\rm disk}
               id: "potential-difference",
               type: "formula",
               title: "电势差",
+              figures: [
+                {
+                  src: "./assets/examples/line-potential-reference.jpg",
+                  title: "例题：无限长带电直线取电势零点",
+                  caption: "无限长模型不能取无穷远为零，改选距轴线 rB 的 B 点作为参考点。"
+                },
+                {
+                  src: "./assets/examples/charged-sphere-potential-difference.jpg",
+                  title: "例题：带电球面内外的电势差",
+                  caption: "沿径向积分场强，分别检验球外与球内两点间的电势差。"
+                }
+              ],
               formula: String.raw`U_{AB}=V_A-V_B
 =\int_A^B\vec E\cdot\mathrm d\vec l`
             },
@@ -322,6 +363,13 @@ E_{\rm disk}
               id: "point-potential",
               type: "formula",
               title: "点电荷电势",
+              figures: [
+                {
+                  src: "./assets/examples/charged-ring-potential.jpg",
+                  title: "例题：均匀带电圆环轴线上的电势",
+                  caption: "取电荷元 dq，按标量电势叠加后得到轴线上一点的电势。"
+                }
+              ],
               body: [
                 "取无穷远为电势零点。正电荷周围电势为正，负电荷周围电势为负。",
                 "电势是标量，多个电荷的电势按代数和叠加，不需要矢量分解。"
@@ -354,7 +402,18 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
               id: "charged-sphere-potential",
               type: "formula",
               title: "均匀带电球面的电势",
-              figures: [{ src: "./assets/source/classroom-figures.jpg", title: "带电球面各点电势", caption: "球内等势、球外按 1/r 下降。" }],
+              figures: [
+                {
+                  src: "./assets/examples/charged-sphere-potential-profile.jpg",
+                  title: "例题：均匀带电球面内外的电势分布",
+                  caption: "球内为等势区，球外与点电荷电势相同，并给出 V-r 曲线。"
+                },
+                {
+                  src: "./assets/examples/concentric-shell-potential.jpg",
+                  title: "例题：同心带电球壳的电势",
+                  caption: "分三个径向区域积分，并分别讨论球内、夹层和球外区域。"
+                }
+              ],
               formula: String.raw`V(r)=
 \begin{cases}
 \dfrac{Q}{4\pi\varepsilon_0R}, & r\le R\\[5pt]
@@ -378,13 +437,6 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
           id: "conductor-equilibrium",
           title: "导体的静电平衡",
           summary: "自由电荷移动直到导体内场强为零，此时整个导体成为等势体。",
-          figures: [
-            {
-              src: "./assets/source/electrostatics-notes.jpg",
-              title: "导体与电介质笔记",
-              caption: "笔记：静电平衡、电荷分布、静电屏蔽、介质极化和电容"
-            }
-          ],
           cards: [
             {
               id: "equilibrium-conditions",
@@ -408,7 +460,6 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
               id: "surface-field",
               type: "formula",
               title: "导体表面场强与面电荷密度",
-              figures: [{ src: "./assets/source/electrostatics-notes.jpg", title: "导体表面电荷分布", caption: "表面场强、面电荷密度与静电平衡。" }],
               body: [
                 "在表面取一个很小的扁盒形高斯面，只有外侧通量，得到 $E=\\sigma/\\varepsilon_0$。",
                 "该式中的 $\\sigma$ 是当地局部面电荷密度；曲率较大处电荷更密集、附近场强更强。"
@@ -470,7 +521,6 @@ V=\sum_i\frac1{4\pi\varepsilon_0}\frac{Q_i}{r_i}`
               id: "cavity-induced-charge",
               type: "formula",
               title: "空腔内有电荷时的感应电荷",
-              figures: [{ src: "./assets/source/electrostatics-notes.jpg", title: "空腔导体电荷分布", caption: "内表面与外表面的感应电荷关系。" }],
               body: [
                 "腔内放电荷 $+q$，空腔内表面感应出 $-q$；根据导体总电荷守恒，外表面还会出现相应的 $+q$ 变化。",
                 "若外表面总面积分布复杂，应写“外表面总电荷增加 $q$”，而不是断言每一点都增加同一面密度。"
@@ -537,7 +587,6 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "dielectric-field",
               type: "formula",
               title: "介质中的电场",
-              figures: [{ src: "./assets/source/electrostatics-notes.jpg", title: "电介质极化", caption: "极化电荷产生的附加场削弱原电场。" }],
               body: [
                 "均匀介质完全充满原本真空的场区时，极化电荷产生反向附加场，使合场减弱。",
                 "该简化关系要求介质均匀、线性、各向同性，并且几何填充条件适用。"
@@ -717,19 +766,23 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
           id: "capacitor-geometry",
           title: "三种典型电容器的几何计算",
           summary: "先求电场与电势差，再用 C=Q/U；不同几何只改变场和积分方式。",
-          figures: [
-            {
-              src: "./assets/source/capacitor-examples.jpg",
-              title: "平行板、圆柱形与球形电容器",
-              caption: "教材截图：三种电容器的电场、电势差和电容公式"
-            }
-          ],
           cards: [
             {
               id: "parallel-plate-capacitor",
               type: "formula",
               title: "平行板电容器",
-              figures: [{ src: "./assets/source/capacitor-examples.jpg", title: "平行板电容器", caption: "极板间电场、电势差与电容公式。" }],
+              figures: [
+                {
+                  src: "./assets/examples/parallel-plate-capacitor-setup.jpg",
+                  title: "例题：平行板电容器（建立场强）",
+                  caption: "由有介质高斯定理写出极板间电位移与场强，再积分求电势差。"
+                },
+                {
+                  src: "./assets/examples/parallel-plate-capacitor-result.jpg",
+                  title: "例题：平行板电容器（得到电容）",
+                  caption: "将电势差代入电容定义式，并整理面积、间距与介质的关系。"
+                }
+              ],
               body: [
                 "忽略边缘效应，两板间场强 $E=\\sigma/\\varepsilon$，电势差 $U=Ed$。",
                 "介质必须完全、均匀填充板间场区时，公式才可直接使用。"
@@ -741,7 +794,13 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "cylindrical-capacitor",
               type: "formula",
               title: "圆柱形电容器",
-              figures: [{ src: "./assets/source/capacitor-examples.jpg", title: "圆柱形电容器", caption: "同轴圆柱的电场、电势与电容。" }],
+              figures: [
+                {
+                  src: "./assets/examples/cylindrical-capacitor.jpg",
+                  title: "例题：圆柱形电容器",
+                  caption: "同轴圆柱面之间的径向场积分得到电势差，再求单位长度电容。"
+                }
+              ],
               body: [
                 "同轴圆柱半径分别为 $R_1<R_2$，长度为 $L$，且 $L$ 远大于半径差。",
                 "由圆柱形高斯面得 $E(r)=\\lambda/(2\\pi\\varepsilon r)$，再从 $R_1$ 积分到 $R_2$。"
@@ -753,7 +812,13 @@ Q_{\rm outer}=Q_{\rm conductor}+q`
               id: "spherical-capacitor",
               type: "formula",
               title: "球形电容器",
-              figures: [{ src: "./assets/source/capacitor-examples.jpg", title: "球形电容器", caption: "同心球面的电场、电势与电容。" }],
+              figures: [
+                {
+                  src: "./assets/examples/spherical-capacitor.jpg",
+                  title: "例题：球形电容器",
+                  caption: "同心球壳之间的径向场按 1/r² 变化，积分后得到球形电容。"
+                }
+              ],
               body: [
                 "由内外两个同心导体球面构成，内外半径为 $R_1<R_2$。",
                 "介质填满两球之间的区域时，场强仍按径向 $1/r^2$ 变化。"

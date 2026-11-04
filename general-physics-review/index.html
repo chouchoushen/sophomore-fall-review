@@ -7,7 +7,7 @@
   <title>普通物理学 · 静电场知识主线</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="./css/styles.css?v=20261103-weekly">
+  <link rel="stylesheet" href="./css/styles.css?v=20261104-examples">
 </head>
 <body>
   <a class="skip-link" href="#courseContent">跳到知识内容</a>
@@ -23,14 +23,13 @@
         <div class="hero__stats" aria-label="站点统计">
           <span><strong>3</strong> 个章节</span>
           <span><strong id="totalKnowledge">0</strong> 个知识点</span>
-          <span><strong id="totalFigures">0</strong> 张资料图</span>
-          <span><strong>4</strong> 份原始笔记</span>
+          <span><strong id="totalFigures">0</strong> 张例题图示</span>
           <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
         </div>
         <div class="hero__actions" aria-label="快速入口">
           <a class="hero__action hero__action--primary" href="#assessment">开始通关自测</a>
           <a class="hero__action" href="#formulaSheet">打开公式速查</a>
-          <a class="hero__action" href="#sources">查看原始笔记</a>
+          <a class="hero__action" href="#chapterRoot">浏览图文例题</a>
         </div>
       </div>
 
@@ -352,46 +351,6 @@
 
       <div id="chapterRoot" class="chapters"></div>
 
-      <section class="source-library" id="sources" aria-labelledby="sourcesTitle">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">SOURCE LIBRARY</p>
-            <h2 id="sourcesTitle">原始笔记与课堂图片</h2>
-          </div>
-          <p>网站内容以这四份材料为边界；点击图片可放大对照原笔记。</p>
-        </div>
-        <div class="figure-gallery source-gallery">
-          <button class="figure-card" type="button"
-            data-figure-src="./assets/source/electrostatics-outline.jpg"
-            data-figure-title="静电场知识提纲"
-            data-figure-caption="小米笔记：库仑定律到等势面的完整提纲">
-            <span class="figure-card__media"><img src="./assets/source/electrostatics-outline.jpg" alt="静电场知识提纲" loading="lazy"></span>
-            <span class="figure-card__text"><strong>静电场知识提纲</strong><small>场强、高斯定理、电势与等势面</small></span>
-          </button>
-          <button class="figure-card" type="button"
-            data-figure-src="./assets/source/classroom-figures.jpg"
-            data-figure-title="课堂电磁学图示索引"
-            data-figure-caption="课堂照片：带电直线、球面、无限平面与电势计算">
-            <span class="figure-card__media"><img src="./assets/source/classroom-figures.jpg" alt="课堂电磁学图示索引" loading="lazy"></span>
-            <span class="figure-card__text"><strong>课堂电磁学图示</strong><small>13 个典型场与电势图像</small></span>
-          </button>
-          <button class="figure-card" type="button"
-            data-figure-src="./assets/source/electrostatics-notes.jpg"
-            data-figure-title="导体与电介质笔记"
-            data-figure-caption="笔记：静电平衡、电荷分布、屏蔽、极化和电容器">
-            <span class="figure-card__media"><img src="./assets/source/electrostatics-notes.jpg" alt="导体与电介质笔记" loading="lazy"></span>
-            <span class="figure-card__text"><strong>导体与电介质</strong><small>第 10 章结构化笔记</small></span>
-          </button>
-          <button class="figure-card" type="button"
-            data-figure-src="./assets/source/capacitor-examples.jpg"
-            data-figure-title="三种典型电容器"
-            data-figure-caption="教材截图：平行板、圆柱形、球形电容器的公式与场图">
-            <span class="figure-card__media"><img src="./assets/source/capacitor-examples.jpg" alt="三种典型电容器" loading="lazy"></span>
-            <span class="figure-card__text"><strong>典型电容器</strong><small>平行板、圆柱形、球形</small></span>
-          </button>
-        </div>
-      </section>
-
       <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
     </main>
   </div>
@@ -409,16 +368,16 @@
 
   <footer class="footer">
     <p>普通物理学互动复习站 · 静电场、导体与电介质、电容与电场能量</p>
-    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 原始笔记入口</p>
+    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 图文例题</p>
   </footer>
 
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
   <script defer src="../weekly-quiz.js?v=20261103-weekly"></script>
-  <script defer src="./js/course-data.js?v=20261103-weekly"></script>
+  <script defer src="./js/course-data.js?v=20261104-examples"></script>
   <script defer src="./js/quiz-data.js?v=20261103-weekly"></script>
   <script defer src="./js/weekly-variants.js?v=20261103-weekly"></script>
-  <script defer src="./js/app.js?v=20261103-weekly"></script>
+  <script defer src="./js/app.js?v=20261104-examples"></script>
   <script defer src="./js/practice.js?v=20261103-weekly"></script>
 </body>
 </html>

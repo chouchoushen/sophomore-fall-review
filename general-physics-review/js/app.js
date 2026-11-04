@@ -42,10 +42,9 @@
       theme.cards.map((card) => ({ chapter, theme, card }))
     )
   );
-  const allFigures = COURSE.chapters.flatMap((chapter) =>
-    chapter.themes.flatMap((theme) =>
-      (theme.figures || []).map((figure) => ({ chapter, theme, figure }))
-    )
+  const allFigures = allCards.flatMap(({ chapter, theme, card }) =>
+    (card.figures || (card.figure ? [card.figure] : []))
+      .map((figure) => ({ chapter, theme, card, figure }))
   );
 
   document.getElementById("totalKnowledge").textContent = allCards.length;
@@ -305,7 +304,11 @@
                   data-figure-caption="${escapeAttribute(figure.caption || "")}"
                   aria-label="放大查看：${escapeAttribute(figure.title)}">
                   <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy">
-                  <span>${figure.title}</span>
+                  <span class="linked-figure__caption">
+                    <strong>${figure.title}</strong>
+                    ${figure.caption ? `<small>${figure.caption}</small>` : ""}
+                    <em>点击放大</em>
+                  </span>
                 </button>
               `).join("")}
             </div>
