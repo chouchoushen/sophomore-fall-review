@@ -6,7 +6,7 @@
   <meta name="description" content="大学英语四级每日复习站：200词文章、高频词汇详解、近四年真题主题改编阅读与听力。">
   <title>英语四级 · 每日复习站</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./css/styles.css?v=20261104-reader-progress">
+  <link rel="stylesheet" href="./css/styles.css?v=20261104-word-book">
 </head>
 <body>
   <a class="skip-link" href="#dailyArticle">跳到每日文章</a>
@@ -19,7 +19,7 @@
       </a>
       <div class="nav__links">
         <a href="#dailyArticle">每日文章</a>
-        <a href="#vocabulary">高频词汇</a>
+        <a href="#vocabulary">词汇合订本</a>
         <a href="#examBank">四年题库</a>
       </div>
       <span class="nav__date" id="headerDate"></span>
@@ -98,11 +98,14 @@
     <section class="section vocabulary-section" id="vocabulary">
       <div class="section-head">
         <div>
-          <p class="eyebrow">WORD ATLAS</p>
-          <h2>高频词汇详解</h2>
+          <p class="eyebrow">BOUND WORD ATLAS</p>
+          <h2>四级词汇合订本</h2>
         </div>
-        <p>优先收录四级阅读和听力中常见、但并非基础代词或基础动词的名词、动词、形容词和副词。</p>
+        <p>先按名词、动词、形容词、副词分卷，再按语义主题细分。每张词卡保留它出现过的期号；兼类词会出现在多个词性卷中，合订总数仍按唯一词统计。</p>
       </div>
+
+      <div class="word-book__overview" id="wordBookSummary"></div>
+      <div class="daily-editions" id="dailyEditions"></div>
 
       <div class="word-tools">
         <label class="search">
@@ -119,7 +122,7 @@
         </div>
       </div>
 
-      <div class="word-list" id="wordList"></div>
+      <div class="word-book" id="wordList"></div>
       <p class="empty-state" id="wordEmpty" hidden>没有找到匹配词汇。</p>
     </section>
 
@@ -160,6 +163,6 @@
 
   <script defer src="./js/content-data.js?v=20261103-cet4"></script>
   <script defer src="./js/exam-data.js?v=20261103-cet4"></script>
-  <script defer src="./js/app.js?v=20261104-reader-progress"></script>
+  <script defer src="./js/app.js?v=20261104-word-book"></script>
 </body>
 </html>

@@ -8,10 +8,77 @@
   const WORD_KEY = "cet4-review.mastered.v1";
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
   const mastered = new Set(readJson(WORD_KEY, []));
+  const POS_META = [
+    { id: "n.", label: "名词", volume: "卷一", description: "人物、事物与抽象概念" },
+    { id: "v.", label: "动词", volume: "卷二", description: "行为、判断与变化过程" },
+    { id: "adj.", label: "形容词", volume: "卷三", description: "性质、状态与程度" },
+    { id: "adv.", label: "副词", volume: "卷四", description: "方式、时间与趋势" }
+  ];
+  const TOPIC_ORDER = [
+    "学习与认知",
+    "情绪与态度",
+    "计划与工作",
+    "交流与表达",
+    "变化与调整",
+    "社会与协作",
+    "城市与空间",
+    "环境与资源",
+    "效率与趋势"
+  ];
+  const WORD_TOPICS = {
+    allocate: "计划与工作",
+    anticipate: "情绪与态度",
+    assess: "学习与认知",
+    compensate: "社会与协作",
+    conserve: "环境与资源",
+    crucial: "情绪与态度",
+    decline: "变化与调整",
+    demonstrate: "交流与表达",
+    derive: "学习与认知",
+    diminish: "变化与调整",
+    encounter: "社会与协作",
+    enhance: "变化与调整",
+    evaluate: "学习与认知",
+    facilitate: "计划与工作",
+    generate: "环境与资源",
+    hesitate: "情绪与态度",
+    illustrate: "交流与表达",
+    impose: "社会与协作",
+    indicate: "交流与表达",
+    inevitable: "情绪与态度",
+    interpret: "学习与认知",
+    maintain: "城市与空间",
+    modify: "城市与空间",
+    obtain: "计划与工作",
+    participate: "社会与协作",
+    perceive: "学习与认知",
+    persist: "情绪与态度",
+    preserve: "城市与空间",
+    prohibit: "社会与协作",
+    retain: "学习与认知",
+    reveal: "交流与表达",
+    sustain: "环境与资源",
+    transform: "城市与空间",
+    vary: "变化与调整",
+    efficient: "效率与趋势",
+    essential: "情绪与态度",
+    flexible: "变化与调整",
+    significant: "交流与表达",
+    accessible: "城市与空间",
+    prioritize: "计划与工作",
+    consume: "环境与资源",
+    effective: "效率与趋势",
+    increasingly: "效率与趋势",
+    ultimately: "效率与趋势",
+    effectively: "效率与趋势",
+    readily: "情绪与态度"
+  };
   let articleOffset = 0;
   let activeExamYear = EXAMS[0]?.year || null;
   let wordQuery = "";
   let wordPos = "all";
+  let activeDay = 0;
+  let visibleWordCount = 0;
   let currentArticle = null;
   let articleReader = null;
   let examReaders = [];
@@ -61,6 +128,7 @@
     document.querySelectorAll("#articleBody mark, #articleWords [data-word]").forEach((button) => {
       button.addEventListener("click", () => openWord(button.dataset.word));
     });
+    renderDailyEditions();
   }
 
   function createSpeechReader({ body, toolbar, text, targetWords = [], label }) {
@@ -310,39 +378,174 @@
 
   function renderWordList() {
     const query = wordQuery.trim().toLowerCase();
+    const daysByWord = getWordDays();
     const visible = DATA.vocabulary.filter((item) => {
       const partMatch = wordPos === "all" || item.part.includes(wordPos);
-      const text = `${item.word} ${item.meaning} ${item.synonyms.join(" ")}`.toLowerCase();
-      return partMatch && (!query || text.includes(query));
+      const dayMatch =
+        !activeDay || (daysByWord.get(item.word) || []).includes(activeDay);
+      const text = `${item.word} ${item.meaning} ${item.synonyms.join(" ")} ${WORD_TOPICS[item.word] || ""}`.toLowerCase();
+      return partMatch && dayMatch && (!query || text.includes(query));
     });
+    visibleWordCount = visible.length;
 
-    document.getElementById("wordList").innerHTML = visible
+    renderWordBookSummary(visible.length, daysByWord);
+    const searchExpanded = Boolean(query) || wordPos !== "all" || activeDay > 0;
+    const activeParts =
+      wordPos === "all"
+        ? POS_META
+        : POS_META.filter((part) => part.id === wordPos);
+    const volumes = activeParts.map((part) => {
+      const partWords = visible.filter((item) => item.part.includes(part.id));
+      const topics = TOPIC_ORDER.map((topic) => ({
+        name: topic,
+        words: partWords.filter(
+          (item) => (WORD_TOPICS[item.word] || "交流与表达") === topic
+        )
+      })).filter((topic) => topic.words.length);
+      const fallbackWords = partWords.filter(
+        (item) => !TOPIC_ORDER.includes(WORD_TOPICS[item.word])
+      );
+      if (fallbackWords.length) {
+        topics.push({ name: "综合表达", words: fallbackWords });
+      }
+      return {
+        ...part,
+        words: partWords,
+        topics
+      };
+    }).filter((volume) => volume.words.length);
+
+    document.getElementById("wordList").innerHTML = volumes
       .map(
-        (item) => `
-          <article class="word-card">
-            <div class="word-card__main">
-              <div>
-                <div class="word-card__headline">
-                  <h3>${escapeHtml(item.word)}</h3>
-                  <span class="word-card__ipa">${escapeHtml(item.ipa)}</span>
-                </div>
-                <p class="word-card__meaning">${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</p>
-                <span class="word-card__level">${escapeHtml(item.level)}</span>
-              </div>
-              <button class="master-word${mastered.has(item.word) ? " is-mastered" : ""}" type="button" data-master-word="${escapeAttr(item.word)}">
-                ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
-              </button>
+        (volume) => `
+          <details class="word-volume" ${searchExpanded ? "open" : ""}>
+            <summary>
+              <span class="word-volume__number">${volume.volume}</span>
+              <span class="word-volume__title">
+                <strong>${volume.label}</strong>
+                <small>${volume.description}</small>
+              </span>
+              <span class="word-volume__count">${volume.words.length} 词</span>
+            </summary>
+            <div class="word-volume__body">
+              ${volume.topics.map(
+                (topic) => `
+                  <details class="word-topic" ${searchExpanded ? "open" : ""}>
+                    <summary>
+                      <strong>${topic.name}</strong>
+                      <span>${topic.words.length} 个词</span>
+                    </summary>
+                    <div class="word-topic__grid">
+                      ${topic.words.map((item) => renderWordCard(item, daysByWord)).join("")}
+                    </div>
+                  </details>
+                `
+              ).join("")}
             </div>
-            <div class="word-card__actions">
-              <button type="button" data-open-word="${escapeAttr(item.word)}">全部释义与词形</button>
-              <button type="button" data-speak="${escapeAttr(item.example)}">朗读例句</button>
-            </div>
-          </article>
+          </details>
         `
       )
       .join("");
 
     document.getElementById("wordEmpty").hidden = visible.length > 0;
+  }
+
+  function renderWordCard(item, daysByWord) {
+    const days = daysByWord.get(item.word) || [];
+    const topic = WORD_TOPICS[item.word] || "综合表达";
+    return `
+      <article class="word-card" id="word-${escapeAttr(item.word)}">
+        <div class="word-card__main">
+          <div>
+            <div class="word-card__headline">
+              <h3>${escapeHtml(item.word)}</h3>
+              <span class="word-card__ipa">${escapeHtml(item.ipa)}</span>
+            </div>
+            <p class="word-card__meaning">${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</p>
+            <div class="word-card__context">
+              <span class="word-card__topic">${escapeHtml(topic)}</span>
+              <span class="word-card__days">
+                ${days.length
+                  ? days.map((day) => `<i title="收录于第 ${String(day).padStart(2, "0")} 期">${String(day).padStart(2, "0")}</i>`).join("")
+                  : `<i class="is-pending">待入篇</i>`}
+              </span>
+            </div>
+          </div>
+          <button class="master-word${mastered.has(item.word) ? " is-mastered" : ""}" type="button" data-master-word="${escapeAttr(item.word)}">
+            ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
+          </button>
+        </div>
+        <div class="word-card__actions">
+          <button type="button" data-open-word="${escapeAttr(item.word)}">全部释义与词形</button>
+          <button type="button" data-speak="${escapeAttr(item.example)}">朗读例句</button>
+        </div>
+      </article>
+    `;
+  }
+
+  function getWordDays() {
+    const daysByWord = new Map();
+    DATA.articles.forEach((article, index) => {
+      article.words.forEach((word) => {
+        if (!daysByWord.has(word)) daysByWord.set(word, []);
+        daysByWord.get(word).push(index + 1);
+      });
+    });
+    return daysByWord;
+  }
+
+  function renderWordBookSummary(visibleCount, daysByWord) {
+    const dailyWords = new Set([...daysByWord.keys()]);
+    const masteredDaily = [...dailyWords].filter((word) => mastered.has(word)).length;
+    const selectedEdition = activeDay ? DATA.articles[activeDay - 1] : null;
+    document.getElementById("wordBookSummary").innerHTML = `
+      <div class="word-book__lead">
+        <p class="eyebrow">BOUND VOCABULARY EDITION</p>
+        <strong>${selectedEdition ? `第 ${String(activeDay).padStart(2, "0")} 期 · ${escapeHtml(selectedEdition.topic)}` : "十期文章词汇合订"}</strong>
+        <span>${selectedEdition ? escapeHtml(selectedEdition.title) : "先按词性分卷，再按语义主题收纳；每张词卡都保留它在每日文章中的出处。"}</span>
+      </div>
+      <div class="word-book__stats">
+        <span><strong>${visibleCount}</strong>当前词目</span>
+        <span><strong>${dailyWords.size}</strong>已入篇</span>
+        <span><strong>${masteredDaily}</strong>已掌握</span>
+        <span><strong>${DATA.articles.length}</strong>期合订</span>
+      </div>
+    `;
+  }
+
+  function renderDailyEditions() {
+    const root = document.getElementById("dailyEditions");
+    const daysByWord = getWordDays();
+    const dailyWords = new Set([...daysByWord.keys()]);
+    root.innerHTML = `
+      <div class="daily-editions__head">
+        <div>
+          <p class="eyebrow">DAILY WORD LEDGER</p>
+          <h3>每日词目存档</h3>
+        </div>
+        <span>共 ${dailyWords.size} 个已出现词目</span>
+      </div>
+      <div class="daily-edition-track" role="group" aria-label="按每日文章筛选词汇">
+        <button class="daily-edition${activeDay === 0 ? " is-active" : ""}" type="button"
+          data-word-day="0" aria-pressed="${activeDay === 0}">
+          <span class="daily-edition__index">ALL</span>
+          <strong>全部十期</strong>
+          <small>查看完整合订本</small>
+        </button>
+        ${DATA.articles.map((article, index) => {
+          const day = index + 1;
+          return `
+            <button class="daily-edition${activeDay === day ? " is-active" : ""}${article.id === currentArticle?.id ? " is-current" : ""}"
+              type="button" data-word-day="${day}" aria-pressed="${activeDay === day}">
+              <span class="daily-edition__index">${String(day).padStart(2, "0")}</span>
+              <strong>${escapeHtml(article.topic)}</strong>
+              <small>${escapeHtml(article.title)}</small>
+              <em>${article.words.length} 词</em>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    `;
   }
 
   function openWord(wordKey) {
@@ -397,7 +600,12 @@
     if (mastered.has(word)) mastered.delete(word);
     else mastered.add(word);
     localStorage.setItem(WORD_KEY, JSON.stringify([...mastered]));
-    renderWordList();
+    document.querySelectorAll("[data-master-word]").forEach((button) => {
+      if (button.dataset.masterWord !== word) return;
+      button.classList.toggle("is-mastered", mastered.has(word));
+      button.textContent = mastered.has(word) ? "已掌握" : "标记掌握";
+    });
+    renderWordBookSummary(visibleWordCount, getWordDays());
     if (document.getElementById("wordDrawer").classList.contains("is-open")) {
       openWord(word);
     }
@@ -533,7 +741,15 @@
     });
     document.getElementById("nextArticle").addEventListener("click", () => {
       articleOffset = (articleOffset + 1) % DATA.articles.length;
+      activeDay = 0;
       renderDailyArticle();
+    });
+    document.getElementById("dailyEditions").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-word-day]");
+      if (!button) return;
+      activeDay = Number(button.dataset.wordDay);
+      renderWordList();
+      renderDailyEditions();
     });
     document.getElementById("wordSearch").addEventListener("input", (event) => {
       wordQuery = event.target.value;
