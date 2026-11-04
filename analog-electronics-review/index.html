@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="模拟电子技术互动复习站：半导体器件、放大电路基本原理与频率响应。">
+  <meta name="description" content="模拟电子技术互动复习站：半导体器件、放大电路基本原理、频率响应与功率放大电路。">
   <title>模拟电子技术知识主线</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="./css/styles.css?v=20261103-weekly">
+  <link rel="stylesheet" href="./css/styles.css?v=20261104-power">
 </head>
 <body>
   <a class="skip-link" href="#courseContent">跳到知识内容</a>
@@ -18,10 +18,10 @@
         <p class="eyebrow">ANALOG ELECTRONICS · 2026</p>
         <h1>模拟电子技术<span>知识主线</span></h1>
         <p class="hero__lead">
-          用器件特性理解电路，用等效模型完成计算，再用 Bode 图看清增益随频率的变化。
+          从器件与等效模型走到频率响应，再进入功率放大电路的输出功率、效率和失真分析。
         </p>
         <div class="hero__stats" aria-label="站点统计">
-          <span><strong>3</strong> 个章节</span>
+          <span><strong>4</strong> 个章节</span>
           <span><strong id="totalKnowledge">0</strong> 个知识点</span>
           <span><strong id="totalFigures">0</strong> 张笔记图</span>
           <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
@@ -66,7 +66,7 @@
       <li>
         <span>01</span>
         <strong>判定题型</strong>
-        <p>先看二极管、三极管还是频率响应；明确大信号、小信号与所求端口量。</p>
+        <p>先看二极管、三极管、频率响应还是功放输出级；明确大信号、小信号与所求端口量。</p>
       </li>
       <li>
         <span>02</span>
@@ -75,13 +75,13 @@
       </li>
       <li>
         <span>03</span>
-        <strong>先 Q 点后模型</strong>
-        <p>求出 I<sub>BQ</sub>、I<sub>CQ</sub>、U<sub>CEQ</sub>，确认放大区后再用 r<sub>be</sub> 与受控源。</p>
+        <strong>区分大小信号</strong>
+        <p>小信号先求 Q 点再用 r<sub>be</sub> 与受控源；功放则用负载线、输出摆幅和工作类别分析。</p>
       </li>
       <li>
         <span>04</span>
         <strong>计算并校验</strong>
-        <p>检查反相、数量级、单位、−3 dB 与失真；用自测解析定位错因。</p>
+        <p>检查反相、数量级、单位、−3 dB、交越失真与管耗；用自测解析定位错因。</p>
       </li>
     </ol>
   </section>
@@ -114,9 +114,9 @@
         </div>
 
         <nav class="rail__actions" aria-label="冲刺入口">
-          <a href="#assessment">通关自测 <span>18 题</span></a>
-          <a href="#formulaSheet">公式速查 <span>12 组</span></a>
-          <a href="#examWorkflow">解题流程 <span>4 步</span></a>
+          <a href="#assessment">通关自测 <span>24 题</span></a>
+          <a href="#formulaSheet">公式速查 <span>16 组</span></a>
+          <a href="#examWorkflow">解题流程 <span>5 步</span></a>
         </nav>
       </div>
     </aside>
@@ -124,7 +124,7 @@
     <main id="courseContent" class="main">
       <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
         <div class="assessment__intro">
-          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <p class="eyebrow">CHECKPOINT · 24 QUESTIONS</p>
           <h2 id="assessmentTitle">先做题，再决定回看哪一章</h2>
           <p>
             每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
@@ -146,7 +146,7 @@
           </div>
           <div class="quiz-dashboard" aria-live="polite">
             <div class="quiz-dashboard__status">
-              <strong id="quizProgressText">已答 0 / 18</strong>
+              <strong id="quizProgressText">已答 0 / 24</strong>
               <span id="quizScoreText">答对 0 题</span>
             </div>
             <div class="quiz-dashboard__track" aria-hidden="true">
@@ -263,6 +263,26 @@
                 <td>$\dfrac1{f_H}\approx1.1\sqrt{\sum_i\dfrac1{f_{Hi}^2}}$</td>
                 <td>级数越多，总通频带通常越窄。</td>
               </tr>
+              <tr>
+                <td>甲类功放</td>
+                <td>$P_{omax}=\dfrac{V_{CC}I_{CQ}}4,\quad \eta_{\max}=25\%$</td>
+                <td>静态 Q 点在负载线中点；最大管耗出现在无交流输入时。</td>
+              </tr>
+              <tr>
+                <td>OTL 乙类最大输出</td>
+                <td>$P_{omax}=\dfrac{V_{CC}^2}{8R_L},\quad \eta_{\max}\approx78.5\%$</td>
+                <td>单电源、有输出电容；输出电压幅度约为 $V_{CC}/2$。</td>
+              </tr>
+              <tr>
+                <td>OCL 乙类最大输出</td>
+                <td>$P_{omax}=\dfrac{V_{CC}^2}{2R_L},\quad P_V=\dfrac{2V_{CC}^2}{\pi R_L}$</td>
+                <td>双电源、负载直连；忽略饱和压降时 $U_{om}\approx V_{CC}$。</td>
+              </tr>
+              <tr>
+                <td>复合管</td>
+                <td>$\beta\approx\beta_1\beta_2,\quad r_{be}\approx r_{be1}+(1+\beta_1)r_{be2}$</td>
+                <td>增强电流驱动；复合管类型由第一只晶体管决定。</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -272,7 +292,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">ANSWER PROTOCOL</p>
-            <h2 id="examWorkflowTitle">四类题的落笔顺序</h2>
+            <h2 id="examWorkflowTitle">五类题的落笔顺序</h2>
           </div>
           <p>不确定时先写“判断依据—所用模型—计算结果—合理性检查”，过程本身就能拿分。</p>
         </div>
@@ -317,6 +337,16 @@
               <li>多级时增益乘、分贝加、相位加，通频带变窄。</li>
             </ol>
           </article>
+          <article>
+            <span>05 · 功率放大</span>
+            <h3>先定结构，再算功率</h3>
+            <ol>
+              <li>单电源且有输出电容先判为 OTL，双电源且负载直连先判为 OCL。</li>
+              <li>由输出中点电压确定最大电压摆幅：OTL 约为 $V_{CC}/2$，OCL 约为 $V_{CC}$。</li>
+              <li>依次计算 $P_{omax}$、$P_V$、$\eta$ 和每只管子的 $P_T$，再与 $P_{CM}$ 比较。</li>
+              <li>纯乙类检查交越失真；甲乙类检查静态偏置、热稳定和偏置支路故障。</li>
+            </ol>
+          </article>
         </div>
       </section>
 
@@ -338,16 +368,17 @@
 
   <footer class="footer">
     <p>模拟电子技术互动复习站 · 内容整理自你提供的模电图片与笔记</p>
-    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 进度保存在当前浏览器</p>
+    <p>知识卡 · 24 题通关自测 · 公式速查 · 解题流程 · 进度保存在当前浏览器</p>
   </footer>
 
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
-  <script defer src="../weekly-quiz.js?v=20261103-weekly"></script>
-  <script defer src="./js/course-data.js?v=20261103-weekly"></script>
-  <script defer src="./js/quiz-data.js?v=20261103-weekly"></script>
-  <script defer src="./js/weekly-variants.js?v=20261103-weekly"></script>
-  <script defer src="./js/app.js?v=20261103-weekly"></script>
-  <script defer src="./js/practice.js?v=20261103-weekly"></script>
+  <script defer src="../weekly-quiz.js?v=20261104-power"></script>
+  <script defer src="./js/course-data.js?v=20261104-power"></script>
+  <script defer src="./js/power-amplifier-data.js?v=20261104-power"></script>
+  <script defer src="./js/quiz-data.js?v=20261104-power"></script>
+  <script defer src="./js/weekly-variants.js?v=20261104-power"></script>
+  <script defer src="./js/app.js?v=20261104-power"></script>
+  <script defer src="./js/practice.js?v=20261104-power"></script>
 </body>
 </html>

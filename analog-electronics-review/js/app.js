@@ -5,6 +5,9 @@
   if (!COURSE) {
     throw new Error("Analog electronics course data was not loaded.");
   }
+  if (window.ANALOG_POWER_AMPLIFIER_CHAPTER) {
+    COURSE.chapters.push(window.ANALOG_POWER_AMPLIFIER_CHAPTER);
+  }
 
   const TYPE_META = {
     definition: { label: "概念", filter: "概念与器件" },
@@ -43,9 +46,18 @@
     )
   );
   const allFigures = COURSE.chapters.flatMap((chapter) =>
-    chapter.themes.flatMap((theme) =>
-      (theme.figures || []).map((figure) => ({ chapter, theme, figure }))
-    )
+    chapter.themes.flatMap((theme) => {
+      const cardFigures = theme.cards.flatMap((card) =>
+        (card.figures || (card.figure ? [card.figure] : []))
+      );
+      return [...(theme.figures || []), ...cardFigures].map((figure) => ({
+        chapter,
+        theme,
+        figure
+      }));
+    })
+  ).filter(({ figure }, index, figures) =>
+    figures.findIndex((item) => item.figure.src === figure.src) === index
   );
 
   document.getElementById("totalKnowledge").textContent = allCards.length;

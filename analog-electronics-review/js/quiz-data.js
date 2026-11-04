@@ -1,10 +1,11 @@
 window.ANALOG_QUIZ = {
   title: "模电通关自测",
-  subtitle: "18 道题覆盖三章主线；先独立作答，再用解析定位缺口。",
+  subtitle: "24 道题覆盖四章主线；先独立作答，再用解析定位缺口。",
   chapterLabels: {
     devices: "半导体器件",
     amplifiers: "放大电路基本原理",
-    frequency: "频率响应"
+    frequency: "频率响应",
+    "power-amplifiers": "功率放大电路"
   },
   questions: [
     {
@@ -239,6 +240,71 @@ window.ANALOG_QUIZ = {
       answer: 2,
       explanation:
         "各级幅频和相频影响相叠加，附加极点会让高频增益更早下降。两级相同时，总上限频率约为单级的 0.64 倍，因此总通频带比任一单级都窄。"
+    },
+    {
+      id: "q19",
+      chapter: "power-amplifiers",
+      topic: "甲类功放效率",
+      prompt: "单管甲类共射功率放大电路在理想负载线中点条件下，最大效率约为多少？",
+      options: ["25%", "50%", "78.5%", "100%"],
+      answer: 0,
+      explanation:
+        "理想条件下，最大交流输出功率为 $P_{omax}=V_{CC}I_{CQ}/4$，而电源功率为 $P_V=V_{CC}I_{CQ}$，所以 $\\eta_{\\max}=25\\%$。若静态点不在负载线中点、考虑饱和压降或偏置损耗，实际效率还会更低。"
+    },
+    {
+      id: "q20",
+      chapter: "power-amplifiers",
+      topic: "乙类导通角",
+      prompt: "理想乙类功率放大器中，每一只晶体管在一个信号周期内的导通角约为多少？",
+      options: ["90°", "180°", "270°", "360°"],
+      answer: 1,
+      explanation:
+        "乙类放大器只用一个半周导通，因此单管导通角约为 $180^\\circ$。互补对称结构由 NPN 和 PNP 两管分别承担正、负半周，负载才能得到完整周期。"
+    },
+    {
+      id: "q21",
+      chapter: "power-amplifiers",
+      topic: "OTL 最大输出功率",
+      prompt: "忽略饱和压降时，OTL 乙类互补功放的最大输出功率为？（负载为 $R_L$，单电源为 $V_{CC}$）",
+      options: ["$V_{CC}^2/(2R_L)$", "$V_{CC}^2/(4R_L)$", "$V_{CC}^2/(8R_L)$", "$2V_{CC}^2/R_L$"],
+      answer: 2,
+      explanation:
+        "OTL 输出端静态电压为 $V_{CC}/2$，所以最大输出电压幅度约为 $V_{CC}/2$。代入 $P_{omax}=U_{om}^2/(2R_L)$，得到 $P_{omax}=V_{CC}^2/(8R_L)$。"
+    },
+    {
+      id: "q22",
+      chapter: "power-amplifiers",
+      topic: "交越失真",
+      prompt: "互补功放在正、负半周交接处出现交越失真，最直接的改善方法是？",
+      options: [
+        "提高输入信号频率",
+        "给输出管设置少量正向静态偏置",
+        "取消输出耦合电容",
+        "把负载短路"
+      ],
+      answer: 1,
+      explanation:
+        "交越失真的根源是晶体管开启电压造成的过零死区。把电路从纯乙类调整到甲乙类，让输出管在零输入附近微导通，就能让两只管子平滑交接。偏置不能过大，否则静态电流和管耗会明显增加。"
+    },
+    {
+      id: "q23",
+      chapter: "power-amplifiers",
+      topic: "OCL 静态状态",
+      prompt: "OCL 互补功放在正常静态时，负载中的直流电流应接近多少？",
+      options: ["零", "电源电流的一半", "最大输出电流", "等于晶体管集电极电流"],
+      answer: 0,
+      explanation:
+        "OCL 采用正、负双电源，静态输出端应接近 0 V，因此负载两端没有直流电压，负载直流电流为零。输出端若偏离 0 V，就说明中点电位或偏置存在问题。"
+    },
+    {
+      id: "q24",
+      chapter: "power-amplifiers",
+      topic: "复合管电流增益",
+      prompt: "两只晶体管组成复合管后，在近似分析中总电流放大倍数通常怎样表示？",
+      options: ["$\\beta_1+\\beta_2$", "$\\beta_1-\\beta_2$", "$\\beta_1\\beta_2$", "$\\sqrt{\\beta_1\\beta_2}$"],
+      answer: 2,
+      explanation:
+        "第一只晶体管的发射极电流近似成为第二只晶体管的基极电流，经两级电流放大后，总电流增益近似为 $\\beta\\approx\\beta_1\\beta_2$。复合管能增强电流驱动能力，但其 NPN/PNP 类型由第一只晶体管决定。"
     }
   ]
 };

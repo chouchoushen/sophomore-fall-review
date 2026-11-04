@@ -13,7 +13,7 @@
       id: "analog",
       name: "模拟电子技术",
       href: "./analog-electronics-review/",
-      total: 86,
+      total: 116,
       key: "analog-electronics-review.mastered.v1"
     },
     {

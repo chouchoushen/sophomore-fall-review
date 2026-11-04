@@ -82,8 +82,9 @@
   });
 
   function renderChapterFilter() {
+    const totalQuestions = QUIZ.questions.length;
     chapterFilter.innerHTML =
-      '<option value="all">全部三章 · 18 题</option>' +
+      `<option value="all">全部章节 · ${totalQuestions} 题</option>` +
       Object.entries(QUIZ.chapterLabels)
         .map(([id, label]) => {
           const count = QUIZ.questions.filter((question) => question.chapter === id).length;

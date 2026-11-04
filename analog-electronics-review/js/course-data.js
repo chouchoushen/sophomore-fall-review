@@ -1,7 +1,7 @@
 window.ANALOG_COURSE = {
   title: "模拟电子技术",
   subtitle: "半导体器件、放大电路与频率响应",
-  updatedAt: "2026-11-01",
+  updatedAt: "2026-11-04",
   chapters: [
     {
       id: "devices",
