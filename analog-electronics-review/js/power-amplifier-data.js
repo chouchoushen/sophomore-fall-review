@@ -5,7 +5,7 @@ window.ANALOG_POWER_AMPLIFIER_CHAPTER = {
   english: "Power Amplifiers",
   accent: "forest",
   summary: "在大信号条件下，由直流电源向负载提供足够的输出功率，同时兼顾效率、失真与晶体管安全工作区。",
-  examFocus: ["甲/乙/甲乙类", "OTL 与 OCL", "最大输出功率", "效率", "交越失真", "复合互补管"],
+  examFocus: ["甲/乙/甲乙类", "OTL 与 OCL", "最大输出功率", "效率", "交越失真", "复合管接法", "等效参数", "复合互补"],
   themes: [
     {
       id: "power-basics",
@@ -375,56 +375,147 @@ P_V&=\frac{2V_{CC}^2}{\pi R_L}\\
     {
       id: "composite-power",
       title: "复合互补对称功率放大电路",
-      summary: "用两只晶体管级联成复合管，提高电流放大倍数和带负载能力；复合管类型由第一只晶体管决定。",
-      figures: [
-        {
-          src: "./assets/source/power-amplifiers/composite-ocl.jpg",
-          title: "复合 OCL 互补输出功放",
-          caption: "图片电路：前置推动级、基射电压扩大电路和达林顿复合输出管"
-        }
-      ],
+      summary: "复合管把两级晶体管级联等效为一只高电流增益器件；连接成立的前提是前后级电流方向一致、两管都处于放大区。复合互补输出级再利用两只等效互补管承担正、负半周。",
       cards: [
+        {
+          id: "composite-connection-rules",
+          type: "judgment",
+          title: "复合管正确接法：先看电流方向与偏置",
+          figures: [
+            {
+              src: "./assets/source/power-amplifiers/composite-transistor-rules.jpg",
+              title: "同型复合管的构成条件",
+              caption: "前后两级必须满足电流方向一致、发射结正偏、集电结反偏"
+            },
+            {
+              src: "./assets/source/power-amplifiers/composite-transistor-mixed.jpg",
+              title: "异型复合管的两种接法",
+              caption: "不同型号晶体管也可组成复合管，等效类型仍由第一只晶体管决定"
+            }
+          ],
+          body: [
+            "复合管不是把任意两只晶体管串起来就能成立。第一只管的输出电流必须成为第二只管的有效输入电流，而且形成复合管后两只管都要满足发射结正偏、集电结反偏。",
+            "同型组合中，NPN 与 NPN 仍等效为 NPN，PNP 与 PNP 仍等效为 PNP；异型组合中，复合管类型由第一只晶体管决定：NPN 在前时等效为 PNP，PNP 在前时等效为 NPN。"
+          ],
+          bullets: [
+            "电流判据：$i_{E1}$ 必须与第二只管所需基极电流的实际方向一致，不能用方向相反的 $i_{C1}$ 代替。",
+            "偏置判据：两只管均应工作在放大区；任何一只进入截止或饱和，都不能直接套用复合管参数。",
+            "电极判据：等效基极接第一只管基极；等效集电极和发射极按具体级联关系合并，极性由第一只管决定。"
+          ],
+          note: "审题时先画两只管发射结、集电结的实际偏置，再检查前后级电流能不能顺利接续；只看外形是否像达林顿管很容易误判。"
+        },
         {
           id: "composite-output-stage",
           type: "application",
-          title: "复合 OCL 输出级的组成",
+          title: "复合 OCL 输出级在整机中的位置",
+          figures: [
+            {
+              src: "./assets/source/power-amplifiers/composite-ocl.jpg",
+              title: "复合 OCL 互补输出功放",
+              caption: "前置推动级、基射电压扩大电路和复合输出管共同完成大电流驱动"
+            }
+          ],
           body: [
             "$T_1$ 是电压推动级，为后级提供足够的电压摆幅；$T_2$、$R_1$、$R_2$ 构成基射电压扩大电路。",
-            "$T_3$、$T_4$ 与 $T_5$、$T_6$ 组成两组复合管，承担正、负半周的大电流输出。输出级的两只末级管都采用 NPN 型，便于获得较对称的特性。"
+            "$T_3$、$T_4$ 与 $T_5$、$T_6$ 组成两组复合管，分别承担正、负半周的大电流输出。复合结构把推动级的小电流放大到足以驱动负载的末级电流。"
           ],
           formula: String.raw`U_{CE2}\approx U_{BE2}\frac{R_1+R_2}{R_2}`
         },
         {
           id: "composite-transistor-purpose",
           type: "application",
-          title: "复合管增加电流驱动能力",
+          title: "为什么功放输出级常用复合管",
           figures: [
             {
               src: "./assets/source/power-amplifiers/composite-transistors.jpg",
               title: "复合 NPN 与复合 PNP 管",
-              caption: "图片结构：第一只管的发射极电流成为第二只管的基极电流"
+              caption: "第一只管的发射极电流成为第二只管的有效基极输入电流"
             }
           ],
           body: [
-            "把第一只晶体管的发射极接到第二只晶体管的基极，前级较小的电流可以控制后级更大的电流，从而提高总电流放大倍数。",
-            "复合管仍可等效成 NPN 或 PNP 器件，但其类型由第一只晶体管决定，不能只看末级功率管。"
+            "功放末级需要向低阻负载提供较大电流，而前置放大级通常只能提供很小的基极电流。复合管用较小的首级电流控制较大的末级电流，显著提高总电流增益。",
+            "复合管在电路上仍可看作一只 NPN 或 PNP 管。设计时必须同时检查等效 $\beta$、等效 $r_{be}$、末级功率器件的安全定额和两半周特性的配对。"
           ]
         },
         {
-          id: "composite-current-gain",
+          id: "composite-equivalent-parameters",
           type: "formula",
-          title: "复合管电流放大倍数",
-          formula: String.raw`\beta\approx\beta_1\beta_2`
+          title: "同型与异型复合管的等效参数",
+          figures: [
+            {
+              src: "./assets/source/power-amplifiers/composite-transistor-parameters.jpg",
+              title: "复合管类型与输入电阻结论",
+              caption: "同型复合管保留原类型；异型复合管类型与第一只晶体管相同"
+            }
+          ],
+          body: [
+            "两类复合管的电流增益都可近似写成 $\\beta\\approx\\beta_1\\beta_2$，但输入电阻并不相同：同型组合中第二只管的 $r_{be2}$ 经过 $(1+\\beta_1)$ 折算，异型组合中工程近似常直接取第一只管的 $r_{be1}$。",
+            "使用前要先判断连接属于同型还是异型；把两个公式混用，是复合管计算题最常见的错误。"
+          ],
+          formula: String.raw`\begin{aligned}
+\text{same-type}:&\quad \beta\approx\beta_1\beta_2,\;
+r_{be}\approx r_{be1}+(1+\beta_1)r_{be2}\\
+\text{mixed-type}:&\quad \beta\approx\beta_1\beta_2,\;
+r_{be}\approx r_{be1}
+\end{aligned}`,
+          note: "$\\beta$ 是按电流放大关系得到的近似值；实际器件还要受漏电流、工作电流、温度和末级大电流下 $\\beta$ 下降的影响。"
         },
         {
-          id: "composite-input-resistance",
-          type: "formula",
-          title: "复合管输入电阻",
-          body: [
-            "第二只晶体管的基射电阻会经过第一只晶体管的电流放大作用折算到输入端，因此复合管的输入电阻明显增大。",
-            "工程近似常写为下式；精确计算还要考虑第一只晶体管的体电阻和偏置网络。"
+          id: "composite-recognition-example",
+          type: "example",
+          title: "课堂例题：判断四个复合管接法",
+          figures: [
+            {
+              src: "./assets/source/power-amplifiers/composite-transistor-recognition.jpg",
+              title: "复合管正确性判断例题",
+              caption: "检查前后级电流方向，判断等效类型，并写出 β 与 rbe"
+            }
           ],
-          formula: String.raw`r_{be}\approx r_{be1}+(1+\beta_1)r_{be2}`
+          body: [
+            "判断顺序分为三步：先标出两只管各电极的实际电流方向，再检查首级输出是否成为次级的有效输入，最后根据第一只管判断等效类型并选择参数公式。"
+          ],
+          bullets: [
+            "(a) 不正确：$i_{E1}$ 与第二只管所需 $i_{B2}$ 的实际方向不一致。",
+            "(b) 不正确：用 $i_{C1}$ 充当第二只管的输入，电流方向接续错误。",
+            "(c) 正确：NPN 在前、PNP 在后，等效为 PNP，且 $\\beta\\approx\\beta_1\\beta_2$、$r_{be}\\approx r_{be1}$。",
+            "(d) 不正确：$i_{E1}$ 与第二只管所需 $i_{B2}$ 的实际方向不一致。"
+          ],
+          note: "本题只有 (c) 成立。等效基极 B 接第一只管的基极，等效发射极 E、集电极 C 按异型复合管关系合并。",
+          source: "据第四章课堂例题整理"
+        },
+        {
+          id: "composite-complementary-topology",
+          type: "application",
+          title: "复合互补输出级的两种拓扑",
+          figures: [
+            {
+              src: "./assets/source/power-amplifiers/composite-complementary-topology.jpg",
+              title: "复合管组成的互补对称输出级",
+              caption: "比较两类复合互补拓扑：末级器件能否方便地实现互补配对"
+            }
+          ],
+          body: [
+            "复合互补输出级让上方等效 NPN 管负责正半周、下方等效 PNP 管负责负半周。这样，前置级只需提供较小控制电流，负载仍能获得完整周期的较大电流。",
+            "左图中两组输出复合管分别由同型管级联，末级直接使用 NPN 与 PNP 两种不同器件。大功率互补管在 $\\beta$、饱和压降、温度特性和高频响应上往往不完全一致，正负半周很难做到理想对称。",
+            "右图通过重新安排复合连接并引入 $R_{e1}$、$R_{e2}$，采用准互补思路，使末级功率器件更便于选用同型管配对，同时对外仍表现为上下两组等效互补管。"
+          ],
+          bullets: [
+            "判断类型看每组复合管内部的第一只晶体管，而不是只看末级功率管。",
+            "判断互补功能看上下两组复合管对外是否形成 NPN/PNP 互补关系。",
+            "判断对称性还要比较两组的等效 $\\beta$、$r_{be}$、饱和压降和静态偏置。"
+          ]
+        },
+        {
+          id: "composite-design-check",
+          type: "warning",
+          title: "复合互补管的工程检查清单",
+          bullets: [
+            "先判极性：由第一只管确定等效类型，再确认第二只管被正确偏置。",
+            "再估参数：同型组合用 $r_{be1}+(1+\\beta_1)r_{be2}$，异型组合近似用 $r_{be1}$。",
+            "再核安全：末级承受几乎全部负载电流和电压摆幅，必须核对 $I_{CM}$、$U_{(BR)CEO}$、$P_{CM}$ 和散热。",
+            "最后看对称：两组增益、饱和压降或输入电阻不一致，会造成中点偏移、交越失真和正负半周削波不对称。"
+          ],
+          note: "复合管的高 $\\beta$ 只能说明“更容易被前级驱动”，不能代替输出功率、耐压、最大电流和热设计校核。"
         }
       ]
     },
