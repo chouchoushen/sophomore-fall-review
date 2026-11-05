@@ -460,7 +460,7 @@ main {
 
 .reader-toolbar {
   display: grid;
-  grid-template-columns: auto auto minmax(8rem, 1fr) auto;
+  grid-template-columns: auto auto minmax(8rem, 1fr) auto auto;
   gap: .55rem;
   align-items: center;
   margin: 0 0 1rem;
@@ -550,6 +550,16 @@ main {
   color: var(--muted);
   font: 600 .64rem var(--mono);
   text-align: right;
+  white-space: nowrap;
+}
+
+.reader-audio-tag {
+  padding: .32rem .5rem;
+  border: 1px solid #cbd8ff;
+  border-radius: 99px;
+  background: var(--blue-soft);
+  color: #3157bc;
+  font: 700 .6rem var(--sans);
   white-space: nowrap;
 }
 
@@ -1533,9 +1543,15 @@ footer p {
   }
 
   .reader-position {
-    grid-column: 1 / -1;
+    grid-column: 1;
     grid-row: 3;
     text-align: left;
+  }
+
+  .reader-audio-tag {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
   }
 
   .source-note {

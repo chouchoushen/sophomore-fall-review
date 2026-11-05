@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="大学英语四级每日复习站：200词文章、高频词汇详解、近四年真题主题改编阅读与听力。">
+  <meta name="description" content="大学英语四级每日复习站：约200词四级阅读、高频词汇详解、自然美音朗读与近四年真题主题改编题库。">
   <title>英语四级 · 每日复习站</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./css/styles.css?v=20261104-word-book">
+  <link rel="stylesheet" href="./css/styles.css?v=20261105-audio-reader">
 </head>
 <body>
   <a class="skip-link" href="#dailyArticle">跳到每日文章</a>
@@ -30,11 +30,11 @@
         <p class="eyebrow">DAILY CET-4 · WORDS IN CONTEXT</p>
         <h1>每天读一篇<span>四级语境文章</span></h1>
         <p class="hero__lead">
-          用约 200 词的真实校园与社会话题串起高频词汇。每天轮换，文章、词汇卡、阅读和听力练习集中在一个页面。
+          用约 200 词的四级风格文章串起高频词汇。每天轮换，并配有自然美音、逐词高亮与定位朗读。
         </p>
         <div class="hero__actions">
           <a class="button button--primary" href="#dailyArticle">阅读今日文章</a>
-          <button class="button button--ghost" id="heroSpeak" type="button">朗读今日文章</button>
+          <button class="button button--ghost" id="heroSpeak" type="button">播放今日音频</button>
         </div>
       </div>
 
@@ -68,7 +68,7 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">TODAY'S READING</p>
-          <h2>今天的 200 词文章</h2>
+          <h2>今天的四级阅读</h2>
         </div>
         <div class="section-head__actions">
           <span id="articleDate"></span>
@@ -153,7 +153,7 @@
 
   <footer>
     <strong>英语四级 · 每日复习站</strong>
-    <p>每日文章 · 高频词卡 · 阅读训练 · 听力原文与语音朗读</p>
+    <p>每日文章 · 高频词卡 · 阅读训练 · 听力原文与自然美音朗读</p>
   </footer>
 
   <aside class="word-drawer" id="wordDrawer" aria-hidden="true" aria-label="单词详情">
@@ -163,6 +163,7 @@
 
   <script defer src="./js/content-data.js?v=20261103-cet4"></script>
   <script defer src="./js/exam-data.js?v=20261103-cet4"></script>
-  <script defer src="./js/app.js?v=20261104-word-book"></script>
+  <script defer src="./js/audio-timings.js?v=20261105-audio-reader"></script>
+  <script defer src="./js/app.js?v=20261105-audio-reader"></script>
 </body>
 </html>

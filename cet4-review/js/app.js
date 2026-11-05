@@ -3,6 +3,7 @@
 
   const DATA = window.CET4_DATA;
   const EXAMS = window.CET4_EXAMS || [];
+  const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
 
   const WORD_KEY = "cet4-review.mastered.v1";
@@ -122,7 +123,8 @@
       toolbar: document.getElementById("articleReaderToolbar"),
       text: article.body,
       targetWords: article.words,
-      label: "今日文章"
+      label: "今日文章",
+      audioKey: `article-${article.id}`
     });
 
     document.querySelectorAll("#articleBody mark, #articleWords [data-word]").forEach((button) => {
@@ -131,7 +133,7 @@
     renderDailyEditions();
   }
 
-  function createSpeechReader({ body, toolbar, text, targetWords = [], label }) {
+  function createSpeechReader({ body, toolbar, text, targetWords = [], label, audioKey }) {
     const rendered = renderReadableText(text, targetWords);
     body.innerHTML = rendered.html;
     const tokens = rendered.tokens.map((token) => ({
@@ -139,6 +141,14 @@
       element: body.querySelector(`[data-reader-index="${token.index}"]`)
     }));
     const lastIndex = Math.max(0, tokens.length - 1);
+    const timing = AUDIO_TIMINGS[audioKey];
+    const timedTokens =
+      timing && Array.isArray(timing.tokens) && timing.tokens.length === tokens.length
+        ? timing.tokens
+        : null;
+    let useAudio = Boolean(timedTokens && audioKey);
+    let audio = useAudio ? new Audio(`./audio/${audioKey}.mp3`) : null;
+    if (audio) audio.preload = "metadata";
 
     toolbar.innerHTML = `
       <div class="reader-toolbar" role="group" aria-label="${escapeAttr(label)}朗读进度">
@@ -147,6 +157,7 @@
         <input class="reader-progress" type="range" min="0" max="${lastIndex}" value="0" step="1"
           aria-label="调整${escapeAttr(label)}阅读进度">
         <output class="reader-position" aria-label="当前朗读到第几个单词">1 / ${tokens.length}</output>
+        <span class="reader-audio-tag">${useAudio ? "自然美音 · Ava" : "浏览器朗读"}</span>
       </div>
     `;
 
@@ -154,11 +165,16 @@
     const stopButton = toolbar.querySelector(".reader-stop");
     const range = toolbar.querySelector(".reader-progress");
     const position = toolbar.querySelector(".reader-position");
+    const audioTag = toolbar.querySelector(".reader-audio-tag");
     let currentIndex = 0;
     let mode = "idle";
     let session = 0;
     let utterance = null;
     let hasReadPosition = false;
+    let frameId = 0;
+    let fallbackTimer = 0;
+    let lastBoundaryAt = 0;
+    let isScrubbing = false;
 
     function findWordAt(charIndex) {
       let low = 0;
@@ -174,14 +190,15 @@
     }
 
     function updateVisual(index, shouldScroll = false, showReadingPosition = true) {
+      const previousIndex = currentIndex;
       currentIndex = Math.max(0, Math.min(Number(index) || 0, lastIndex));
       if (showReadingPosition) hasReadPosition = true;
-      tokens.forEach((token, tokenIndex) => {
-        token.element?.classList.toggle(
-          "is-reading",
-          hasReadPosition && tokenIndex === currentIndex
-        );
-      });
+      if (hasReadPosition) {
+        if (previousIndex !== currentIndex) {
+          tokens[previousIndex]?.element?.classList.remove("is-reading");
+        }
+        tokens[currentIndex]?.element?.classList.add("is-reading");
+      }
       range.value = String(currentIndex);
       range.style.setProperty(
         "--reader-progress",
@@ -204,18 +221,84 @@
       if (shouldScroll) {
         tokens[currentIndex]?.element?.scrollIntoView({
           block: "center",
-          behavior: "smooth"
+          behavior: "smooth",
+          inline: "nearest"
         });
       }
+    }
+
+    function stopFrameLoop() {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = 0;
+    }
+
+    function findWordAtTime(time) {
+      if (!timedTokens?.length) return 0;
+      let low = 0;
+      let high = timedTokens.length - 1;
+      let found = 0;
+      while (low <= high) {
+        const middle = Math.floor((low + high) / 2);
+        if (timedTokens[middle].start <= time) {
+          found = middle;
+          low = middle + 1;
+        } else {
+          high = middle - 1;
+        }
+      }
+      return found;
+    }
+
+    function syncAudioPosition() {
+      if (!audio || !timedTokens || mode !== "speaking" || isScrubbing) return;
+      const nextIndex = findWordAtTime(audio.currentTime + 0.025);
+      if (nextIndex !== currentIndex) updateVisual(nextIndex, true);
+    }
+
+    function runFrameLoop() {
+      stopFrameLoop();
+      const tick = () => {
+        if (mode !== "speaking") {
+          frameId = 0;
+          return;
+        }
+        syncAudioPosition();
+        frameId = requestAnimationFrame(tick);
+      };
+      frameId = requestAnimationFrame(tick);
+    }
+
+    function clearFallbackTimer() {
+      if (fallbackTimer) window.clearInterval(fallbackTimer);
+      fallbackTimer = 0;
     }
 
     function cancelSpeech() {
       session += 1;
       utterance = null;
+      clearFallbackTimer();
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     }
 
-    function startFrom(index = currentIndex) {
+    function startTimedAudio(index = currentIndex) {
+      if (!audio || !timedTokens) return;
+      if (activeReader && activeReader !== reader) activeReader.stop();
+      cancelSpeech();
+      const safeIndex = Math.max(0, Math.min(index, lastIndex));
+      audio.currentTime = Math.max(0, timedTokens[safeIndex].start - 0.02);
+      updateVisual(safeIndex, true);
+      mode = "speaking";
+      activeReader = reader;
+      audio.play().then(runFrameLoop).catch(() => {
+        useAudio = false;
+        audioTag.textContent = "浏览器朗读";
+        mode = "idle";
+        activeReader = null;
+        updateVisual(currentIndex, false);
+      });
+    }
+
+    function startBrowserSpeech(index = currentIndex) {
       if (!tokens.length || !("speechSynthesis" in window)) {
         window.alert("当前浏览器不支持语音朗读。");
         return;
@@ -235,14 +318,23 @@
         if (voiceSession !== session) return;
         activeReader = reader;
         mode = "speaking";
+        lastBoundaryAt = performance.now();
         updateVisual(currentIndex, true);
+        fallbackTimer = window.setInterval(() => {
+          if (mode !== "speaking" || voiceSession !== session) return;
+          if (performance.now() - lastBoundaryAt < 520) return;
+          const estimatedIndex = Math.min(lastIndex, currentIndex + 1);
+          if (estimatedIndex > currentIndex) updateVisual(estimatedIndex, true);
+        }, 320);
       };
       utterance.onboundary = (event) => {
         if (voiceSession !== session || typeof event.charIndex !== "number") return;
+        lastBoundaryAt = performance.now();
         updateVisual(findWordAt(sourceStart + event.charIndex), true);
       };
       utterance.onend = () => {
         if (voiceSession !== session) return;
+        clearFallbackTimer();
         mode = "finished";
         activeReader = null;
         updateVisual(lastIndex, false);
@@ -251,6 +343,7 @@
         if (voiceSession !== session || ["canceled", "interrupted"].includes(event.error)) {
           return;
         }
+        clearFallbackTimer();
         mode = "idle";
         activeReader = null;
         updateVisual(currentIndex, false);
@@ -262,11 +355,27 @@
       window.speechSynthesis.speak(utterance);
     }
 
+    function startFrom(index = currentIndex) {
+      if (useAudio) startTimedAudio(index);
+      else startBrowserSpeech(index);
+    }
+
     const reader = {
       start() {
+        if (mode === "paused" && useAudio && audio) {
+          audio.play().then(runFrameLoop).catch(() => {
+            useAudio = false;
+            audioTag.textContent = "浏览器朗读";
+            startFrom(currentIndex);
+          });
+          mode = "speaking";
+          updateVisual(currentIndex, false);
+          return;
+        }
         if (mode === "paused" && "speechSynthesis" in window) {
           window.speechSynthesis.resume();
           mode = "speaking";
+          lastBoundaryAt = performance.now();
           updateVisual(currentIndex, false);
           return;
         }
@@ -274,12 +383,23 @@
         startFrom(currentIndex);
       },
       pause() {
-        if (mode !== "speaking" || !("speechSynthesis" in window)) return;
-        window.speechSynthesis.pause();
+        if (mode !== "speaking") return;
+        if (useAudio && audio) {
+          audio.pause();
+          stopFrameLoop();
+        } else if ("speechSynthesis" in window) {
+          window.speechSynthesis.pause();
+          clearFallbackTimer();
+        }
         mode = "paused";
         updateVisual(currentIndex, false);
       },
       stop() {
+        if (audio) {
+          audio.pause();
+          audio.currentTime = timedTokens?.[currentIndex]?.start || 0;
+        }
+        stopFrameLoop();
         cancelSpeech();
         mode = "idle";
         if (activeReader === reader) activeReader = null;
@@ -289,13 +409,27 @@
         updateVisual(index, true);
       },
       seek(index) {
-        const wasActive = mode === "speaking" || mode === "paused";
-        updateVisual(index, true);
-        if (wasActive) startFrom(currentIndex);
+        const safeIndex = Math.max(0, Math.min(Number(index) || 0, lastIndex));
+        const wasPlaying = mode === "speaking";
+        isScrubbing = false;
+        updateVisual(safeIndex, true);
+        if (useAudio && audio && timedTokens) {
+          audio.currentTime = Math.max(0, timedTokens[safeIndex].start - 0.02);
+          if (wasPlaying) audio.play().then(runFrameLoop).catch(() => {});
+        } else if (wasPlaying || mode === "paused") {
+          startBrowserSpeech(safeIndex);
+        }
       },
       destroy() {
         if (activeReader === reader) activeReader = null;
+        stopFrameLoop();
         cancelSpeech();
+        if (audio) {
+          audio.pause();
+          audio.removeAttribute("src");
+          audio.load();
+          audio = null;
+        }
         mode = "idle";
       },
       get currentIndex() {
@@ -308,8 +442,46 @@
       else reader.start();
     });
     stopButton.addEventListener("click", () => reader.stop());
-    range.addEventListener("input", () => reader.searchFrom(Number(range.value)));
+    range.addEventListener("input", () => {
+      isScrubbing = true;
+      reader.searchFrom(Number(range.value));
+    });
     range.addEventListener("change", () => reader.seek(Number(range.value)));
+
+    if (audio) {
+      audio.addEventListener("play", () => {
+        mode = "speaking";
+        activeReader = reader;
+        updateVisual(currentIndex, false);
+        runFrameLoop();
+      });
+      audio.addEventListener("pause", () => {
+        if (mode !== "speaking") return;
+        stopFrameLoop();
+        mode = "paused";
+        updateVisual(currentIndex, false);
+      });
+      audio.addEventListener("ended", () => {
+        stopFrameLoop();
+        mode = "finished";
+        activeReader = null;
+        updateVisual(lastIndex, false);
+      });
+      audio.addEventListener("error", () => {
+        useAudio = false;
+        audioTag.textContent = "浏览器朗读";
+        stopFrameLoop();
+        if (mode === "speaking") {
+          mode = "idle";
+          activeReader = null;
+          updateVisual(currentIndex, false);
+        }
+      });
+      audio.addEventListener("loadedmetadata", () => {
+        position.title = `音频时长 ${Math.round(audio.duration)} 秒`;
+      });
+    }
+
     updateVisual(0, false, false);
     return reader;
   }
@@ -332,7 +504,7 @@
     const html = paragraphs
       .filter((paragraph) => paragraph.text.length)
       .map((paragraph) => {
-        const wordPattern = /\b[A-Za-z]+(?:['’–-][A-Za-z]+)*\b/g;
+        const wordPattern = /\p{L}+(?:['’–-]\p{L}+)*/gu;
         let cursor = 0;
         let paragraphHtml = "";
         for (const match of paragraph.text.matchAll(wordPattern)) {
@@ -662,7 +834,8 @@
           body: panel.querySelector("[data-reader-body]"),
           toolbar: panel.querySelector("[data-reader-toolbar]"),
           text: listening ? content.script : content.passage,
-          label: listening ? `${exam.year} 模拟听力原文` : `${exam.year} 阅读文章`
+          label: listening ? `${exam.year} 模拟听力原文` : `${exam.year} 阅读文章`,
+          audioKey: `exam-${exam.year}-${listening ? "listening" : "reading"}`
         })
       );
     });
@@ -828,7 +1001,7 @@
   }
 
   function countWords(text) {
-    return (text.match(/\b[A-Za-z]+(?:['-][A-Za-z]+)?\b/g) || []).length;
+    return (text.match(/\p{L}+(?:['’–-]\p{L}+)*/gu) || []).length;
   }
 
   function readJson(key, fallback) {

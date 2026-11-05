@@ -559,9 +559,9 @@ window.CET4_DATA = {
       title: "A Better Way to Plan a Busy Week",
       topic: "校园学习",
       body:
-        "Many students begin a busy week with a long list of tasks, yet they often spend hours on activities that bring little progress. A more efficient method is to allocate time according to difficulty rather than convenience. On Sunday evening, list every reading task, group project and personal errand. Then prioritize the items that require deep thought and submit them to an honest time estimate. This process helps you assess whether the plan is realistic.\n\n" +
-        "It is also important to maintain a flexible routine. Unexpected messages, extra classes and health problems are inevitable, so a useful timetable should leave small spaces between tasks. When one part of the plan fails, persist with the remaining priorities instead of abandoning the whole week. Short breaks and regular sleep help sustain concentration over several days. Research on study habits often reveals a significant improvement when students review their progress each evening.\n\n" +
-        "Finally, remember that planning is not the same as filling every minute. A clear schedule should protect both focused work and genuine rest. Students who review their method once a week can modify it before small problems become serious. The goal is not a perfect timetable, but a system that helps you make steady progress.",
+        "Many students start a busy week with a long list of tasks, yet they often spend hours on activities that produce little real progress. A more efficient method is to allocate time according to difficulty rather than convenience. On Sunday evening, list every reading task, group project and personal errand, and give each one an honest time estimate. Then prioritize the items that require deep thought. This process helps you assess whether the plan is realistic.\n\n" +
+        "It is also important to maintain a flexible routine. Unexpected messages, extra classes and health problems are inevitable, so a useful timetable should leave small spaces between tasks. When one part of the plan fails, persist with the remaining priorities instead of abandoning the whole week. Short breaks and regular sleep help sustain concentration over several days. Reviewing progress each evening also shows which habits are working.\n\n" +
+        "Finally, remember that planning is not the same as filling every minute. A clear schedule should protect both focused work and genuine rest. Students who review their method once a week can modify it before small problems become serious. A significant part of good planning is knowing what to leave out. The goal is not a perfect timetable, but a system that helps you make steady progress.",
       summaryZh:
         "文章介绍一套实用的周计划方法：先估算任务，再确定优先级，在计划中留出机动时间，并通过每周复盘不断调整。",
       words: ["allocate", "prioritize", "assess", "maintain", "inevitable", "persist", "sustain", "significant", "efficient", "modify"]
@@ -571,10 +571,10 @@ window.CET4_DATA = {
       title: "Why Deep Reading Still Matters",
       topic: "数字阅读",
       body:
-        "Digital devices have made information easier to obtain, but they have also changed the way people read. Quick browsing can be useful for checking news or finding a definition. However, when every page contains links and notifications, readers may perceive less of the argument and retain fewer details.\n\n" +
-        "A recent campus survey illustrates the problem clearly. Students who read long articles on their phones without pausing often found it difficult to interpret the writer's main point. They could remember separate facts, yet they missed how those facts were connected. This does not mean that screens are always harmful. It means that the way we read matters.\n\n" +
-        "One solution is to alternate between fast and slow reading. Before opening an article, decide what you need from it. If the purpose is deep understanding, turn off notifications and read one section at a time. Taking brief notes can enhance memory and help you evaluate whether the evidence is strong. A flexible routine also makes it easier to return to a difficult text later.\n\n" +
-        "The decline in sustained attention is not inevitable. By choosing when to read quickly and when to slow down, students can use digital tools without surrendering the benefits of careful reading.",
+        "Digital devices have made information easier to obtain, but they have also changed the way people read. Quick browsing is useful for checking news or finding a definition. However, when a page is filled with links and notifications, readers may perceive less of the writer's argument and retain fewer details.\n\n" +
+        "A recent campus survey can illustrate this problem. Students who read long articles on their phones without pausing often found it difficult to interpret the writer's main point. They remembered separate facts, yet they missed how those facts were connected. This does not mean screens are always harmful. It means the way we read matters.\n\n" +
+        "One solution is to alternate between fast and slow reading. Before opening an article, decide what you need from it. If the purpose is deep understanding, turn off notifications and read one section at a time. Brief notes can enhance memory and help you evaluate whether the evidence is strong. A flexible routine also makes it easier to return to a difficult text later.\n\n" +
+        "The decline in sustained attention is not inevitable. By choosing when to skim and when to read closely, students can use digital tools without giving up the benefits of careful reading.",
       summaryZh:
         "数字阅读提高了信息获取速度，但容易削弱深度理解。文章建议根据目的切换快读与慢读，并通过关闭通知、分段阅读和做笔记保持专注。",
       words: ["obtain", "perceive", "retain", "illustrate", "interpret", "enhance", "evaluate", "flexible", "decline", "inevitable"]
@@ -584,9 +584,9 @@ window.CET4_DATA = {
       title: "A Campus That Wastes Less",
       topic: "环保与校园",
       body:
-        "Universities are often described as small cities. They use energy, produce waste and transform natural resources into everyday services. This makes the campus a useful place to practise conservation. A student group at one university began by recording how much food and paper was thrown away each week. The results helped the group assess where waste was greatest and which changes were likely to be effective.\n\n" +
-        "Their first project was a repair café. Instead of replacing a broken lamp or chair, students learned to fix it with the help of volunteers. The project generated new interest in practical skills and helped diminish unnecessary waste. A second project encouraged people to share books and laboratory equipment through an online system. Because participation was voluntary, the organizers had to communicate clearly and compensate for the extra time some volunteers gave.\n\n" +
-        "No single project can solve an environmental problem. However, small actions can conserve resources and sustain long-term habits. The organizers now publish monthly data so that students can evaluate progress and modify the next plan. They believe that environmental education is essential, but they also know that visible results are more persuasive than repeated warnings.",
+        "Universities often work like small cities. They use energy, produce waste and transform natural resources into everyday services. This makes the campus a useful place to practice conservation. A student group at one university began by recording how much food and paper was thrown away each week. The results helped the group assess where waste was greatest and which changes were likely to be effective.\n\n" +
+        "Their first project was a repair cafe. Instead of replacing a broken lamp or chair, students learned to fix it with the help of volunteers. The project can generate new interest in practical skills and help diminish unnecessary waste. A second project encouraged people to share books and lab equipment through an online system. Because volunteers participate freely, organizers had to communicate clearly and compensate for the extra time some of them gave.\n\n" +
+        "No single project can solve an environmental problem. However, small actions can conserve resources and sustain long-term habits. The organizers now publish monthly data so students can evaluate progress and modify the next plan. They believe environmental education is essential, but they also know visible results are more persuasive than repeated warnings.",
       summaryZh:
         "文章以校园维修站和共享系统为例，说明环保需要数据评估、简便制度和持续参与，而不只是口号。",
       words: ["transform", "assess", "generate", "diminish", "participate", "compensate", "conserve", "sustain", "evaluate", "modify", "essential"]
@@ -598,8 +598,7 @@ window.CET4_DATA = {
       body:
         "When students first consider volunteering, they may hesitate because they already have limited free time. They anticipate that the work will be tiring and wonder whether it will benefit their studies. In practice, well-planned volunteering can develop skills that classrooms rarely test.\n\n" +
         "A student who helps at a community centre may encounter people with very different needs. Some need help with digital forms, while others simply want someone to listen. The volunteer must interpret unclear requests, explain choices and remain patient when plans change. These experiences demonstrate the importance of communication and flexible thinking. Volunteers also learn to assess their own limits, because promising more than they can deliver creates trouble for everyone.\n\n" +
-        "Volunteering should not become another competition for impressive records. Its value does not derive only from the number of hours listed on a résumé. The most significant benefit is often a change in perspective. Students may discover that a small action can produce a durable result when it is carried out consistently.\n\n" +
-        "Those who persist in a suitable role can enhance their confidence and expand their understanding of society. The key is to choose a project that matches both personal interests and available time.",
+        "Volunteering should not become another competition for impressive records. Its value does not derive only from the number of hours listed on a résumé. The most significant benefit is often a change in perspective. Students may discover that a small action can produce a lasting result when it is carried out consistently. Those who persist in a suitable role can enhance their confidence and deepen their understanding of society. The key is to choose a project that matches personal interests and available time.",
       summaryZh:
         "志愿服务不只是履历上的小时数，它能训练沟通、判断、理解和坚持，也帮助学生认识自己的时间与能力边界。",
       words: ["hesitate", "anticipate", "encounter", "interpret", "demonstrate", "flexible", "assess", "derive", "significant", "persist", "enhance"]
@@ -611,7 +610,7 @@ window.CET4_DATA = {
       body:
         "Before an examination, many students try to gain extra hours by reducing sleep. They believe that more time at the desk must lead to better results. Research on learning suggests the opposite: sleep is an essential part of memory, not a delay between study sessions.\n\n" +
         "During sleep, the brain organizes new information and strengthens connections formed during the day. This process can help students retain vocabulary, interpret difficult ideas and evaluate what they have understood. A significant decline in sleep may also reduce attention and make people more likely to make simple errors.\n\n" +
-        "A student who studies late every night may maintain a routine for a few days, but it is difficult to sustain the habit without damage. Some problems are inevitable when deadlines are close, so planning ahead is more useful than emotional promises. A flexible evening routine helps avoid the trap of using a phone until very late. It also makes it easier to persist with a healthy schedule when the week becomes busy.\n\n" +
+        "A student who studies late every night may maintain a routine for a few days, but it is difficult to sustain the habit without damage. Some problems are inevitable when deadlines are close, so planning ahead is more useful than making last-minute promises. A flexible evening routine helps avoid the trap of using a phone until very late. It also makes it easier to persist with a healthy schedule when the week becomes busy.\n\n" +
         "Students should assess their own pattern rather than copying someone else's. Short review sessions, regular breaks and a consistent bedtime often produce better results than one exhausted evening of study.",
       summaryZh:
         "睡眠参与记忆整理和注意力恢复。考前熬夜并非高效学习，规律睡眠、分次复习和提前规划更重要。",
@@ -619,13 +618,13 @@ window.CET4_DATA = {
     },
     {
       id: "smart-shopping",
-      title: "Reading Behind a Product Label",
+      title: "Reading Beyond a Product Label",
       topic: "消费选择",
       body:
-        "People who consume products are often encouraged to compare prices and choose the cheapest option, but price tells only part of the story. A product that costs less at the beginning may be expensive later if it breaks quickly or requires frequent repair.\n\n" +
+        "People often consume products mainly by comparing prices, but a low price tells only part of the story. Something that costs less at the beginning may become expensive if it breaks quickly or requires frequent repair.\n\n" +
         "Careful buyers evaluate the material, warranty and expected lifetime before buying. They also try to perceive the difference between a useful feature and a claim that merely sounds impressive. Companies may modify the wording on a label without changing the product itself. New laws sometimes prohibit misleading statements, but consumers still need to read carefully.\n\n" +
-        "Independent reviews can reveal how a product performs in daily use, although reviews may vary in quality. A buyer should derive conclusions from several sources rather than relying on a single rating. When possible, it is useful to assess how easily an item can be repaired or returned. These small checks compensate for the fact that advertisements rarely explain a product's weaknesses.\n\n" +
-        "Smart shopping is not about spending as little as possible. It is about understanding what you need and predicting how well a choice will serve you. A well-made object may create less waste and offer better value over time.",
+        "Independent reviews can reveal how a product performs in daily use, although reviews vary in quality. A buyer should derive conclusions from several sources rather than relying on a single rating. When possible, it is useful to assess how easily an item can be repaired or returned. These small checks compensate for the fact that advertisements rarely explain a product's weaknesses.\n\n" +
+        "Smart shopping is not about spending as little as possible. It is about understanding what you need and predicting how well a choice will serve you over time. A well-made object may create less waste and offer better value.",
       summaryZh:
         "购买商品不能只看价格，还要判断耐用性、维修和售后，并综合多个来源评价产品。",
       words: ["consume", "evaluate", "perceive", "modify", "prohibit", "reveal", "vary", "derive", "assess", "compensate"]
@@ -636,11 +635,11 @@ window.CET4_DATA = {
       topic: "人工智能与学习",
       body:
         "Artificial intelligence can facilitate learning by explaining a difficult sentence, generating practice questions and providing immediate feedback. Students can obtain quick answers that would otherwise require waiting for a teacher. Yet speed is not always the same as understanding.\n\n" +
-        "A useful approach is to ask the tool for an explanation rather than a finished answer. When a system produces a summary, compare it with the original text and interpret any differences. This habit encourages deeper reading and helps students assess whether the response is complete. If an example seems confusing, ask for another illustration and test it with your own knowledge.\n\n" +
+        "A useful approach is to ask the tool for an explanation rather than a finished answer. When a system produces a summary, compare it with the original text and interpret any differences. This habit encourages deeper reading and helps students assess whether the response is complete. If an example seems confusing, ask the tool to illustrate the point in another way and test it with your own knowledge.\n\n" +
         "Students should also retain responsibility for decisions. AI may produce a confident answer that is inaccurate, or an attractive paragraph that does not support the task. It is essential to check facts, quote sources and explain the reasoning in your own words. A tool can generate possibilities, but it cannot decide what you genuinely understand.\n\n" +
         "The most effective use of AI is therefore flexible and critical. Use it to obtain clues, not to replace thought. The skill most worth developing is the ability to evaluate what the system says and explain why you accept or reject it.",
       summaryZh:
-        "AI 可以提供解释和练习，但学生仍需核对事实、判断答案并用自⼰的语言复述推理过程。",
+        "AI 可以提供解释和练习，但学生仍需核对事实、判断答案并用自己的语言复述推理过程。",
       words: ["facilitate", "generate", "obtain", "interpret", "assess", "illustrate", "retain", "essential", "flexible", "evaluate", "effective"]
     },
     {
@@ -649,9 +648,9 @@ window.CET4_DATA = {
       topic: "城市交通",
       body:
         "A city cannot make public transport attractive merely by announcing that it is good for the environment. The service must also be convenient, affordable and accessible. When routes are confusing or waiting times are long, people return to private cars, even if buses are cheaper.\n\n" +
-        "One practical improvement is to provide reliable information. Screens that indicate the next bus can diminish uncertainty and help passengers modify their plans. Low-floor vehicles make access easier for older people and parents with children. If a city imposes higher parking fees, it should also maintain frequent service so that drivers have a realistic alternative.\n\n" +
+        "One practical improvement is to provide reliable information. Screens that indicate the next bus can diminish uncertainty and help passengers modify their plans. Low-floor vehicles make access easier for older people and parents with young children. If a city does impose higher parking fees, it should also maintain frequent service so that drivers have a realistic alternative.\n\n" +
         "Safety and comfort are equally important. Stations with clear lighting and staff support may encourage more people to travel after dark. Surveys can reveal which changes are most urgent, but the results vary between neighbourhoods. A flexible plan should therefore respond to local needs instead of applying one solution everywhere.\n\n" +
-        "Although the number of private cars may decline slowly, consistent improvements can transform daily travel. The most efficient system is not the one with the largest number of buses, but the one that makes a reliable journey easy to plan.",
+        "Although private car use may decline slowly, consistent improvements can transform daily travel. The most efficient system is not the one with the most buses, but the one that makes a reliable journey easy to plan.",
       summaryZh:
         "公共交通要在信息、价格、无障碍和换乘体验上同时改善，才能真正减少私人汽车使用。",
       words: ["accessible", "diminish", "modify", "impose", "maintain", "reveal", "vary", "flexible", "decline", "transform", "efficient"]
@@ -662,9 +661,9 @@ window.CET4_DATA = {
       topic: "社区生活",
       body:
         "An unused piece of land between two apartment buildings can easily become a place for rubbish or neglected plants. In one neighbourhood, residents decided to transform it into a small community garden. The project began with a simple meeting where people discussed how much time they could allocate and who would participate.\n\n" +
-        "The volunteers encountered practical problems. Water was difficult to obtain, and the strongest sunlight reached only one side of the plot. Rather than hesitate, the group asked local shops for used containers and tested different planting positions. This experience revealed how much could be achieved through small local resources. They also learned to conserve water by collecting rain and covering the soil.\n\n" +
-        "The garden did not eliminate every property problem in the area, but it diminished the feeling that the land belonged to no one. Neighbours began to recognize one another and share useful advice. A monthly task list helped maintain participation without demanding the same amount of work from everyone.\n\n" +
-        "Environmental knowledge was essential, yet the social benefit was equally significant. The project sustained itself because people could see a direct result. What began as a response to unused land became an ongoing form of cooperation.",
+        "The volunteers soon had to encounter practical problems. Water was difficult to obtain, and the strongest sunlight reached only one side of the plot. Rather than hesitate, the group asked local shops for used containers and tested different planting positions. This experience can reveal how much is possible with small local resources. They also learned to conserve water by collecting rain and covering the soil.\n\n" +
+        "The garden did not solve every problem in the area, but it did diminish the feeling that the land belonged to no one. Neighbours began to recognize one another and share useful advice. A monthly task list helped maintain participation without demanding the same amount of work from everyone.\n\n" +
+        "Environmental knowledge was essential, yet the social benefit was equally significant. The project could sustain itself because people saw a direct result. What began as a response to unused land became an ongoing form of cooperation.",
       summaryZh:
         "社区花园把闲置土地变成居民合作空间，既改善环境，也促进邻里交往和持续参与。",
       words: ["transform", "allocate", "participate", "encounter", "obtain", "hesitate", "reveal", "conserve", "diminish", "maintain", "essential", "significant", "sustain"]
@@ -675,9 +674,9 @@ window.CET4_DATA = {
       topic: "学习方法",
       body:
         "A poor result on a test or project can make students believe that they are simply not good at a subject. This interpretation is understandable, but it is not always useful. One low result describes a particular performance; it does not describe a person's entire ability.\n\n" +
-        "It is more helpful to assess the causes of the result. Perhaps a student encountered an unfamiliar question type or underestimated the time required. Perhaps the material was covered too quickly, leaving misunderstandings that later caused errors. To persist without reflection may simply repeat the same mistake. A useful review uses evidence to identify one change that can be made next time.\n\n" +
+        "It is more helpful to assess the causes of the result. Perhaps a student did encounter an unfamiliar question type or underestimated the time required. Perhaps the material was covered too quickly, leaving misunderstandings that later caused errors. To persist without reflection may simply repeat the same mistake. A useful review uses evidence to identify one change that can be made next time.\n\n" +
         "Good feedback is not always pleasant, but it can reveal important information. Students should hesitate before dismissing low marks or blaming circumstances. They should interpret the result carefully and derive a practical plan from it. A teacher may explain a new method, a classmate may illustrate a useful strategy, or an online exercise may help confirm whether understanding has improved.\n\n" +
-        "Every learning process contains setbacks, and some frustration is inevitable. What matters is whether the experience produces a better next action. A significant part of progress often comes from a series of small corrections sustained over time.",
+        "Every learning process contains setbacks, and some frustration is inevitable. What matters is whether the experience produces a better next action. A significant part of progress often comes from a series of small corrections that sustain effort over time.",
       summaryZh:
         "一次失败不能说明能力差。分析原因、获取反馈并将结果转化为下一步行动，才能真正进步。",
       words: ["encounter", "persist", "assess", "reveal", "hesitate", "interpret", "derive", "illustrate", "inevitable", "sustain", "significant"]
