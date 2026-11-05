@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="大二上复习资料总入口：概率论、模拟电子技术、数字电子技术、普通物理学、数学物理方法和英语四级。">
+  <meta name="description" content="大二上复习资料总入口：概率论、模拟电子技术、数字电子技术、普通物理学、数学物理方法、英语四级和习概。">
   <title>大二上复习资料</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./css/styles.css?v=20261104-amplifiers">
+  <link rel="stylesheet" href="./css/styles.css?v=20261105-xi">
 </head>
 <body>
   <a class="skip-link" href="#library">跳到站点列表</a>
@@ -20,7 +20,7 @@
         <span>大二上复习资料</span>
       </a>
       <div class="topbar__links">
-        <a href="#library">六门课程</a>
+        <a href="#library">七门课程</a>
         <a href="#overview">本周总览</a>
       </div>
       <span class="topbar__term">2026 · FALL</span>
@@ -28,10 +28,10 @@
 
     <div class="hero__body">
       <div class="hero__copy">
-        <p class="eyebrow">SIX COURSES · ONE REVIEW DESK</p>
+        <p class="eyebrow">SEVEN COURSES · ONE REVIEW DESK</p>
         <h1>大二上<span>复习资料</span></h1>
         <p class="hero__lead">
-          六门课程独立成站，统一从这里进入。知识卡、公式、自测和每日英语文章都保存在同一入口，复习进度也由你掌控。
+          七门课程独立成站，统一从这里进入。知识卡、公式、自测、每日英语文章和思政导论都保存在同一入口，复习进度也由你掌控。
         </p>
         <div class="hero__actions">
           <button class="button button--primary" id="continueButton" type="button">从概率论开始</button>
@@ -78,8 +78,8 @@
     </div>
 
     <div class="hero__stats" aria-label="复习资料统计">
-      <div><strong>6</strong><span>门独立课程站</span></div>
-      <div><strong id="totalCards">494</strong><span>个知识卡</span></div>
+      <div><strong>7</strong><span>门独立课程站</span></div>
+      <div><strong id="totalCards">522</strong><span>个知识卡</span></div>
       <div><strong>112</strong><span>道通关自测</span></div>
       <div><strong>150</strong><span>组资料图</span></div>
     </div>
@@ -90,7 +90,7 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">COURSE LIBRARY</p>
-          <h2 id="libraryTitle">六门课程，各走各的主线</h2>
+          <h2 id="libraryTitle">七门课程，各走各的主线</h2>
         </div>
         <p>选择一个站点进入。每门课的知识点、自测和原始笔记彼此独立，不会混在一起。</p>
       </div>
@@ -98,15 +98,16 @@
       <div class="library__tools">
         <label class="search">
           <span aria-hidden="true"></span>
-          <input id="courseSearch" type="search" aria-label="搜索课程" placeholder="搜索课程、章节或关键词，如“高斯”“卡诺图”“留数”" autocomplete="off">
+          <input id="courseSearch" type="search" aria-label="搜索课程" placeholder="搜索课程、章节或关键词，如“高斯”“卡诺图”“两个确立”" autocomplete="off">
           <button id="clearSearch" type="button" hidden>清除</button>
         </label>
         <div class="filters" role="group" aria-label="课程分类">
-          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 6</button>
+          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 7</button>
           <button type="button" data-filter="electronics" aria-pressed="false">电类 2</button>
           <button type="button" data-filter="science" aria-pressed="false">数理 2</button>
           <button type="button" data-filter="statistics" aria-pressed="false">统计 1</button>
           <button type="button" data-filter="language" aria-pressed="false">语言 1</button>
+          <button type="button" data-filter="theory" aria-pressed="false">思政 1</button>
         </div>
       </div>
       <div class="weekly-update-note">
@@ -282,6 +283,34 @@
           </div>
           <span class="course-card__enter">进入课程 <b>→</b></span>
         </a>
+
+        <a
+          class="course-card course-card--xi"
+          href="../xi-general-review/"
+          data-site="xi"
+          data-category="theory"
+          data-search="习概 习近平新时代中国特色社会主义思想概论 导论 时代背景 理论根据 科学体系 历史地位 根本保证 两个结合 十个明确 十四个坚持 十三个方面成就 六个必须坚持 两个确立"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">习</span>
+            <span class="course-index">07 / THEORY</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">XI GENERAL INTRODUCTION</p>
+            <h3>习概</h3>
+            <p>导论：从时代背景、理论根据到科学体系、历史地位与根本保证。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>1 章</span>
+            <span>5 个主题</span>
+            <span>28 个知识点</span>
+          </div>
+          <div class="course-progress">
+            <div><span>掌握进度</span><strong data-progress-label="xi">0 / 28</strong></div>
+            <i><span data-progress-bar="xi"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
       </div>
 
       <p id="emptyState" class="empty-state" hidden>没有找到匹配课程，换个关键词或选择“全部”。</p>
@@ -305,8 +334,8 @@
         </article>
         <article class="overview-card">
           <p>MASTERY</p>
-          <h3><strong id="totalMastered">0</strong> / 480</h3>
-          <span>六个站点合计掌握进度</span>
+          <h3><strong id="totalMastered">0</strong> / 522</h3>
+          <span>七个站点合计掌握进度</span>
           <div class="overview-bar" aria-hidden="true"><i id="totalMasteryBar"></i></div>
         </article>
         <article class="overview-card">
@@ -321,7 +350,7 @@
         <div>
           <span>01</span>
           <strong>课程彼此独立</strong>
-          <p>六门课使用各自的章节、题型和学习体系，不在一个页面里混杂。</p>
+          <p>七门课使用各自的章节、题型和学习体系，不在一个页面里混杂。</p>
         </div>
         <div>
           <span>02</span>
@@ -340,12 +369,12 @@
   <footer>
     <div>
       <strong>大二上复习资料</strong>
-      <span>六个站点 · 一套入口 · 离线可用</span>
+      <span>七个站点 · 一套入口 · 离线可用</span>
     </div>
-    <p>知识卡 · 公式速查 · 通关自测 · 原始笔记</p>
+    <p>知识卡 · 公式速查 · 通关自测 · 图文例题</p>
   </footer>
 
   <script defer src="../weekly-quiz.js?v=20261104-amplifiers"></script>
-  <script defer src="./js/portal.js?v=20261104-characteristics"></script>
+  <script defer src="./js/portal.js?v=20261105-xi"></script>
 </body>
 </html>

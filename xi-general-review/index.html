@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="习近平新时代中国特色社会主义思想概论导论复习站：时代背景、理论根据、科学体系、历史地位和根本保证。">
+  <title>习概 · 导论知识主线</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./css/styles.css?v=20261105-intro">
+</head>
+<body>
+  <a class="skip-link" href="#courseContent">跳到知识内容</a>
+
+  <header class="hero">
+    <div class="hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">XI GENERAL INTRODUCTION · 2026</p>
+        <h1>习概<span>导论知识主线</span></h1>
+        <p class="hero__lead">
+          以“马克思主义中国化时代化新的飞跃”为主线，梳理这一思想的时代背景、理论根据、科学体系、历史地位和根本保证。
+        </p>
+        <div class="hero__stats" aria-label="站点统计">
+          <span><strong id="totalChapters">0</strong> 个章节</span>
+          <span><strong id="totalThemes">0</strong> 个小标题</span>
+          <span><strong id="totalKnowledge">0</strong> 个知识点</span>
+          <span>本地保存掌握进度</span>
+        </div>
+        <div class="hero__actions">
+          <a href="#chapterRoot">开始复习</a>
+          <a href="#knowledgeFramework">查看章节结构</a>
+        </div>
+      </div>
+
+      <div class="hero__map" aria-hidden="true">
+        <span class="hero__orbit hero__orbit--one"></span>
+        <span class="hero__orbit hero__orbit--two"></span>
+        <span class="hero__core">导论</span>
+        <span class="hero__node hero__node--one">时代背景</span>
+        <span class="hero__node hero__node--two">理论根据</span>
+        <span class="hero__node hero__node--three">科学体系</span>
+        <span class="hero__node hero__node--four">历史地位</span>
+        <span class="hero__node hero__node--five">根本保证</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="framework" id="knowledgeFramework" aria-labelledby="frameworkTitle">
+    <div class="framework__head">
+      <div>
+        <p class="eyebrow">FIVE-PART FRAMEWORK</p>
+        <h2 id="frameworkTitle">一个大标题，五条理解主线</h2>
+      </div>
+      <p>先建立“为什么、从哪里来、是什么、有何意义、如何保证”的递进关系，再进入各知识点。</p>
+    </div>
+    <ol class="framework__steps">
+      <li>
+        <span>01</span>
+        <strong>时代背景</strong>
+        <p>为什么创立这一思想</p>
+      </li>
+      <li>
+        <span>02</span>
+        <strong>理论根据</strong>
+        <p>这一思想从哪里来</p>
+      </li>
+      <li>
+        <span>03</span>
+        <strong>科学体系</strong>
+        <p>这一思想是什么</p>
+      </li>
+      <li>
+        <span>04</span>
+        <strong>历史地位</strong>
+        <p>有何重大意义</p>
+      </li>
+      <li>
+        <span>05</span>
+        <strong>根本保证</strong>
+        <p>如何确保思想贯彻</p>
+      </li>
+    </ol>
+  </section>
+
+  <div class="page">
+    <aside class="rail" aria-label="学习导航">
+      <div class="rail__sticky">
+        <div class="progress-card">
+          <div class="progress-card__head">
+            <span>复习进度</span>
+            <strong id="masteryText">0 / 0</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true"><i id="masteryBar"></i></div>
+          <button class="text-button" id="resetProgress" type="button">重置掌握标记</button>
+        </div>
+
+        <nav class="chapter-nav" aria-label="章节与主题目录">
+          <p class="rail__label">导论结构</p>
+          <div id="chapterNav"></div>
+        </nav>
+
+        <div class="type-nav">
+          <p class="rail__label">知识点类型</p>
+          <div id="typeFilters" class="type-filters" role="group" aria-label="筛选知识点类型"></div>
+        </div>
+
+        <div class="rail__note">
+          <strong>阅读提示</strong>
+          <p>先掌握五个小标题之间的关系，再记忆具体表述和结构层次。</p>
+        </div>
+      </div>
+    </aside>
+
+    <main id="courseContent" class="main">
+      <section class="toolbar" aria-label="知识查询工具">
+        <label class="search-box">
+          <span class="search-box__icon" aria-hidden="true"></span>
+          <input id="searchInput" type="search" placeholder="搜索知识点，如“两个结合”“十个明确”“两个确立”" aria-label="搜索知识点" autocomplete="off">
+          <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
+        </label>
+        <div class="toolbar__actions">
+          <span id="resultCount" class="result-count" aria-live="polite"></span>
+          <button id="expandAll" class="secondary-button" type="button">展开全部</button>
+          <button id="collapseAll" class="secondary-button" type="button">全部折叠</button>
+        </div>
+      </section>
+
+      <aside class="legend" aria-label="知识点颜色说明">
+        <span><i class="dot dot--definition"></i>概念与定位</span>
+        <span><i class="dot dot--structure"></i>体系与结构</span>
+        <span><i class="dot dot--judgment"></i>判断与关系</span>
+        <span><i class="dot dot--significance"></i>历史与意义</span>
+        <span><i class="dot dot--requirement"></i>根本保证</span>
+        <span><i class="dot dot--warning"></i>易错提醒</span>
+      </aside>
+
+      <div id="chapterRoot" class="chapters"></div>
+      <p id="emptyState" class="empty-state" hidden>没有找到匹配的知识点，换一个关键词或清除筛选。</p>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>习概 · 导论 ｜ 时代背景 · 理论根据 · 科学体系 · 历史地位 · 根本保证</p>
+    <p>知识卡 · 关键词搜索 · 类型筛选 · 浏览器本地进度</p>
+  </footer>
+
+  <script defer src="./js/course-data.js?v=20261105-intro"></script>
+  <script defer src="./js/app.js?v=20261105-intro"></script>
+</body>
+</html>

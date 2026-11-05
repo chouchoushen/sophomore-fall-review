@@ -43,6 +43,13 @@
       href: "./cet4-review/",
       total: 46,
       key: "cet4-review.mastered.v1"
+    },
+    {
+      id: "xi",
+      name: "习概",
+      href: "./xi-general-review/",
+      total: 28,
+      key: "xi-general-review.mastered.v1"
     }
   ];
 

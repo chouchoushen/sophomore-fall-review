@@ -566,6 +566,11 @@ main {
   --card-accent-soft: rgba(60, 103, 232, .1);
 }
 
+.course-card--xi {
+  --card-accent: #a23d2d;
+  --card-accent-soft: rgba(162, 61, 45, .11);
+}
+
 .course-card__top {
   display: flex;
   align-items: center;
