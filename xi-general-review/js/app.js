@@ -41,10 +41,23 @@
   const allCards = allThemes.flatMap(({ chapter, theme }) =>
     theme.cards.map((card) => ({ chapter, theme, card }))
   );
+  const allFigures = allThemes.flatMap(({ chapter, theme }) => {
+    const cardFigures = theme.cards.flatMap((card) =>
+      card.figures || (card.figure ? [card.figure] : [])
+    );
+    return [...(theme.figures || []), ...cardFigures].map((figure) => ({
+      chapter,
+      theme,
+      figure
+    }));
+  }).filter(({ figure }, index, figures) =>
+    figures.findIndex((item) => item.figure.src === figure.src) === index
+  );
 
   document.getElementById("totalChapters").textContent = COURSE.chapters.length;
   document.getElementById("totalThemes").textContent = allThemes.length;
   document.getElementById("totalKnowledge").textContent = allCards.length;
+  document.getElementById("totalFigures").textContent = allFigures.length;
 
   buildSidebar();
   buildTypeFilters();
@@ -94,6 +107,10 @@
   });
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !document.getElementById("figureModal").hidden) {
+      closeFigureModal();
+      return;
+    }
     if (event.key === "/" && document.activeElement !== searchInput) {
       event.preventDefault();
       searchInput.focus();
@@ -197,6 +214,7 @@
       button.addEventListener("click", () => toggleMastery(button.dataset.card));
     });
 
+    setupFigureModal();
     updateResultCount(allCards.length);
   }
 
@@ -246,10 +264,37 @@
           </div>
           <span class="theme-block__count">${theme.cards.length} 项</span>
         </div>
+        ${theme.figures ? renderFigures(theme.figures) : ""}
         <div class="knowledge-grid">
           ${theme.cards.map((card) => renderCard(chapter, theme, card)).join("")}
         </div>
       </section>
+    `;
+  }
+
+  function renderFigures(figures) {
+    return `
+      <div class="figure-gallery" aria-label="${figures.length} 张相关课堂图片">
+        ${figures.map((figure, index) => `
+          <button
+            class="figure-card"
+            type="button"
+            data-figure-src="${escapeAttribute(figure.src)}"
+            data-figure-title="${escapeAttribute(figure.title)}"
+            data-figure-caption="${escapeAttribute(figure.caption || "")}"
+            aria-label="放大查看：${escapeAttribute(figure.title)}"
+          >
+            <span class="figure-card__media">
+              <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy">
+            </span>
+            <span class="figure-card__text">
+              <span class="figure-card__index">图 ${String(index + 1).padStart(2, "0")} · 课堂资料</span>
+              <strong>${figure.title}</strong>
+              <small>${figure.caption || "点击查看原图"}</small>
+            </span>
+          </button>
+        `).join("")}
+      </div>
     `;
   }
 
@@ -287,6 +332,37 @@
         <button class="mastery-button" type="button" data-card="${card.id}" aria-pressed="false">标记掌握</button>
       </article>
     `;
+  }
+
+  function setupFigureModal() {
+    const modal = document.getElementById("figureModal");
+    document.querySelectorAll(".figure-card").forEach((button) => {
+      button.addEventListener("click", () => openFigureModal(button));
+    });
+    document.getElementById("figureModalClose").addEventListener("click", closeFigureModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeFigureModal();
+    });
+  }
+
+  function openFigureModal(button) {
+    const modal = document.getElementById("figureModal");
+    const image = document.getElementById("figureModalImage");
+    image.src = button.dataset.figureSrc;
+    image.alt = button.dataset.figureTitle;
+    document.getElementById("figureModalTitle").textContent = button.dataset.figureTitle;
+    document.getElementById("figureModalCaption").textContent = button.dataset.figureCaption;
+    modal.hidden = false;
+    document.body.classList.add("modal-open");
+    document.getElementById("figureModalClose").focus();
+  }
+
+  function closeFigureModal() {
+    const modal = document.getElementById("figureModal");
+    if (modal.hidden) return;
+    modal.hidden = true;
+    document.body.classList.remove("modal-open");
+    document.getElementById("figureModalImage").removeAttribute("src");
   }
 
   function setChapterOpen(chapter, open, persist = true) {

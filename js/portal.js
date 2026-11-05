@@ -48,7 +48,7 @@
       id: "xi",
       name: "习概",
       href: "./xi-general-review/",
-      total: 28,
+      total: 60,
       key: "xi-general-review.mastered.v1"
     }
   ];
