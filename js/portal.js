@@ -6,7 +6,7 @@
       id: "probability",
       name: "概率论",
       href: "./probability-review/",
-      total: 110,
+      total: 90,
       key: "probability-review.mastered.v1"
     },
     {
@@ -48,7 +48,7 @@
       id: "xi",
       name: "习概",
       href: "./xi-general-review/",
-      total: 90,
+      total: 129,
       key: "xi-general-review.mastered.v1"
     }
   ];

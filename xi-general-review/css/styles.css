@@ -1087,6 +1087,14 @@ body.modal-open {
     max-width: 760px;
   }
 
+  .chapter-intro {
+    grid-template-columns: 1fr;
+  }
+
+  .focus-list {
+    justify-content: flex-start;
+  }
+
   .framework__steps {
     grid-template-columns: repeat(3, 1fr);
     row-gap: 1rem;
