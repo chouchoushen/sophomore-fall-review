@@ -17,7 +17,10 @@
     "math-physics-methods-review",
     "xi-general-review"
   ];
-  const siteKey = window.location.pathname.split("/").filter(Boolean)[0] || "site";
+  const pathSegments = window.location.pathname.split("/").filter(Boolean);
+  const siteKey = SITE_KEYS.find((key) => pathSegments.includes(key)) ||
+    pathSegments.at(-1) ||
+    "site";
   const storageKey = `${STORAGE_PREFIX}${siteKey}`;
   let annotations = readAnnotations();
   let scanQueued = false;
