@@ -7,7 +7,7 @@
   <title>模拟电子技术知识主线</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="./css/styles.css?v=20261104-frequency-response">
+  <link rel="stylesheet" href="./css/styles.css?v=20261106-power-text">
 </head>
 <body>
   <a class="skip-link" href="#courseContent">跳到知识内容</a>
@@ -274,14 +274,14 @@
                 <td>单电源、有输出电容；输出电压幅度约为 $V_{CC}/2$。</td>
               </tr>
               <tr>
-                <td>OCL 乙类最大输出</td>
-                <td>$P_{omax}=\dfrac{V_{CC}^2}{2R_L},\quad P_V=\dfrac{2V_{CC}^2}{\pi R_L}$</td>
+                <td>OCL 互补对称电路的最大功率和电源最大功率</td>
+                <td>$P_{omax}=\dfrac{V_{CC}^2}{2R_L},\quad P_{V\max}=\dfrac{2V_{CC}^2}{\pi R_L}$</td>
                 <td>双电源、负载直连；忽略饱和压降时 $U_{om}\approx V_{CC}$。</td>
               </tr>
               <tr>
                 <td>复合管</td>
                 <td>$\beta\approx\beta_1\beta_2,\quad r_{be}\approx r_{be1}+(1+\beta_1)r_{be2}$</td>
-                <td>增强电流驱动；复合管类型由第一只晶体管决定。</td>
+                <td>扩大电流驱动能力；谁直接接出等效基极，谁就是前管，复合管类型与前管相同。</td>
               </tr>
             </tbody>
           </table>
@@ -373,12 +373,12 @@
 
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
-  <script defer src="../weekly-quiz.js?v=20261105-composite-power"></script>
-  <script defer src="./js/course-data.js?v=20261105-composite-power"></script>
-  <script defer src="./js/power-amplifier-data.js?v=20261105-composite-power"></script>
-  <script defer src="./js/quiz-data.js?v=20261105-composite-power"></script>
-  <script defer src="./js/weekly-variants.js?v=20261105-composite-power"></script>
-  <script defer src="./js/app.js?v=20261105-composite-power"></script>
-  <script defer src="./js/practice.js?v=20261105-composite-power"></script>
+  <script defer src="../weekly-quiz.js?v=20261106-power-text"></script>
+  <script defer src="./js/course-data.js?v=20261106-power-text"></script>
+  <script defer src="./js/power-amplifier-data.js?v=20261106-power-text"></script>
+  <script defer src="./js/quiz-data.js?v=20261106-power-text"></script>
+  <script defer src="./js/weekly-variants.js?v=20261106-power-text"></script>
+  <script defer src="./js/app.js?v=20261106-power-text"></script>
+  <script defer src="./js/practice.js?v=20261106-power-text"></script>
 </body>
 </html>

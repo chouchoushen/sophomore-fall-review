@@ -304,7 +304,7 @@ window.ANALOG_QUIZ = {
       options: ["$\\beta_1+\\beta_2$", "$\\beta_1-\\beta_2$", "$\\beta_1\\beta_2$", "$\\sqrt{\\beta_1\\beta_2}$"],
       answer: 2,
       explanation:
-        "第一只晶体管的发射极电流近似成为第二只晶体管的基极电流，经两级电流放大后，总电流增益近似为 $\\beta\\approx\\beta_1\\beta_2$。复合管能增强电流驱动能力，但其 NPN/PNP 类型由第一只晶体管决定。"
+        "前管的发射极电流近似成为后管的基极电流，经两级电流放大后，总电流增益近似为 $\\beta\\approx\\beta_1\\beta_2$。增加复合管是为了扩大电流驱动能力；其 NPN/PNP 类型由直接接出等效基极的前管决定。"
     }
   ]
 };
