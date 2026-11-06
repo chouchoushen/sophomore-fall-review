@@ -9,6 +9,14 @@
     "例题：",
     "易错点："
   ].join("\n");
+  const SITE_KEYS = [
+    "probability-review",
+    "analog-electronics-review",
+    "digital-electronics-review",
+    "general-physics-review",
+    "math-physics-methods-review",
+    "xi-general-review"
+  ];
   const siteKey = window.location.pathname.split("/").filter(Boolean)[0] || "site";
   const storageKey = `${STORAGE_PREFIX}${siteKey}`;
   let annotations = readAnnotations();
@@ -105,10 +113,124 @@
       line-height: 1.55;
     }
 
+    .annotation-sync-button {
+      position: fixed;
+      right: max(.9rem, env(safe-area-inset-right));
+      bottom: max(4.2rem, calc(env(safe-area-inset-bottom) + 4.2rem));
+      z-index: 2147482999;
+      padding: .62rem .82rem;
+      border: 1px solid #b9c9e8;
+      border-radius: 999px;
+      background: var(--surface, #fff);
+      box-shadow: 0 8px 24px rgba(22, 48, 82, .17);
+      color: var(--blue, var(--red, #3157bc));
+      cursor: pointer;
+      font: 700 .68rem/1.2 var(--sans, "Microsoft YaHei", sans-serif);
+    }
+
+    .annotation-sync-button:hover {
+      border-color: var(--blue, var(--red, #3157bc));
+    }
+
+    .annotation-sync-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483010;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+      background: rgba(15, 25, 38, .58);
+      backdrop-filter: blur(4px);
+    }
+
+    .annotation-sync-modal[hidden] {
+      display: none !important;
+    }
+
+    .annotation-sync-dialog {
+      width: min(42rem, 100%);
+      max-height: min(42rem, calc(100vh - 2rem));
+      padding: 1rem;
+      overflow-y: auto;
+      border-radius: 10px;
+      background: var(--surface, #fff);
+      color: var(--ink, #202936);
+      box-shadow: 0 24px 70px rgba(9, 22, 37, .28);
+    }
+
+    .annotation-sync-dialog__head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: .65rem;
+    }
+
+    .annotation-sync-dialog h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .annotation-sync-dialog p {
+      margin: .35rem 0 0;
+      color: var(--muted, #66717d);
+      font-size: .68rem;
+      line-height: 1.7;
+    }
+
+    .annotation-sync-close {
+      border: 0;
+      background: transparent;
+      color: var(--muted, #66717d);
+      cursor: pointer;
+      font-size: 1.35rem;
+    }
+
+    .annotation-sync-code {
+      width: 100%;
+      min-height: 8rem;
+      padding: .65rem;
+      resize: vertical;
+      border: 1px solid var(--rule, var(--line, #d9dee6));
+      border-radius: 6px;
+      background: #fbfcfe;
+      color: var(--ink, #202936);
+      font: .58rem/1.6 var(--mono, Consolas, monospace);
+      word-break: break-all;
+    }
+
+    .annotation-sync-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .6rem;
+    }
+
+    .annotation-sync-actions button {
+      padding: .42rem .62rem;
+      border: 1px solid var(--rule, var(--line, #d9dee6));
+      border-radius: 4px;
+      background: var(--surface, #fff);
+      color: var(--blue, var(--red, #3157bc));
+      cursor: pointer;
+      font: 700 .64rem var(--sans, "Microsoft YaHei", sans-serif);
+    }
+
+    .annotation-sync-status {
+      min-height: 1.4rem;
+      margin-top: .55rem;
+      color: var(--green, #23725b);
+      font-size: .64rem;
+    }
+
     @media (max-width: 600px) {
       .knowledge-annotation textarea {
         min-height: 7.5rem;
         font-size: 16px;
+      }
+
+      .annotation-sync-button {
+        bottom: max(3.9rem, calc(env(safe-area-inset-bottom) + 3.9rem));
       }
     }
 
@@ -125,6 +247,11 @@
         border: 0;
         background: transparent;
       }
+
+      .annotation-sync-button,
+      .annotation-sync-modal {
+        display: none !important;
+      }
     }
   `;
   document.head.appendChild(style);
@@ -140,6 +267,116 @@
 
   function writeAnnotations() {
     localStorage.setItem(storageKey, JSON.stringify(annotations));
+  }
+
+  function readSiteAnnotations(key) {
+    try {
+      const value = JSON.parse(localStorage.getItem(`${STORAGE_PREFIX}${key}`));
+      return value && typeof value === "object" ? value : {};
+    } catch {
+      return {};
+    }
+  }
+
+  function collectAllAnnotations() {
+    const sites = {};
+    SITE_KEYS.forEach((key) => {
+      sites[key] = readSiteAnnotations(key);
+    });
+    return {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      sites
+    };
+  }
+
+  function bytesToBase64Url(bytes) {
+    let binary = "";
+    bytes.forEach((byte) => {
+      binary += String.fromCharCode(byte);
+    });
+    return btoa(binary)
+      .replaceAll("+", "-")
+      .replaceAll("/", "_")
+      .replace(/=+$/, "");
+  }
+
+  function base64UrlToBytes(value) {
+    const base64 = value.replaceAll("-", "+").replaceAll("_", "/");
+    const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+    const binary = atob(padded);
+    return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  }
+
+  async function encodeSyncPayload(payload) {
+    const bytes = new TextEncoder().encode(JSON.stringify(payload));
+    if (!("CompressionStream" in window)) {
+      return `RAW:${bytesToBase64Url(bytes)}`;
+    }
+    const compressedStream = new Blob([bytes])
+      .stream()
+      .pipeThrough(new CompressionStream("gzip"));
+    const compressed = new Uint8Array(
+      await new Response(compressedStream).arrayBuffer()
+    );
+    return `GZ:${bytesToBase64Url(compressed)}`;
+  }
+
+  async function decodeSyncPayload(code) {
+    const trimmed = String(code || "").trim();
+    const separator = trimmed.indexOf(":");
+    if (separator < 0) throw new Error("同步码格式不正确");
+    const format = trimmed.slice(0, separator);
+    const bytes = base64UrlToBytes(trimmed.slice(separator + 1));
+    let decoded = bytes;
+    if (format === "GZ") {
+      if (!("DecompressionStream" in window)) {
+        throw new Error("当前浏览器不支持解压同步码");
+      }
+      const decompressedStream = new Blob([bytes])
+        .stream()
+        .pipeThrough(new DecompressionStream("gzip"));
+      decoded = new Uint8Array(
+        await new Response(decompressedStream).arrayBuffer()
+      );
+    } else if (format !== "RAW") {
+      throw new Error("同步码版本不受支持");
+    }
+    const payload = JSON.parse(new TextDecoder().decode(decoded));
+    if (payload.version !== 1 || !payload.sites) {
+      throw new Error("同步码内容无效");
+    }
+    return payload;
+  }
+
+  function importPayload(payload) {
+    let imported = 0;
+    SITE_KEYS.forEach((key) => {
+      const incoming = payload.sites[key] || {};
+      if (!incoming || typeof incoming !== "object") return;
+      const current = readSiteAnnotations(key);
+      const merged = { ...current, ...incoming };
+      localStorage.setItem(`${STORAGE_PREFIX}${key}`, JSON.stringify(merged));
+      imported += Object.keys(incoming).length;
+    });
+    annotations = readAnnotations();
+    refreshMountedAnnotations();
+    return imported;
+  }
+
+  function refreshMountedAnnotations() {
+    document
+      .querySelectorAll(".knowledge-card > .knowledge-annotation")
+      .forEach((details) => {
+        const card = details.parentElement;
+        const key = cardKey(card);
+        const value = annotations[key] || "";
+        const textarea = details.querySelector("textarea");
+        const state = details.querySelector(".knowledge-annotation__state");
+        textarea.value = value;
+        details.open = Boolean(value);
+        state.textContent = value ? "已有批注" : "未填写";
+      });
   }
 
   function cardKey(card) {
@@ -164,7 +401,7 @@
         <div class="knowledge-annotation__actions">
           <button type="button" data-annotation-template>插入结构模板</button>
           <button type="button" data-annotation-clear>清空批注</button>
-          <span class="knowledge-annotation__hint">仅保存在当前浏览器</span>
+          <span class="knowledge-annotation__hint">本机自动保存；可跨设备同步</span>
         </div>
       </div>
     `;
@@ -210,6 +447,140 @@
     card.appendChild(details);
   }
 
+  function createSyncUi() {
+    if (document.querySelector("[data-annotation-sync]")) return;
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "annotation-sync-button";
+    button.dataset.annotationSync = "";
+    button.textContent = "批注同步";
+    button.title = "生成或导入六站批注同步码";
+
+    const modal = document.createElement("div");
+    modal.className = "annotation-sync-modal";
+    modal.hidden = true;
+    modal.innerHTML = `
+      <section class="annotation-sync-dialog" role="dialog" aria-modal="true" aria-labelledby="annotationSyncTitle">
+        <div class="annotation-sync-dialog__head">
+          <div>
+            <h3 id="annotationSyncTitle">六站批注跨设备同步</h3>
+            <p>同步码包含概率论、模电、数电、普物、数理方法和习概，不包含英语四级。同步不经过服务器，请自行把同步码发到手机，再在手机上导入。</p>
+          </div>
+          <button class="annotation-sync-close" type="button" data-sync-close aria-label="关闭">×</button>
+        </div>
+        <textarea class="annotation-sync-code" data-sync-code
+          placeholder="点击“生成全部批注”，复制同步码；或在手机粘贴电脑发来的同步码后点击“导入”。"></textarea>
+        <div class="annotation-sync-actions">
+          <button type="button" data-sync-generate>生成全部批注</button>
+          <button type="button" data-sync-copy>复制同步码</button>
+          <button type="button" data-sync-import>导入同步码</button>
+          <button type="button" data-sync-export>下载 JSON</button>
+          <button type="button" data-sync-choose>导入 JSON</button>
+          <input type="file" accept="application/json,.json" data-sync-file hidden>
+        </div>
+        <div class="annotation-sync-status" data-sync-status aria-live="polite"></div>
+      </section>
+    `;
+
+    document.body.append(button, modal);
+    const code = modal.querySelector("[data-sync-code]");
+    const status = modal.querySelector("[data-sync-status]");
+    const fileInput = modal.querySelector("[data-sync-file]");
+
+    function setStatus(message, isError = false) {
+      status.textContent = message;
+      status.style.color = isError ? "#a33a32" : "";
+    }
+
+    function close() {
+      modal.hidden = true;
+    }
+
+    button.addEventListener("click", () => {
+      modal.hidden = false;
+      setStatus("");
+      code.focus();
+    });
+    modal.querySelector("[data-sync-close]").addEventListener("click", close);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) close();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !modal.hidden) close();
+    });
+
+    modal.querySelector("[data-sync-generate]").addEventListener("click", async () => {
+      setStatus("正在生成同步码…");
+      try {
+        code.value = await encodeSyncPayload(collectAllAnnotations());
+        setStatus("同步码已生成，可复制后发送到手机。");
+      } catch (error) {
+        setStatus(`生成失败：${error.message}`, true);
+      }
+    });
+
+    modal.querySelector("[data-sync-copy]").addEventListener("click", async () => {
+      if (!code.value) {
+        code.value = await encodeSyncPayload(collectAllAnnotations());
+      }
+      try {
+        await navigator.clipboard.writeText(code.value);
+        setStatus("同步码已复制到剪贴板。");
+      } catch {
+        code.focus();
+        code.select();
+        setStatus("请按 Ctrl+C 或长按复制已选中的同步码。");
+      }
+    });
+
+    modal.querySelector("[data-sync-import]").addEventListener("click", async () => {
+      setStatus("正在导入同步码…");
+      try {
+        const count = importPayload(await decodeSyncPayload(code.value));
+        setStatus(`已导入 ${count} 条批注。`);
+      } catch (error) {
+        setStatus(`导入失败：${error.message}`, true);
+      }
+    });
+
+    modal.querySelector("[data-sync-export]").addEventListener("click", () => {
+      const payload = collectAllAnnotations();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], {
+        type: "application/json"
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `复习批注-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setStatus("批注 JSON 已开始下载。");
+    });
+
+    modal.querySelector("[data-sync-choose]").addEventListener("click", () => {
+      fileInput.click();
+    });
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files?.[0];
+      if (!file) return;
+      try {
+        const payload = JSON.parse(await file.text());
+        if (payload.version !== 1 || !payload.sites) {
+          throw new Error("文件内容无效");
+        }
+        const count = importPayload(payload);
+        setStatus(`已从 JSON 导入 ${count} 条批注。`);
+      } catch (error) {
+        setStatus(`导入失败：${error.message}`, true);
+      } finally {
+        fileInput.value = "";
+      }
+    });
+  }
+
   function scan() {
     scanQueued = false;
     document.querySelectorAll(".knowledge-card").forEach(mountAnnotation);
@@ -222,6 +593,7 @@
   }
 
   scan();
+  createSyncUi();
   const observer = new MutationObserver(queueScan);
   observer.observe(document.body, { childList: true, subtree: true });
 })();
