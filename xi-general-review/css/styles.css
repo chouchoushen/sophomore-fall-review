@@ -951,7 +951,7 @@ a {
 }
 
 .figure-card__media {
-  min-height: 126px;
+  align-self: start;
   overflow: hidden;
   border: 1px solid var(--rule);
   border-radius: 5px;
@@ -961,8 +961,8 @@ a {
 .figure-card__media img {
   display: block;
   width: 100%;
-  height: 100%;
-  min-height: 126px;
+  height: auto;
+  max-height: 300px;
   object-fit: contain;
 }
 
@@ -1203,9 +1203,8 @@ body.modal-open {
     grid-template-columns: 1fr;
   }
 
-  .figure-card__media,
   .figure-card__media img {
-    min-height: 210px;
+    max-height: 460px;
   }
 
   .theme-block {

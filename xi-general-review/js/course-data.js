@@ -1,6 +1,6 @@
 window.XI_COURSE = {
   title: "习近平新时代中国特色社会主义思想概论",
-  subtitle: "导论 · 马克思主义中国化时代化新的飞跃",
+  subtitle: "导论 · 新时代坚持和发展中国特色社会主义 · 全面深化改革开放",
   updatedAt: "2026-11-05",
   chapters: [
     {
@@ -790,6 +790,466 @@ window.XI_COURSE = {
               body: [
                 "中国特色社会主义是科学社会主义理论逻辑与中国社会发展历史逻辑的辩证统一，这条道路符合中国实际、反映人民意愿、适应时代发展要求。",
                 "坚持和发展中国特色社会主义，必须坚定“四个自信”，准确把握新时代历史方位、主要矛盾和伟大变革，全面贯彻基本理论、基本路线、基本方略，统筹推进“两个布局”，在新的伟大奋斗中不断开拓前进。"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      id: "comprehensive-reform",
+      number: "05",
+      title: "全面深化改革开放",
+      english: "Deepening Reform and Opening Up",
+      accent: "red",
+      summary:
+        "从“关键一招”理解为什么改，从总目标、治理效能和科学方法论把握怎样改，从改革开放永无止境、对内深化改革和高水平对外开放回答走向何方。",
+      examFocus: ["关键一招", "深刻革命", "总目标", "治理效能", "正确方法论", "高水平开放"],
+      themes: [
+        {
+          id: "reform-key-move",
+          title: "关键一招：为什么要全面深化改革开放",
+          subtitle: "改革开放到了一个新的重要关头",
+          summary:
+            "改革开放是决定当代中国命运的关键一招，也是当代中国最显著的特征、最壮丽的气象。",
+          figures: [
+            {
+              src: "./assets/source/reform-chapter-overview.jpg",
+              title: "第五章：全面深化改革开放",
+              caption: "本章按“关键一招、实践路径、未来方向”三个问题展开，分别回答为什么改、怎么改、走向何方。"
+            },
+            {
+              src: "./assets/source/reform-key-move.jpg",
+              title: "关键一招：改革开放的新重要关头",
+              caption: "重大定位是前进的重要法宝，本质属性是一场深刻革命，坚守原则是坚持正确方向。"
+            }
+          ],
+          cards: [
+            {
+              id: "reform-key-move-position",
+              type: "definition",
+              title: "改革开放是前进的重要法宝",
+              body: [
+                "改革开放是决定当代中国命运的关键一招，也是决定实现“两个一百年”奋斗目标、实现中华民族伟大复兴的关键一招。",
+                "它极大解放和发展了社会生产力，推动中国大踏步赶上时代，是党和人民事业不断取得胜利的重要法宝。"
+              ]
+            },
+            {
+              id: "reform-new-juncture",
+              type: "judgment",
+              title: "改革开放进入新的重要关头",
+              body: [
+                "改革开放是当代中国最显著的特征、最壮丽的气象。",
+                "进入新时代，改革进入攻坚期和深水区，面临的任务更重、矛盾更深、难度更大，必须以更大的政治勇气和智慧推进改革。"
+              ]
+            },
+            {
+              id: "reform-key-move-whole",
+              type: "structure",
+              title: "为什么改：三个理解层次",
+              bullets: [
+                "重大定位：改革开放是我们前进的重要法宝。",
+                "本质属性：新时代全面深化改革开放是一场深刻革命。",
+                "坚守原则：坚持全面深化改革开放的正确方向。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "profound-revolution",
+          title: "本质属性：新时代全面深化改革开放是一场深刻革命",
+          subtitle: "把握改革的深度、广度和效果",
+          summary:
+            "全面深化改革不是局部修补，而是关系党和国家事业发展全局的深刻变革，具有前所未有的艰巨性、复杂性和系统性。",
+          figures: [
+            {
+              src: "./assets/source/reform-profound-revolution.jpg",
+              title: "新时代全面深化改革开放是一场深刻革命",
+              caption: "改革因艰巨性、复杂性和系统性而具有深度；必须以全面、系统、整体的方式推进，并取得历史性、革命性、开创性成效。"
+            }
+          ],
+          cards: [
+            {
+              id: "why-profound-revolution",
+              type: "definition",
+              title: "为什么说是一场深刻革命",
+              body: [
+                "全面深化改革触及深层次利益格局调整和制度体系变革，面临的任务具有艰巨性、复杂性和系统性。",
+                "正因为要解决长期积累的体制机制问题，改革才表现出深刻性、全面性和长期性。"
+              ]
+            },
+            {
+              id: "how-profound-revolution",
+              type: "structure",
+              title: "怎样推进全面革命",
+              body: [
+                "不能把全面深化改革理解为零散的政策调整，而必须坚持全面、系统、整体推进。",
+                "要统筹各领域改革，注重改革举措的系统集成和协同高效，形成整体效应。"
+              ]
+            },
+            {
+              id: "revolution-effect",
+              type: "significance",
+              title: "改革的实际效果",
+              body: [
+                "新时代全面深化改革取得历史性、革命性、开创性成就。",
+                "各领域体制机制发生深刻变革，中国特色社会主义制度更加成熟更加定型，国家治理体系和治理能力现代化水平不断提高。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-correct-direction",
+          title: "坚守原则：坚持全面深化改革开放的正确方向",
+          subtitle: "人民立场、制度底线与三个进一步解放",
+          summary:
+            "改革必须坚持正确方向，既大胆探索、敢闯敢试，又守住根本原则和制度底线。",
+          figures: [
+            {
+              src: "./assets/source/reform-correct-direction.jpg",
+              title: "坚持全面深化改革开放的正确方向",
+              caption: "坚持人民立场，坚持党的领导和中国特色社会主义制度底线，坚持进一步解放思想、解放和发展社会生产力、解放和增强社会活力。"
+            }
+          ],
+          cards: [
+            {
+              id: "people-centered-reform",
+              type: "requirement",
+              title: "坚持人民立场原则",
+              body: [
+                "改革为了人民，改革依靠人民，改革成果由人民共享。",
+                "要把是否促进社会公平正义、增进人民福祉作为改革的重要检验标准，让人民群众有更多获得感。"
+              ]
+            },
+            {
+              id: "institutional-bottom-line",
+              type: "warning",
+              title: "坚持制度底线原则",
+              body: [
+                "改革必须坚持党的领导和中国特色社会主义制度，不能在根本性问题上出现颠覆性错误。",
+                "完善和发展制度不是否定制度，而是使制度更加成熟更加定型、优势更加充分发挥。"
+              ]
+            },
+            {
+              id: "three-further-emancipations",
+              type: "structure",
+              title: "坚持“三个进一步解放”原则",
+              bullets: [
+                "进一步解放思想。",
+                "进一步解放和发展社会生产力。",
+                "进一步解放和增强社会活力。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-general-goal",
+          title: "锚定总目标：坚持全面深化改革总目标",
+          subtitle: "完善制度与提升治理现代化水平",
+          summary:
+            "全面深化改革总目标是完善和发展中国特色社会主义制度、推进国家治理体系和治理能力现代化。",
+          figures: [
+            {
+              src: "./assets/source/reform-practice-overview.jpg",
+              title: "实践路径：怎样推进全面深化改革开放",
+              caption: "实践路径包括锚定总目标、提升治理效能、善用正确方法论三个层面。"
+            },
+            {
+              src: "./assets/source/reform-general-goal.jpg",
+              title: "全面深化改革总目标",
+              caption: "党的十八届三中全会作出顶层设计和全面部署，党的二十届三中全会再次强调全面深化改革总目标。"
+            }
+          ],
+          cards: [
+            {
+              id: "general-goal-content",
+              type: "definition",
+              title: "总目标的两句话",
+              body: [
+                "全面深化改革总目标是完善和发展中国特色社会主义制度、推进国家治理体系和治理能力现代化。",
+                "前一句规定改革的制度方向，后一句规定治理现代化的实践要求，二者相互联系、不可分割。"
+              ]
+            },
+            {
+              id: "system-and-governance",
+              type: "judgment",
+              title: "制度与治理的关系",
+              body: [
+                "制度是治理的依据，治理是制度执行和效能转化的过程。",
+                "既要把制度建设摆在突出位置，也要提高制度执行能力，把制度优势转化为治理效能。"
+              ]
+            },
+            {
+              id: "reform-top-level-design",
+              type: "structure",
+              title: "顶层设计与全面部署",
+              body: [
+                "全面深化改革是一项系统工程，需要从全局出发加强顶层设计、整体谋划和统筹协调。",
+                "各项改革举措要在目标上相互衔接、在政策上相互配合、在实施中相互促进。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-governance",
+          title: "提升治理效能：推进国家治理体系和治理能力现代化",
+          subtitle: "把制度优势转化为治理效能",
+          summary:
+            "国家治理体系和治理能力是一个国家制度和制度执行能力的集中体现，必须坚定制度自信、发挥制度优势、提升治理效能。",
+          figures: [
+            {
+              src: "./assets/source/reform-governance-capacity.jpg",
+              title: "国家治理体系和治理能力",
+              caption: "治理体系与治理能力是国家制度和制度执行能力的集中体现；要做到坚定制度自信、发挥制度优势、把优势转化为治理效能。"
+            },
+            {
+              src: "./assets/source/reform-institutional-advantage.jpg",
+              title: "发挥中国特色社会主义制度优势",
+              caption: "坚持社会主义方向，依靠人民推动发展，保障公平正义，集中力量办大事，走共同富裕道路，并使制度优势转化为治理效能。"
+            }
+          ],
+          cards: [
+            {
+              id: "governance-definition",
+              type: "definition",
+              title: "国家治理体系和治理能力是什么",
+              body: [
+                "国家治理体系是一整套紧密相连、相互协调的国家制度，国家治理能力是运用国家制度管理社会各方面事务的能力。",
+                "二者是一个国家制度和制度执行能力的集中体现。"
+              ]
+            },
+            {
+              id: "three-musts-governance",
+              type: "structure",
+              title: "推进治理现代化的“三个必须”",
+              bullets: [
+                "坚定中国特色社会主义制度自信。",
+                "更好发挥中国特色社会主义制度优势。",
+                "把中国特色社会主义制度优势转化为国家治理效能。"
+              ]
+            },
+            {
+              id: "institutional-advantages",
+              type: "significance",
+              title: "制度优势的主要体现",
+              body: [
+                "制度优势体现在坚持社会主义方向、紧紧依靠人民推动发展、保障社会公平正义和人民权利、集中力量办大事、走共同富裕道路等方面。",
+                "也体现在保持社会生机活力、促进共同团结奋斗、培养优秀人才、维护国家主权安全发展利益和促进祖国和平统一等方面。"
+              ]
+            },
+            {
+              id: "advantage-to-efficacy",
+              type: "judgment",
+              title: "从制度优势到治理效能",
+              body: [
+                "制度优势不会自动转化为治理效能，需要通过制度执行、机制创新和能力建设加以实现。",
+                "治理体系要推陈出新、适应时代发展变化；治理能力要不断提升，提高科学执政、民主执政、依法执政水平。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-methodology",
+          title: "善用方法论：全面深化改革开放要坚持正确方法论",
+          subtitle: "系统观念、稳中求进与依法推进",
+          summary:
+            "全面深化改革必须坚持科学方法论，注重系统性、整体性、协同性，把顶层设计与基层探索、改革发展稳定、胆大与步稳统一起来。",
+          figures: [
+            {
+              src: "./assets/source/reform-methodology-practice.jpg",
+              title: "全面深化改革的科学方法",
+              caption: "注重系统集成和整体效果，抓住主要矛盾，协同推进改革方案、落实和成效；同时坚持顶层设计与“摸着石头过河”相结合。"
+            },
+            {
+              src: "./assets/source/reform-methodology-principles.jpg",
+              title: "改革发展稳定与依法改革",
+              caption: "改革是动力、发展是关键、稳定是前提；既要胆子大又要步子稳，并坚持重大改革于法有据。"
+            }
+          ],
+          cards: [
+            {
+              id: "systematic-holistic-coordinated",
+              type: "definition",
+              title: "注重系统性、整体性、协同性",
+              body: [
+                "要厘清重大改革的逻辑关系，推动有条件的地区和领域实现改革举措系统集成。",
+                "坚持整体推进、讲求整体效果，避免畸轻畸重、单兵突进、顾此失彼。"
+              ]
+            },
+            {
+              id: "principal-contradiction-method",
+              type: "judgment",
+              title: "抓住主要矛盾和关键环节",
+              body: [
+                "改革不能平均用力、齐头并进，而要抓住主要矛盾和矛盾的主要方面。",
+                "突出改革重点，以重点领域和关键环节突破带动全局，同时注重各项改革的协同配合。"
+              ]
+            },
+            {
+              id: "top-level-and-exploration",
+              type: "structure",
+              title: "顶层设计与“摸着石头过河”",
+              body: [
+                "加强顶层设计，可以提高改革决策的科学性、增强改革措施的协调性。",
+                "同时要继续鼓励基层探索，把自上而下的设计与自下而上的实践结合起来。"
+              ]
+            },
+            {
+              id: "reform-development-stability",
+              type: "judgment",
+              title: "坚持改革发展稳定三者统一",
+              bullets: [
+                "改革是经济社会发展的强大动力。",
+                "发展是解决一切经济社会问题的关键。",
+                "稳定是改革发展的前提。"
+              ]
+            },
+            {
+              id: "bold-and-steady",
+              type: "requirement",
+              title: "胆子要大，步子要稳",
+              body: [
+                "胆子大，就是要解放思想，看清各种利益固化的症结，敢于啃硬骨头、敢于涉险滩。",
+                "步子稳，就是要方向准、把握大局，重大改革不能追求毕其功于一役，要稳扎稳打、积小胜为大胜。"
+              ]
+            },
+            {
+              id: "reform-under-rule-of-law",
+              type: "warning",
+              title: "坚持重大改革于法有据",
+              body: [
+                "改革和法治如鸟之两翼、车之两轮，要坚持改革决策和立法决策相统一、相衔接。",
+                "发挥法治引导、推动、规范、保障改革的作用，确保改革在法治轨道上推进。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-never-ends",
+          title: "根本动力：改革开放永无止境",
+          subtitle: "改革永远在路上",
+          summary:
+            "改革开放只有进行时，没有完成时。继续推进改革，既有理论依据和历史经验，也是推进党和人民事业发展的必然要求。",
+          figures: [
+            {
+              src: "./assets/source/reform-future-overview.jpg",
+              title: "未来方向：将改革开放进行到底",
+              caption: "未来方向包括改革开放永无止境的根本动力、对内改革的持续深化和高水平对外开放的不断扩大。"
+            },
+            {
+              src: "./assets/source/reform-never-ends.jpg",
+              title: "改革开放永无止境的三个依据",
+              caption: "理论依据是社会基本矛盾运动规律，经验总结来自世界社会主义实践，继续改革是推进党和人民事业发展的必然要求。"
+            }
+          ],
+          cards: [
+            {
+              id: "social-contradiction-driver",
+              type: "definition",
+              title: "理论依据：社会基本矛盾运动",
+              body: [
+                "社会基本矛盾运动是改革不断推进的深层根据。",
+                "生产力与生产关系、经济基础与上层建筑之间的矛盾运动，决定改革必须随着实践发展不断深化。"
+              ]
+            },
+            {
+              id: "reform-experience-summary",
+              type: "significance",
+              title: "经验总结与必然要求",
+              body: [
+                "改革开放永无止境，是总结世界社会主义实践经验得出的重要结论。",
+                "新征程上继续推进改革，是推进党和国家事业发展的必然要求，也是应对风险挑战、实现民族复兴的现实需要。"
+              ]
+            },
+            {
+              id: "reform-always-on-the-way",
+              type: "warning",
+              title: "改革没有完成时",
+              body: [
+                "改革不停顿、开放不止步。不能因为取得阶段性成果就产生松劲懈怠，也不能用新的僵化取代旧的僵化。",
+                "要在更高起点、更高层次、更高目标上推进改革开放。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-domestic",
+          title: "对内改革：坚定不移把全面深化改革引向深入",
+          subtitle: "在重点领域和关键环节持续突破",
+          summary:
+            "对内改革要围绕总目标持续推进，以重点领域和关键环节的突破带动改革整体深化。",
+          figures: [
+            {
+              src: "./assets/source/reform-domestic.jpg",
+              title: "坚定不移把全面深化改革引向深入",
+              caption: "课堂提纲：持续推动对内改革向纵深发展，以改革解决发展中的深层次矛盾和问题。"
+            }
+          ],
+          cards: [
+            {
+              id: "deepen-domestic-reform",
+              type: "requirement",
+              title: "持续深化重点领域改革",
+              body: [
+                "对内改革要坚持问题导向，围绕高质量发展、民生保障、国家治理等关键领域推进体制机制创新。",
+                "以重点领域和关键环节突破带动全局，增强改革的系统性、整体性和协同性。"
+              ]
+            },
+            {
+              id: "institutional-maturity",
+              type: "judgment",
+              title: "以改革推动制度更加成熟定型",
+              body: [
+                "深化改革的落脚点是完善和发展中国特色社会主义制度，提高国家治理体系和治理能力现代化水平。",
+                "要把制度建设和治理效能统一起来，形成更加成熟更加定型的制度体系。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "reform-opening-up",
+          title: "对外开放：坚定不移扩大高水平对外开放",
+          subtitle: "以开放促改革、促发展",
+          summary:
+            "改革与开放相辅相成，坚定不移扩大高水平对外开放，是全面深化改革开放的重要内容。",
+          figures: [
+            {
+              src: "./assets/source/reform-opening-up.jpg",
+              title: "坚定不移扩大高水平对外开放",
+              caption: "课堂提纲：推动对内改革与对外开放相互促进，以更高水平开放服务高质量发展。"
+            },
+            {
+              src: "./assets/source/reform-summary.jpg",
+              title: "全面深化改革开放课堂小结",
+              caption: "改革开放是决定当代中国命运的关键一招；必须坚持正确方向、总目标和科学方法论，以改革开放为民族复兴提供根本动力。"
+            }
+          ],
+          cards: [
+            {
+              id: "high-level-opening",
+              type: "requirement",
+              title: "扩大高水平对外开放",
+              body: [
+                "对外开放是全面深化改革的重要方面。要坚持以开放促改革、促发展，在扩大开放中增强发展动力和竞争能力。",
+                "要以更高水平开放推动规则、规制、管理、标准等制度型开放，形成改革与开放相互促进的格局。"
+              ]
+            },
+            {
+              id: "reform-opening-relation",
+              type: "judgment",
+              title: "改革与开放的辩证关系",
+              body: [
+                "改革为开放提供制度基础，开放为改革提供动力和机遇。",
+                "对内改革和对外开放要协同推进，不能把二者割裂开来。"
+              ]
+            },
+            {
+              id: "reform-chapter-summary",
+              type: "significance",
+              title: "本章小结",
+              body: [
+                "改革开放是决定当代中国命运的关键一招，也是实现中华民族伟大复兴的关键一招。",
+                "新时代全面深化改革开放是一场深刻革命。必须坚持总目标、正确方向和正确方法论，推动各领域实现历史性变革、系统性重塑、整体性重构，以全面深化改革和高水平对外开放为中国式现代化提供强大动力。"
               ]
             }
           ]
