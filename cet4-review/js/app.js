@@ -4,11 +4,23 @@
   const DATA = window.CET4_DATA;
   const EXAMS = window.CET4_EXAMS || [];
   const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
+  const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
+  const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
+
+  DATA.vocabulary.push(...EXTRA_VOCABULARY);
+  DATA.vocabulary.forEach((item) => {
+    item.memory = MEMORY_DATA[item.word] || { type: "context" };
+  });
 
   const WORD_KEY = "cet4-review.mastered.v1";
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
   const mastered = new Set(readJson(WORD_KEY, []));
+  const MEMORY_META = {
+    roots: { label: "词根构词", short: "词根" },
+    collocation: { label: "搭配记忆", short: "搭配" },
+    context: { label: "语境记忆", short: "语境" }
+  };
   const POS_META = [
     { id: "n.", label: "名词", volume: "卷一", description: "人物、事物与抽象概念" },
     { id: "v.", label: "动词", volume: "卷二", description: "行为、判断与变化过程" },
@@ -75,9 +87,11 @@
     readily: "情绪与态度"
   };
   let articleOffset = 0;
-  let activeExamYear = EXAMS[0]?.year || null;
+  let dailyReadingExam = null;
+  let dailyListeningExam = null;
   let wordQuery = "";
   let wordPos = "all";
+  let wordMemory = "all";
   let activeDay = 0;
   let visibleWordCount = 0;
   let currentArticle = null;
@@ -86,17 +100,18 @@
   let activeReader = null;
 
   const now = new Date();
+  const dayIndex = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
   const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   document.getElementById("headerDate").textContent = dateKey;
+  document.getElementById("vocabularyCount").textContent = DATA.vocabulary.length;
 
   renderDailyArticle();
   renderWordList();
-  renderYearTabs();
+  renderMockLabels();
   renderExam();
   bindEvents();
 
   function renderDailyArticle() {
-    const dayIndex = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
     const articleIndex = (dayIndex + articleOffset) % DATA.articles.length;
     const article = DATA.articles[articleIndex];
     currentArticle = article;
@@ -131,6 +146,81 @@
       button.addEventListener("click", () => openWord(button.dataset.word));
     });
     renderDailyEditions();
+    renderDailyReviewWords();
+  }
+
+  function renderDailyReviewWords() {
+    const root = document.getElementById("dailyVocabReview");
+    if (!root || !DATA.vocabulary.length) return;
+
+    const focusItems = [...new Set(currentArticle?.words || [])]
+      .map((wordKey) => wordMap.get(wordKey))
+      .filter(Boolean)
+      .slice(0, 10);
+    const focusSet = new Set(focusItems.map((item) => item.word));
+    const entries = focusItems.map((item) => ({ item, kind: "文章重点" }));
+    const start = (dayIndex * 13 + articleOffset * 7) % DATA.vocabulary.length;
+    const stride = 37;
+
+    for (let attempt = 0; entries.length < 100 && attempt < DATA.vocabulary.length * 2; attempt += 1) {
+      const item = DATA.vocabulary[(start + attempt * stride) % DATA.vocabulary.length];
+      entries.push({
+        item,
+        kind: focusSet.has(item.word) ? "复习复现" : "高频巩固"
+      });
+    }
+    while (entries.length < 100) {
+      entries.push({
+        item: DATA.vocabulary[entries.length % DATA.vocabulary.length],
+        kind: "循环复习"
+      });
+    }
+
+    const rootCount = entries.filter(({ item }) => item.memory?.type === "roots").length;
+    const collocationCount = entries.filter(({ item }) => item.memory?.type === "collocation").length;
+    root.innerHTML = `
+      <div class="daily-word-review__head">
+        <div>
+          <p class="eyebrow">DAILY 100 · ${escapeHtml(dateKey)}</p>
+          <h3 id="dailyVocabTitle">今日 100 词</h3>
+          <p>文章重点先复习，再从完整词库轮换抽取。词根、搭配和例句会相互配合，不要求一次死记全部释义。</p>
+        </div>
+        <div class="daily-word-review__stats">
+          <span><strong>${entries.length}</strong>学习项</span>
+          <span><strong>${rootCount}</strong>词根构词</span>
+          <span><strong>${collocationCount}</strong>固定搭配</span>
+        </div>
+      </div>
+      <div class="daily-word-grid">
+        ${entries.map(({ item, kind }, index) => {
+          const memory = MEMORY_META[item.memory?.type || "context"];
+          return `
+            <button class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}" type="button"
+              data-daily-word="${escapeAttr(item.word)}"
+              aria-label="查看 ${escapeAttr(item.word)} 的释义和记忆方式">
+              <span class="daily-word-item__index">${String(index + 1).padStart(3, "0")}</span>
+              <span class="daily-word-item__main">
+                <strong>${escapeHtml(item.word)}</strong>
+                <small>${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</small>
+              </span>
+              <span class="daily-word-item__tags">
+                <em>${escapeHtml(kind)}</em>
+                <i class="memory-badge memory-badge--${escapeAttr(item.memory?.type || "context")}">${escapeHtml(memory.short)}</i>
+                ${mastered.has(item.word) ? '<b aria-label="已掌握">✓</b>' : ""}
+              </span>
+            </button>
+          `;
+        }).join("")}
+      </div>
+      <p class="daily-word-review__method">
+        记忆建议：先用语境判断词义，再用词根拆解或固定搭配建立线索，最后按间隔复现。相关资料：
+        <a href="https://doi.org/10.1007/s11145-009-9172-z" target="_blank" rel="noopener">词法教学研究</a>
+        ·
+        <a href="https://doi.org/10.1038/s44159-022-00089-1" target="_blank" rel="noopener">间隔与检索练习</a>
+        ·
+        <a href="https://doi.org/10.1017/s0142716418000504" target="_blank" rel="noopener">语境线索研究</a>
+      </p>
+    `;
   }
 
   function createSpeechReader({ body, toolbar, text, targetWords = [], label, audioKey }) {
@@ -553,15 +643,24 @@
     const daysByWord = getWordDays();
     const visible = DATA.vocabulary.filter((item) => {
       const partMatch = wordPos === "all" || item.part.includes(wordPos);
+      const memoryType = item.memory?.type || "context";
+      const memoryMatch = wordMemory === "all" || memoryType === wordMemory;
       const dayMatch =
         !activeDay || (daysByWord.get(item.word) || []).includes(activeDay);
-      const text = `${item.word} ${item.meaning} ${item.synonyms.join(" ")} ${WORD_TOPICS[item.word] || ""}`.toLowerCase();
-      return partMatch && dayMatch && (!query || text.includes(query));
+      const memoryText = [
+        MEMORY_META[memoryType]?.label || "",
+        item.memory?.note || "",
+        item.memory?.breakdown || "",
+        ...(item.memory?.family || []),
+        ...(item.memory?.collocations || [])
+      ].join(" ");
+      const text = `${item.word} ${item.meaning} ${item.synonyms.join(" ")} ${WORD_TOPICS[item.word] || item.topic || ""} ${memoryText}`.toLowerCase();
+      return partMatch && memoryMatch && dayMatch && (!query || text.includes(query));
     });
     visibleWordCount = visible.length;
 
     renderWordBookSummary(visible.length, daysByWord);
-    const searchExpanded = Boolean(query) || wordPos !== "all" || activeDay > 0;
+    const searchExpanded = Boolean(query) || wordPos !== "all" || wordMemory !== "all" || activeDay > 0;
     const activeParts =
       wordPos === "all"
         ? POS_META
@@ -571,11 +670,11 @@
       const topics = TOPIC_ORDER.map((topic) => ({
         name: topic,
         words: partWords.filter(
-          (item) => (WORD_TOPICS[item.word] || "交流与表达") === topic
+          (item) => (WORD_TOPICS[item.word] || item.topic || "交流与表达") === topic
         )
       })).filter((topic) => topic.words.length);
       const fallbackWords = partWords.filter(
-        (item) => !TOPIC_ORDER.includes(WORD_TOPICS[item.word])
+        (item) => !TOPIC_ORDER.includes(WORD_TOPICS[item.word] || item.topic)
       );
       if (fallbackWords.length) {
         topics.push({ name: "综合表达", words: fallbackWords });
@@ -624,9 +723,11 @@
 
   function renderWordCard(item, daysByWord) {
     const days = daysByWord.get(item.word) || [];
-    const topic = WORD_TOPICS[item.word] || "综合表达";
+    const topic = WORD_TOPICS[item.word] || item.topic || "综合表达";
+    const memoryType = item.memory?.type || "context";
+    const memory = MEMORY_META[memoryType];
     return `
-      <article class="word-card" id="word-${escapeAttr(item.word)}">
+      <article class="word-card" id="word-${escapeAttr(item.word)}" data-card="${escapeAttr(item.word)}" data-memory="${escapeAttr(memoryType)}">
         <div class="word-card__main">
           <div>
             <div class="word-card__headline">
@@ -636,6 +737,7 @@
             <p class="word-card__meaning">${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</p>
             <div class="word-card__context">
               <span class="word-card__topic">${escapeHtml(topic)}</span>
+              <span class="memory-badge memory-badge--${escapeAttr(memoryType)}">${escapeHtml(memory.label)}</span>
               <span class="word-card__days">
                 ${days.length
                   ? days.map((day) => `<i title="收录于第 ${String(day).padStart(2, "0")} 期">${String(day).padStart(2, "0")}</i>`).join("")
@@ -647,6 +749,7 @@
             ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
           </button>
         </div>
+        ${item.memory?.note ? `<p class="word-card__memory">${escapeHtml(item.memory.note)}</p>` : ""}
         <div class="word-card__actions">
           <button type="button" data-open-word="${escapeAttr(item.word)}">全部释义与词形</button>
           <button type="button" data-speak="${escapeAttr(item.example)}">朗读例句</button>
@@ -668,19 +771,18 @@
 
   function renderWordBookSummary(visibleCount, daysByWord) {
     const dailyWords = new Set([...daysByWord.keys()]);
-    const masteredDaily = [...dailyWords].filter((word) => mastered.has(word)).length;
     const selectedEdition = activeDay ? DATA.articles[activeDay - 1] : null;
     document.getElementById("wordBookSummary").innerHTML = `
       <div class="word-book__lead">
-        <p class="eyebrow">BOUND VOCABULARY EDITION</p>
-        <strong>${selectedEdition ? `第 ${String(activeDay).padStart(2, "0")} 期 · ${escapeHtml(selectedEdition.topic)}` : "十期文章词汇合订"}</strong>
-        <span>${selectedEdition ? escapeHtml(selectedEdition.title) : "先按词性分卷，再按语义主题收纳；每张词卡都保留它在每日文章中的出处。"}</span>
+        <p class="eyebrow">CET-4 VOCABULARY BANK</p>
+        <strong>${selectedEdition ? `第 ${String(activeDay).padStart(2, "0")} 期 · ${escapeHtml(selectedEdition.topic)}` : "四级词汇总库"}</strong>
+        <span>${selectedEdition ? escapeHtml(selectedEdition.title) : "词性、主题、词根构词、固定搭配和语境例句共同组成每日复习线索。"}</span>
       </div>
       <div class="word-book__stats">
-        <span><strong>${visibleCount}</strong>当前词目</span>
-        <span><strong>${dailyWords.size}</strong>已入篇</span>
-        <span><strong>${masteredDaily}</strong>已掌握</span>
-        <span><strong>${DATA.articles.length}</strong>期合订</span>
+        <span><strong>${visibleCount}</strong>当前筛选</span>
+        <span><strong>${DATA.vocabulary.length}</strong>词库总量</span>
+        <span><strong>${dailyWords.size}</strong>文章重点</span>
+        <span><strong>${mastered.size}</strong>已掌握</span>
       </div>
     `;
   }
@@ -723,6 +825,8 @@
   function openWord(wordKey) {
     const item = wordMap.get(wordKey);
     if (!item) return;
+    const memoryType = item.memory?.type || "context";
+    const memory = MEMORY_META[memoryType];
     const forms = Object.entries(item.forms || {})
       .filter(([, value]) => value)
       .map(([pos, value]) => `<dt>${partLabel(pos)}</dt><dd>${escapeHtml(value)}</dd>`)
@@ -734,6 +838,13 @@
         <h2>${escapeHtml(item.word)}</h2>
         <span class="ipa">${escapeHtml(item.ipa)} · ${item.part.map(escapeHtml).join(" ")}</span>
         <div class="word-detail__meaning">${escapeHtml(item.meaning)}</div>
+        <div class="word-memory">
+          <span class="memory-badge memory-badge--${escapeAttr(memoryType)}">${escapeHtml(memory.label)}</span>
+          ${item.memory?.breakdown ? `<p><strong>构词拆解</strong>${escapeHtml(item.memory.breakdown)}</p>` : ""}
+          ${item.memory?.note ? `<p><strong>记忆提示</strong>${escapeHtml(item.memory.note)}</p>` : ""}
+          ${item.memory?.family?.length ? `<p><strong>同族词</strong>${item.memory.family.map(escapeHtml).join(" · ")}</p>` : ""}
+          ${item.memory?.collocations?.length ? `<p><strong>高频搭配</strong>${item.memory.collocations.map(escapeHtml).join(" · ")}</p>` : ""}
+        </div>
         <dl class="detail-grid">
           <dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>
           <dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>
@@ -778,48 +889,56 @@
       button.textContent = mastered.has(word) ? "已掌握" : "标记掌握";
     });
     renderWordBookSummary(visibleWordCount, getWordDays());
+    renderDailyReviewWords();
     if (document.getElementById("wordDrawer").classList.contains("is-open")) {
       openWord(word);
     }
   }
 
-  function renderYearTabs() {
-    const tabs = document.getElementById("yearTabs");
-    tabs.innerHTML = EXAMS.map(
-      (exam) => `
-        <button type="button" role="tab" data-year="${exam.year}" aria-selected="${exam.year === activeExamYear}">
-          ${escapeHtml(exam.label)}
-        </button>
-      `
-    ).join("");
-    tabs.querySelectorAll("button").forEach((button) => {
-      button.classList.toggle("is-active", Number(button.dataset.year) === activeExamYear);
-      button.addEventListener("click", () => {
-        activeExamYear = Number(button.dataset.year);
-        tabs.querySelectorAll("button").forEach((item) => {
-          const active = Number(item.dataset.year) === activeExamYear;
-          item.classList.toggle("is-active", active);
-          item.setAttribute("aria-selected", String(active));
-        });
-        renderExam();
-      });
-    });
+  function getDailyMock() {
+    if (!EXAMS.length) return null;
+    return {
+      reading: EXAMS[dayIndex % EXAMS.length],
+      listening: EXAMS[(dayIndex + 1) % EXAMS.length]
+    };
+  }
+
+  function renderMockLabels() {
+    const root = document.getElementById("yearTabs");
+    const mock = getDailyMock();
+    if (!mock) {
+      root.innerHTML = "";
+      return;
+    }
+    root.innerHTML = `
+      <span><strong>今日阅读</strong> · ${mock.reading.year} · ${escapeHtml(mock.reading.reading.title)}</span>
+      <span><strong>今日听力</strong> · ${mock.listening.year} · ${escapeHtml(mock.listening.listening.title)}</span>
+    `;
+  }
+
+  function buildListeningText(content) {
+    const questions = content.questions.map(
+      (question, index) => `Question ${index + 1}. ${question.prompt}`
+    );
+    return [content.script, ...questions].join("\n\n");
   }
 
   function renderExam() {
     examReaders.forEach((reader) => reader.destroy());
     examReaders = [];
-    const exam = EXAMS.find((item) => item.year === activeExamYear);
+    const mock = getDailyMock();
     const root = document.getElementById("examContent");
-    if (!exam) {
+    if (!mock) {
       root.innerHTML = "";
       return;
     }
+    dailyReadingExam = mock.reading;
+    dailyListeningExam = mock.listening;
 
     root.innerHTML = `
       <div class="exam-pack">
-        ${renderExamPanel(exam.reading, "READING", `${exam.year}-reading`)}
-        ${renderExamPanel(exam.listening, "LISTENING", `${exam.year}-listening`, true)}
+        ${renderExamPanel(mock.reading.reading, "READING", "daily-reading", false, mock.reading.year)}
+        ${renderExamPanel(mock.listening.listening, "LISTENING", "daily-listening", true, mock.listening.year)}
       </div>
     `;
     root.querySelectorAll("[data-submit-exam]").forEach((button) =>
@@ -828,12 +947,13 @@
 
     root.querySelectorAll(".exam-panel").forEach((panel) => {
       const listening = panel.dataset.examKind === "listening";
+      const exam = listening ? dailyListeningExam : dailyReadingExam;
       const content = listening ? exam.listening : exam.reading;
       examReaders.push(
         createSpeechReader({
           body: panel.querySelector("[data-reader-body]"),
           toolbar: panel.querySelector("[data-reader-toolbar]"),
-          text: listening ? content.script : content.passage,
+          text: listening ? buildListeningText(content) : content.passage,
           label: listening ? `${exam.year} 模拟听力原文` : `${exam.year} 阅读文章`,
           audioKey: `exam-${exam.year}-${listening ? "listening" : "reading"}`
         })
@@ -841,36 +961,38 @@
     });
   }
 
-  function renderExamPanel(content, type, panelId, listening) {
+  function renderExamPanel(content, type, panelId, listening, examYear) {
     return `
-      <section class="exam-panel" id="${escapeAttr(panelId)}" data-exam-kind="${listening ? "listening" : "reading"}">
+      <section class="exam-panel" id="${escapeAttr(panelId)}" data-exam-kind="${listening ? "listening" : "reading"}" data-exam-year="${examYear}">
         <div class="exam-panel__head">
           <h3>${escapeHtml(content.title)}</h3>
-          <span class="exam-type">${type} · 原创改编</span>
+          <span class="exam-type">${examYear} · ${type} · 原创改编</span>
         </div>
         <div data-reader-toolbar></div>
         ${
           listening
             ? `
               <details class="transcript" open>
-                <summary>听力原文 · 播放时逐词高亮</summary>
+                <summary>听力稿与朗读题干 · 播放时逐词高亮</summary>
                 <div class="exam-passage transcript-copy" data-reader-body></div>
               </details>
             `
             : `<div class="exam-passage" data-reader-body></div>`
         }
         <div class="exam-questions">
-          ${content.questions.map((question, index) => renderQuestion(question, panelId, index)).join("")}
+          ${content.questions.map((question, index) => renderQuestion(question, panelId, index, listening)).join("")}
         </div>
         <button class="submit-exam" type="button" data-submit-exam="${escapeAttr(panelId)}">提交本篇答案</button>
       </section>
     `;
   }
 
-  function renderQuestion(question, panelId, index) {
+  function renderQuestion(question, panelId, index, listening) {
     return `
       <div class="exam-question" data-question="${index}">
-        <p>${index + 1}. ${escapeHtml(question.prompt)}</p>
+        ${listening
+          ? `<p class="exam-question__cue">第 ${index + 1} 题 · 题干已在听力音频中朗读</p>`
+          : `<p>${index + 1}. ${escapeHtml(question.prompt)}</p>`}
         ${question.options
           .map(
             (option, optionIndex) => `
@@ -887,9 +1009,10 @@
   }
 
   function submitExam(panelId) {
-    const exam = EXAMS.find((item) => item.year === activeExamYear);
-    const content = panelId.endsWith("reading") ? exam.reading : exam.listening;
     const panel = document.getElementById(panelId);
+    const content = panel.dataset.examKind === "reading"
+      ? dailyReadingExam.reading
+      : dailyListeningExam.listening;
     let correct = 0;
 
     panel.querySelectorAll(".exam-question").forEach((questionNode, index) => {
@@ -943,6 +1066,21 @@
         item.classList.toggle("is-active", item === button);
       });
       renderWordList();
+    });
+    document.getElementById("wordMemoryFilters").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-memory]");
+      if (!button) return;
+      wordMemory = button.dataset.memory;
+      document.querySelectorAll("#wordMemoryFilters button").forEach((item) => {
+        const active = item === button;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
+      renderWordList();
+    });
+    document.getElementById("dailyVocabReview").addEventListener("click", (event) => {
+      const button = event.target.closest("[data-daily-word]");
+      if (button) openWord(button.dataset.dailyWord);
     });
     document.getElementById("wordList").addEventListener("click", (event) => {
       const open = event.target.closest("[data-open-word]");

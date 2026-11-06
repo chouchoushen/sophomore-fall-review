@@ -41,7 +41,7 @@
       id: "cet4",
       name: "英语四级",
       href: "../cet4-review/",
-      total: 46,
+      total: 110,
       key: "cet4-review.mastered.v1"
     },
     {
