@@ -6,6 +6,7 @@
   const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
+  const DAILY_WORD_SETS = window.CET4_DAILY_WORD_SETS || [];
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
 
   DATA.vocabulary.push(...EXTRA_VOCABULARY);
@@ -15,6 +16,13 @@
 
   const WORD_KEY = "cet4-review.mastered.v1";
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
+  const wordDailyEditions = new Map();
+  DAILY_WORD_SETS.forEach((edition) => {
+    edition.words.forEach((word) => {
+      if (!wordDailyEditions.has(word)) wordDailyEditions.set(word, []);
+      wordDailyEditions.get(word).push(edition.number);
+    });
+  });
   const mastered = new Set(readJson(WORD_KEY, []));
   const MEMORY_META = {
     roots: { label: "词根构词", short: "词根" },
@@ -93,11 +101,13 @@
   let wordPos = "all";
   let wordMemory = "all";
   let activeDay = 0;
+  let activeWordEdition = null;
   let visibleWordCount = 0;
   let currentArticle = null;
   let articleReader = null;
   let examReaders = [];
   let activeReader = null;
+  let vocabularyAudio = null;
 
   const now = new Date();
   const dayIndex = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
@@ -151,64 +161,80 @@
 
   function renderDailyReviewWords() {
     const root = document.getElementById("dailyVocabReview");
-    if (!root || !DATA.vocabulary.length) return;
+    if (!root || !DAILY_WORD_SETS.length) return;
 
-    const focusItems = [...new Set(currentArticle?.words || [])]
-      .map((wordKey) => wordMap.get(wordKey))
-      .filter(Boolean)
-      .slice(0, 10);
-    const focusSet = new Set(focusItems.map((item) => item.word));
-    const entries = focusItems.map((item) => ({ item, kind: "文章重点" }));
-    const start = (dayIndex * 13 + articleOffset * 7) % DATA.vocabulary.length;
-    const stride = 37;
-
-    for (let attempt = 0; entries.length < 100 && attempt < DATA.vocabulary.length * 2; attempt += 1) {
-      const item = DATA.vocabulary[(start + attempt * stride) % DATA.vocabulary.length];
-      entries.push({
-        item,
-        kind: focusSet.has(item.word) ? "复习复现" : "高频巩固"
-      });
-    }
-    while (entries.length < 100) {
-      entries.push({
-        item: DATA.vocabulary[entries.length % DATA.vocabulary.length],
-        kind: "循环复习"
-      });
-    }
-
-    const rootCount = entries.filter(({ item }) => item.memory?.type === "roots").length;
-    const collocationCount = entries.filter(({ item }) => item.memory?.type === "collocation").length;
+    const todayEdition = (dayIndex % DAILY_WORD_SETS.length) + 1;
+    const selectedNumber = activeWordEdition || todayEdition;
+    const edition =
+      DAILY_WORD_SETS.find((item) => item.number === selectedNumber) ||
+      DAILY_WORD_SETS[0];
+    activeWordEdition = edition.number;
+    const article = DATA.articles.find((item) => item.id === edition.articleId);
+    const articleWords = new Set(article?.words || []);
+    const seen = new Set();
+    const entries = edition.words.map((wordKey) => {
+      const item = wordMap.get(wordKey);
+      const kind = seen.has(wordKey)
+        ? "复习复现"
+        : articleWords.has(wordKey)
+          ? "文章关联"
+          : "新增累积";
+      seen.add(wordKey);
+      return { item, kind };
+    }).filter(({ item }) => item);
+    const partCounts = {
+      "n.": entries.filter(({ item }) => item.part.includes("n.")).length,
+      "v.": entries.filter(({ item }) => item.part.includes("v.")).length,
+      "adj.": entries.filter(({ item }) => item.part.includes("adj.")).length,
+      "adv.": entries.filter(({ item }) => item.part.includes("adv.")).length
+    };
     root.innerHTML = `
       <div class="daily-word-review__head">
         <div>
-          <p class="eyebrow">DAILY 100 · ${escapeHtml(dateKey)}</p>
-          <h3 id="dailyVocabTitle">今日 100 词</h3>
-          <p>文章重点先复习，再从完整词库轮换抽取。词根、搭配和例句会相互配合，不要求一次死记全部释义。</p>
+          <p class="eyebrow">DAILY 100 · EDITION ${String(edition.number).padStart(2, "0")}</p>
+          <h3 id="dailyVocabTitle">${edition.number === todayEdition ? "今日 100 词" : edition.title}</h3>
+          <p>${escapeHtml(edition.title)}以${edition.focusLabel}为重点，关联文章《${escapeHtml(article?.title || "")}》。每期 100 个学习项都会归档，重复词用于间隔复习。</p>
         </div>
         <div class="daily-word-review__stats">
           <span><strong>${entries.length}</strong>学习项</span>
-          <span><strong>${rootCount}</strong>词根构词</span>
-          <span><strong>${collocationCount}</strong>固定搭配</span>
+          <span><strong>${partCounts["n."]}</strong>名词</span>
+          <span><strong>${partCounts["v."]}</strong>动词</span>
+          <span><strong>${partCounts["adj."] + partCounts["adv."]}</strong>形/副</span>
         </div>
+      </div>
+      <div class="daily-word-editions" role="group" aria-label="百词分期册">
+        ${DAILY_WORD_SETS.map((item) => `
+          <button class="daily-word-edition${item.number === edition.number ? " is-active" : ""}${item.number === todayEdition ? " is-current" : ""}"
+            type="button" data-daily-edition="${item.number}" aria-pressed="${item.number === edition.number}">
+            <span>${String(item.number).padStart(2, "0")}</span>
+            <strong>${escapeHtml(item.focusLabel)}</strong>
+            <em>100 词</em>
+          </button>
+        `).join("")}
       </div>
       <div class="daily-word-grid">
         ${entries.map(({ item, kind }, index) => {
           const memory = MEMORY_META[item.memory?.type || "context"];
           return `
-            <button class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}" type="button"
-              data-daily-word="${escapeAttr(item.word)}"
-              aria-label="查看 ${escapeAttr(item.word)} 的释义和记忆方式">
-              <span class="daily-word-item__index">${String(index + 1).padStart(3, "0")}</span>
-              <span class="daily-word-item__main">
-                <strong>${escapeHtml(item.word)}</strong>
-                <small>${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</small>
-              </span>
-              <span class="daily-word-item__tags">
-                <em>${escapeHtml(kind)}</em>
-                <i class="memory-badge memory-badge--${escapeAttr(item.memory?.type || "context")}">${escapeHtml(memory.short)}</i>
-                ${mastered.has(item.word) ? '<b aria-label="已掌握">✓</b>' : ""}
-              </span>
-            </button>
+            <div class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}">
+              <button class="daily-word-item__open" type="button"
+                data-daily-word="${escapeAttr(item.word)}"
+                aria-label="查看 ${escapeAttr(item.word)} 的释义和记忆方式">
+                <span class="daily-word-item__index">${String(index + 1).padStart(3, "0")}</span>
+                <span class="daily-word-item__main">
+                  <strong>${escapeHtml(item.word)}</strong>
+                  <small>${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</small>
+                </span>
+                <span class="daily-word-item__tags">
+                  <em>${escapeHtml(kind)}</em>
+                  <i class="memory-badge memory-badge--${escapeAttr(item.memory?.type || "context")}">${escapeHtml(memory.short)}</i>
+                  ${mastered.has(item.word) ? '<b aria-label="已掌握">✓</b>' : ""}
+                </span>
+              </button>
+              <button class="daily-word-item__audio" type="button"
+                data-word-audio="${escapeAttr(item.word)}"
+                aria-label="朗读单词 ${escapeAttr(item.word)}" title="朗读单词">🔊</button>
+            </div>
           `;
         }).join("")}
       </div>
@@ -373,6 +399,7 @@
     function startTimedAudio(index = currentIndex) {
       if (!audio || !timedTokens) return;
       if (activeReader && activeReader !== reader) activeReader.stop();
+      stopVocabularyAudio();
       cancelSpeech();
       const safeIndex = Math.max(0, Math.min(index, lastIndex));
       audio.currentTime = Math.max(0, timedTokens[safeIndex].start - 0.02);
@@ -395,6 +422,7 @@
       }
 
       if (activeReader && activeReader !== reader) activeReader.stop();
+      stopVocabularyAudio();
       cancelSpeech();
       const sourceStart = tokens[Math.max(0, Math.min(index, lastIndex))].start;
       updateVisual(index, false);
@@ -723,6 +751,7 @@
 
   function renderWordCard(item, daysByWord) {
     const days = daysByWord.get(item.word) || [];
+    const dailyEditions = wordDailyEditions.get(item.word) || [];
     const topic = WORD_TOPICS[item.word] || item.topic || "综合表达";
     const memoryType = item.memory?.type || "context";
     const memory = MEMORY_META[memoryType];
@@ -744,6 +773,13 @@
                   : `<i class="is-pending">待入篇</i>`}
               </span>
             </div>
+            ${dailyEditions.length ? `
+              <div class="word-card__daily-editions">
+                <span>百词期号</span>
+                ${dailyEditions.slice(0, 5).map((day) => `<i>${String(day).padStart(2, "0")}</i>`).join("")}
+                ${dailyEditions.length > 5 ? `<em>+${dailyEditions.length - 5}</em>` : ""}
+              </div>
+            ` : ""}
           </div>
           <button class="master-word${mastered.has(item.word) ? " is-mastered" : ""}" type="button" data-master-word="${escapeAttr(item.word)}">
             ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
@@ -752,7 +788,8 @@
         ${item.memory?.note ? `<p class="word-card__memory">${escapeHtml(item.memory.note)}</p>` : ""}
         <div class="word-card__actions">
           <button type="button" data-open-word="${escapeAttr(item.word)}">全部释义与词形</button>
-          <button type="button" data-speak="${escapeAttr(item.example)}">朗读例句</button>
+          <button type="button" data-word-audio="${escapeAttr(item.word)}">▶ 朗读单词</button>
+          <button type="button" data-example-audio="${escapeAttr(item.word)}">▶ 朗读例句</button>
         </div>
       </article>
     `;
@@ -782,6 +819,7 @@
         <span><strong>${visibleCount}</strong>当前筛选</span>
         <span><strong>${DATA.vocabulary.length}</strong>词库总量</span>
         <span><strong>${dailyWords.size}</strong>文章重点</span>
+        <span><strong>${DAILY_WORD_SETS.length}</strong>百词分期</span>
         <span><strong>${mastered.size}</strong>已掌握</span>
       </div>
     `;
@@ -848,6 +886,7 @@
         <dl class="detail-grid">
           <dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>
           <dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>
+          <dt>百词期号</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => String(day).padStart(2, "0")).join(" · ") || "尚未进入百词分期"}</dd>
           ${forms}
         </dl>
         <div class="word-example">
@@ -855,7 +894,8 @@
           <span>${escapeHtml(item.exampleZh)}</span>
         </div>
         <div class="reading-card__footer">
-          <button class="reading-button" type="button" data-drawer-speak="${escapeAttr(item.example)}">▶ 朗读例句</button>
+          <button class="reading-button" type="button" data-drawer-word-audio="${escapeAttr(item.word)}">▶ 朗读单词</button>
+          <button class="reading-button" type="button" data-drawer-example-audio="${escapeAttr(item.word)}">▶ 朗读例句</button>
           <button class="reading-button" type="button" data-master-word="${escapeAttr(item.word)}">
             ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
           </button>
@@ -865,8 +905,15 @@
     const drawer = document.getElementById("wordDrawer");
     drawer.classList.add("is-open");
     drawer.setAttribute("aria-hidden", "false");
-    drawer.querySelectorAll("[data-drawer-speak]").forEach((button) =>
-      button.addEventListener("click", () => speak(button.dataset.drawerSpeak))
+    drawer.querySelectorAll("[data-drawer-word-audio]").forEach((button) =>
+      button.addEventListener("click", () =>
+        playVocabularyAudio(button.dataset.drawerWordAudio, "word")
+      )
+    );
+    drawer.querySelectorAll("[data-drawer-example-audio]").forEach((button) =>
+      button.addEventListener("click", () =>
+        playVocabularyAudio(button.dataset.drawerExampleAudio, "example")
+      )
     );
     drawer.querySelectorAll("[data-master-word]").forEach((button) =>
       button.addEventListener("click", () => toggleMastery(button.dataset.masterWord))
@@ -1079,16 +1126,31 @@
       renderWordList();
     });
     document.getElementById("dailyVocabReview").addEventListener("click", (event) => {
+      const audioButton = event.target.closest("[data-word-audio]");
+      if (audioButton) {
+        playVocabularyAudio(audioButton.dataset.wordAudio, "word");
+        return;
+      }
+      const editionButton = event.target.closest("[data-daily-edition]");
+      if (editionButton) {
+        activeWordEdition = Number(editionButton.dataset.dailyEdition);
+        renderDailyReviewWords();
+        return;
+      }
       const button = event.target.closest("[data-daily-word]");
       if (button) openWord(button.dataset.dailyWord);
     });
     document.getElementById("wordList").addEventListener("click", (event) => {
       const open = event.target.closest("[data-open-word]");
       const master = event.target.closest("[data-master-word]");
-      const speakButton = event.target.closest("[data-speak]");
+      const wordAudio = event.target.closest("[data-word-audio]");
+      const exampleAudio = event.target.closest("[data-example-audio]");
       if (open) openWord(open.dataset.openWord);
       if (master) toggleMastery(master.dataset.masterWord);
-      if (speakButton) speak(speakButton.dataset.speak);
+      if (wordAudio) playVocabularyAudio(wordAudio.dataset.wordAudio, "word");
+      if (exampleAudio) {
+        playVocabularyAudio(exampleAudio.dataset.exampleAudio, "example");
+      }
     });
     document.getElementById("wordDrawerClose").addEventListener("click", closeWord);
     document.getElementById("wordDrawer").addEventListener("click", (event) => {
@@ -1106,6 +1168,7 @@
     }
     activeReader?.stop();
     activeReader = null;
+    stopVocabularyAudio();
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
@@ -1114,12 +1177,39 @@
   }
 
   function stopSpeaking() {
+    stopVocabularyAudio();
     if (activeReader) {
       activeReader.stop();
       activeReader = null;
     } else if ("speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
+  }
+
+  function stopVocabularyAudio() {
+    if (!vocabularyAudio) return;
+    vocabularyAudio.pause();
+    vocabularyAudio.currentTime = 0;
+    vocabularyAudio = null;
+  }
+
+  function playVocabularyAudio(wordKey, kind) {
+    const item = wordMap.get(wordKey);
+    if (!item) return;
+    activeReader?.stop();
+    activeReader = null;
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    stopVocabularyAudio();
+    const fallback = kind === "word" ? item.word : item.example;
+    const source =
+      kind === "word"
+        ? `./audio/words/${encodeURIComponent(item.word)}.mp3`
+        : `./audio/examples/${encodeURIComponent(item.word)}.mp3`;
+    vocabularyAudio = new Audio(source);
+    vocabularyAudio.play().catch(() => {
+      vocabularyAudio = null;
+      speak(fallback);
+    });
   }
 
   function partLabel(pos) {
