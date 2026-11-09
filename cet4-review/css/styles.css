@@ -743,6 +743,67 @@ main {
   font: 700 .45rem var(--sans);
 }
 
+.daily-word-group-modes {
+  display: flex;
+  gap: .35rem;
+  margin: 0 0 .55rem;
+}
+
+.daily-word-group-modes button {
+  padding: .36rem .58rem;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  font: 700 .62rem var(--sans);
+}
+
+.daily-word-group-modes button.is-active {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+.daily-word-groups {
+  display: grid;
+  gap: .9rem;
+  max-height: 38rem;
+  padding-right: .25rem;
+  overflow-y: auto;
+}
+
+.daily-word-group {
+  display: grid;
+  gap: .45rem;
+}
+
+.daily-word-group__head {
+  display: flex;
+  justify-content: space-between;
+  gap: .7rem;
+  align-items: center;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.daily-word-group__head h4 {
+  margin: 0;
+  color: var(--blue);
+  font: 700 .78rem var(--sans);
+}
+
+.daily-word-group__head span {
+  color: var(--faint);
+  font: .56rem var(--mono);
+}
+
+.daily-word-groups .daily-word-grid {
+  max-height: none;
+  padding-right: 0;
+  overflow: visible;
+}
+
 .daily-word-review__method {
   margin: .75rem 0 0;
   padding-top: .65rem;

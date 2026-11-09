@@ -6,7 +6,6 @@
   const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
-  const DAILY_WORD_SETS = window.CET4_DAILY_WORD_SETS || [];
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
 
   DATA.vocabulary.push(...EXTRA_VOCABULARY);
@@ -15,14 +14,10 @@
   });
 
   const WORD_KEY = "cet4-review.mastered.v1";
+  const DAILY_WORD_HISTORY_KEY = "cet4-review.daily-100-history.v1";
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
-  const wordDailyEditions = new Map();
-  DAILY_WORD_SETS.forEach((edition) => {
-    edition.words.forEach((word) => {
-      if (!wordDailyEditions.has(word)) wordDailyEditions.set(word, []);
-      wordDailyEditions.get(word).push(edition.number);
-    });
-  });
+  let dailyWordHistory = readJson(DAILY_WORD_HISTORY_KEY, {});
+  let wordDailyEditions = new Map();
   const mastered = new Set(readJson(WORD_KEY, []));
   const MEMORY_META = {
     roots: { label: "词根构词", short: "词根" },
@@ -36,63 +31,64 @@
     { id: "adv.", label: "副词", volume: "卷四", description: "方式、时间与趋势" }
   ];
   const TOPIC_ORDER = [
-    "学习与认知",
-    "情绪与态度",
-    "计划与工作",
-    "交流与表达",
-    "变化与调整",
-    "社会与协作",
-    "城市与空间",
-    "环境与资源",
-    "效率与趋势"
+    "学习",
+    "心情",
+    "工作",
+    "交流",
+    "变化",
+    "社会",
+    "建筑与空间",
+    "环境",
+    "科技与创新",
+    "效率"
   ];
   const WORD_TOPICS = {
-    allocate: "计划与工作",
-    anticipate: "情绪与态度",
-    assess: "学习与认知",
-    compensate: "社会与协作",
-    conserve: "环境与资源",
-    crucial: "情绪与态度",
-    decline: "变化与调整",
-    demonstrate: "交流与表达",
-    derive: "学习与认知",
-    diminish: "变化与调整",
-    encounter: "社会与协作",
-    enhance: "变化与调整",
-    evaluate: "学习与认知",
-    facilitate: "计划与工作",
-    generate: "环境与资源",
-    hesitate: "情绪与态度",
-    illustrate: "交流与表达",
-    impose: "社会与协作",
-    indicate: "交流与表达",
-    inevitable: "情绪与态度",
-    interpret: "学习与认知",
-    maintain: "城市与空间",
-    modify: "城市与空间",
-    obtain: "计划与工作",
-    participate: "社会与协作",
-    perceive: "学习与认知",
-    persist: "情绪与态度",
-    preserve: "城市与空间",
-    prohibit: "社会与协作",
-    retain: "学习与认知",
-    reveal: "交流与表达",
-    sustain: "环境与资源",
-    transform: "城市与空间",
-    vary: "变化与调整",
-    efficient: "效率与趋势",
-    essential: "情绪与态度",
-    flexible: "变化与调整",
-    significant: "交流与表达",
-    accessible: "城市与空间",
-    prioritize: "计划与工作",
-    consume: "环境与资源",
-    effective: "效率与趋势",
-    increasingly: "效率与趋势",
-    ultimately: "效率与趋势",
-    effectively: "效率与趋势",
-    readily: "情绪与态度"
+    allocate: "工作",
+    anticipate: "心情",
+    assess: "学习",
+    compensate: "社会",
+    conserve: "环境",
+    crucial: "心情",
+    decline: "变化",
+    demonstrate: "交流",
+    derive: "学习",
+    diminish: "变化",
+    encounter: "社会",
+    enhance: "变化",
+    evaluate: "学习",
+    facilitate: "工作",
+    generate: "环境",
+    hesitate: "心情",
+    illustrate: "交流",
+    impose: "社会",
+    indicate: "交流",
+    inevitable: "心情",
+    interpret: "学习",
+    maintain: "建筑与空间",
+    modify: "建筑与空间",
+    obtain: "工作",
+    participate: "社会",
+    perceive: "学习",
+    persist: "心情",
+    preserve: "建筑与空间",
+    prohibit: "社会",
+    retain: "学习",
+    reveal: "交流",
+    sustain: "环境",
+    transform: "建筑与空间",
+    vary: "变化",
+    efficient: "效率",
+    essential: "心情",
+    flexible: "变化",
+    significant: "交流",
+    accessible: "建筑与空间",
+    prioritize: "工作",
+    consume: "环境",
+    effective: "效率",
+    increasingly: "效率",
+    ultimately: "效率",
+    effectively: "效率",
+    readily: "心情"
   };
   let articleOffset = 0;
   let dailyReadingExam = null;
@@ -101,7 +97,8 @@
   let wordPos = "all";
   let wordMemory = "all";
   let activeDay = 0;
-  let activeWordEdition = null;
+  let activeDailyDateKey = null;
+  let dailyWordGroupMode = "part";
   let visibleWordCount = 0;
   let currentArticle = null;
   let articleReader = null;
@@ -114,6 +111,9 @@
   const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
   document.getElementById("headerDate").textContent = dateKey;
   document.getElementById("vocabularyCount").textContent = DATA.vocabulary.length;
+  activeDailyDateKey = dateKey;
+  ensureDailyWordSet(now);
+  rebuildWordDailyEditionMap();
 
   renderDailyArticle();
   renderWordList();
@@ -159,16 +159,98 @@
     renderDailyReviewWords();
   }
 
+  function ensureDailyWordSet(date) {
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+    if (dailyWordHistory[key]) return dailyWordHistory[key];
+
+    const seed = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+    const article = DATA.articles[seed % DATA.articles.length];
+    const focusTopic = TOPIC_ORDER[seed % TOPIC_ORDER.length];
+    const slots = [...article.words];
+    const topicWords = DATA.vocabulary.filter(
+      (item) => (WORD_TOPICS[item.word] || item.topic) === focusTopic
+    );
+    if (topicWords.length) {
+      const start = (seed * 7) % topicWords.length;
+      for (let index = 0; index < 10; index += 1) {
+        slots.push(topicWords[(start + index) % topicWords.length].word);
+      }
+    }
+
+    const start = (seed * 23 + 11) % DATA.vocabulary.length;
+    let offset = 0;
+    while (slots.length < 100) {
+      slots.push(DATA.vocabulary[(start + offset * 37) % DATA.vocabulary.length].word);
+      offset += 1;
+    }
+
+    dailyWordHistory[key] = {
+      date: key,
+      seed,
+      focusTopic,
+      articleId: article.id,
+      words: slots.slice(0, 100)
+    };
+    localStorage.setItem(DAILY_WORD_HISTORY_KEY, JSON.stringify(dailyWordHistory));
+    return dailyWordHistory[key];
+  }
+
+  function rebuildWordDailyEditionMap() {
+    wordDailyEditions = new Map();
+    Object.values(dailyWordHistory).forEach((edition) => {
+      edition.words.forEach((word) => {
+        if (!wordDailyEditions.has(word)) wordDailyEditions.set(word, []);
+        if (!wordDailyEditions.get(word).includes(edition.date)) {
+          wordDailyEditions.get(word).push(edition.date);
+        }
+      });
+    });
+    wordDailyEditions.forEach((dates) => dates.sort().reverse());
+  }
+
+  function groupDailyWordEntries(entries, mode) {
+    const groups = new Map();
+    entries.forEach((entry) => {
+      const part = entry.item.part[0] || "其他";
+      const topic = WORD_TOPICS[entry.item.word] || entry.item.topic || "其他情景";
+      const key = mode === "part" ? part : topic;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(entry);
+    });
+
+    if (mode === "part") {
+      return POS_META
+        .map((part) => ({
+          label: part.label,
+          entries: groups.get(part.id) || []
+        }))
+        .filter((group) => group.entries.length);
+    }
+
+    const orderedTopics = [
+      ...TOPIC_ORDER,
+      ...[...groups.keys()].filter((topic) => !TOPIC_ORDER.includes(topic))
+    ];
+    return orderedTopics
+      .map((topic) => ({
+        label: topic,
+        entries: groups.get(topic) || []
+      }))
+      .filter((group) => group.entries.length);
+  }
+
   function renderDailyReviewWords() {
     const root = document.getElementById("dailyVocabReview");
-    if (!root || !DAILY_WORD_SETS.length) return;
+    if (!root) return;
 
-    const todayEdition = (dayIndex % DAILY_WORD_SETS.length) + 1;
-    const selectedNumber = activeWordEdition || todayEdition;
+    const editions = Object.values(dailyWordHistory)
+      .sort((left, right) => right.date.localeCompare(left.date));
     const edition =
-      DAILY_WORD_SETS.find((item) => item.number === selectedNumber) ||
-      DAILY_WORD_SETS[0];
-    activeWordEdition = edition.number;
+      dailyWordHistory[activeDailyDateKey] ||
+      dailyWordHistory[dateKey] ||
+      editions[0];
+    if (!edition) return;
+    activeDailyDateKey = edition.date;
     const article = DATA.articles.find((item) => item.id === edition.articleId);
     const articleWords = new Set(article?.words || []);
     const seen = new Set();
@@ -188,12 +270,14 @@
       "adj.": entries.filter(({ item }) => item.part.includes("adj.")).length,
       "adv.": entries.filter(({ item }) => item.part.includes("adv.")).length
     };
+    const grouped = groupDailyWordEntries(entries, dailyWordGroupMode);
+    const formatDay = (value) => `${value.slice(5, 7)}月${value.slice(8, 10)}日`;
     root.innerHTML = `
       <div class="daily-word-review__head">
         <div>
-          <p class="eyebrow">DAILY 100 · EDITION ${String(edition.number).padStart(2, "0")}</p>
-          <h3 id="dailyVocabTitle">${edition.number === todayEdition ? "今日 100 词" : edition.title}</h3>
-          <p>${escapeHtml(edition.title)}以${edition.focusLabel}为重点，关联文章《${escapeHtml(article?.title || "")}》。每期 100 个学习项都会归档，重复词用于间隔复习。</p>
+          <p class="eyebrow">DAILY 100 · ${escapeHtml(edition.date)}</p>
+          <h3 id="dailyVocabTitle">${edition.date === dateKey ? "今日 100 词" : `${formatDay(edition.date)} · 100 词`}</h3>
+          <p>当天 100 个学习项按词性和情景双重分类。关联文章《${escapeHtml(article?.title || "")}》，情景重点是“${escapeHtml(edition.focusTopic)}”；重复词用于间隔复习。</p>
         </div>
         <div class="daily-word-review__stats">
           <span><strong>${entries.length}</strong>学习项</span>
@@ -202,41 +286,56 @@
           <span><strong>${partCounts["adj."] + partCounts["adv."]}</strong>形/副</span>
         </div>
       </div>
+      <div class="daily-word-group-modes" role="group" aria-label="百词分类方式">
+        <button class="${dailyWordGroupMode === "part" ? "is-active" : ""}" type="button"
+          data-daily-group-mode="part" aria-pressed="${dailyWordGroupMode === "part"}">按词性</button>
+        <button class="${dailyWordGroupMode === "topic" ? "is-active" : ""}" type="button"
+          data-daily-group-mode="topic" aria-pressed="${dailyWordGroupMode === "topic"}">按情景</button>
+      </div>
       <div class="daily-word-editions" role="group" aria-label="百词分期册">
-        ${DAILY_WORD_SETS.map((item) => `
-          <button class="daily-word-edition${item.number === edition.number ? " is-active" : ""}${item.number === todayEdition ? " is-current" : ""}"
-            type="button" data-daily-edition="${item.number}" aria-pressed="${item.number === edition.number}">
-            <span>${String(item.number).padStart(2, "0")}</span>
-            <strong>${escapeHtml(item.focusLabel)}</strong>
+        ${editions.map((item) => `
+          <button class="daily-word-edition${item.date === edition.date ? " is-active" : ""}${item.date === dateKey ? " is-current" : ""}"
+            type="button" data-daily-date="${item.date}" aria-pressed="${item.date === edition.date}">
+            <span>${escapeHtml(item.date.slice(5))}</span>
+            <strong>${escapeHtml(item.focusTopic)}</strong>
             <em>100 词</em>
           </button>
         `).join("")}
       </div>
-      <div class="daily-word-grid">
-        ${entries.map(({ item, kind }, index) => {
-          const memory = MEMORY_META[item.memory?.type || "context"];
-          return `
-            <div class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}">
-              <button class="daily-word-item__open" type="button"
-                data-daily-word="${escapeAttr(item.word)}"
-                aria-label="查看 ${escapeAttr(item.word)} 的释义和记忆方式">
-                <span class="daily-word-item__index">${String(index + 1).padStart(3, "0")}</span>
-                <span class="daily-word-item__main">
-                  <strong>${escapeHtml(item.word)}</strong>
-                  <small>${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</small>
-                </span>
-                <span class="daily-word-item__tags">
-                  <em>${escapeHtml(kind)}</em>
-                  <i class="memory-badge memory-badge--${escapeAttr(item.memory?.type || "context")}">${escapeHtml(memory.short)}</i>
-                  ${mastered.has(item.word) ? '<b aria-label="已掌握">✓</b>' : ""}
-                </span>
-              </button>
-              <button class="daily-word-item__audio" type="button"
-                data-word-audio="${escapeAttr(item.word)}"
-                aria-label="朗读单词 ${escapeAttr(item.word)}" title="朗读单词">🔊</button>
+      <div class="daily-word-groups">
+        ${grouped.map((group) => `
+          <section class="daily-word-group">
+            <div class="daily-word-group__head">
+              <h4>${escapeHtml(group.label)}</h4>
+              <span>${group.entries.length} 项</span>
             </div>
-          `;
-        }).join("")}
+            <div class="daily-word-grid">
+              ${group.entries.map(({ item, kind }) => {
+                const memory = MEMORY_META[item.memory?.type || "context"];
+                return `
+                  <div class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}">
+                    <button class="daily-word-item__open" type="button"
+                      data-daily-word="${escapeAttr(item.word)}"
+                      aria-label="查看 ${escapeAttr(item.word)} 的释义和记忆方式">
+                      <span class="daily-word-item__main">
+                        <strong>${escapeHtml(item.word)}</strong>
+                        <small>${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</small>
+                      </span>
+                      <span class="daily-word-item__tags">
+                        <em>${escapeHtml(kind)}</em>
+                        <i class="memory-badge memory-badge--${escapeAttr(item.memory?.type || "context")}">${escapeHtml(memory.short)}</i>
+                        ${mastered.has(item.word) ? '<b aria-label="已掌握">✓</b>' : ""}
+                      </span>
+                    </button>
+                    <button class="daily-word-item__audio" type="button"
+                      data-word-audio="${escapeAttr(item.word)}"
+                      aria-label="朗读单词 ${escapeAttr(item.word)}" title="朗读单词">🔊</button>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          </section>
+        `).join("")}
       </div>
       <p class="daily-word-review__method">
         记忆建议：先用语境判断词义，再用词根拆解或固定搭配建立线索，最后按间隔复现。相关资料：
@@ -698,7 +797,7 @@
       const topics = TOPIC_ORDER.map((topic) => ({
         name: topic,
         words: partWords.filter(
-          (item) => (WORD_TOPICS[item.word] || item.topic || "交流与表达") === topic
+          (item) => (WORD_TOPICS[item.word] || item.topic || "交流") === topic
         )
       })).filter((topic) => topic.words.length);
       const fallbackWords = partWords.filter(
@@ -776,7 +875,7 @@
             ${dailyEditions.length ? `
               <div class="word-card__daily-editions">
                 <span>百词期号</span>
-                ${dailyEditions.slice(0, 5).map((day) => `<i>${String(day).padStart(2, "0")}</i>`).join("")}
+                ${dailyEditions.slice(0, 5).map((day) => `<i title="${escapeAttr(day)}">${escapeHtml(day.slice(5))}</i>`).join("")}
                 ${dailyEditions.length > 5 ? `<em>+${dailyEditions.length - 5}</em>` : ""}
               </div>
             ` : ""}
@@ -819,7 +918,7 @@
         <span><strong>${visibleCount}</strong>当前筛选</span>
         <span><strong>${DATA.vocabulary.length}</strong>词库总量</span>
         <span><strong>${dailyWords.size}</strong>文章重点</span>
-        <span><strong>${DAILY_WORD_SETS.length}</strong>百词分期</span>
+        <span><strong>${Object.keys(dailyWordHistory).length}</strong>百词天数</span>
         <span><strong>${mastered.size}</strong>已掌握</span>
       </div>
     `;
@@ -886,7 +985,7 @@
         <dl class="detail-grid">
           <dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>
           <dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>
-          <dt>百词期号</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => String(day).padStart(2, "0")).join(" · ") || "尚未进入百词分期"}</dd>
+          <dt>百词日期</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => day.slice(5)).join(" · ") || "尚未进入每日百词"}</dd>
           ${forms}
         </dl>
         <div class="word-example">
@@ -1131,9 +1230,15 @@
         playVocabularyAudio(audioButton.dataset.wordAudio, "word");
         return;
       }
-      const editionButton = event.target.closest("[data-daily-edition]");
-      if (editionButton) {
-        activeWordEdition = Number(editionButton.dataset.dailyEdition);
+      const modeButton = event.target.closest("[data-daily-group-mode]");
+      if (modeButton) {
+        dailyWordGroupMode = modeButton.dataset.dailyGroupMode;
+        renderDailyReviewWords();
+        return;
+      }
+      const dateButton = event.target.closest("[data-daily-date]");
+      if (dateButton) {
+        activeDailyDateKey = dateButton.dataset.dailyDate;
         renderDailyReviewWords();
         return;
       }
