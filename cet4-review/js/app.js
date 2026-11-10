@@ -1057,8 +1057,8 @@
       return;
     }
     root.innerHTML = `
-      <span><strong>今日阅读</strong> · ${mock.reading.year} · ${escapeHtml(mock.reading.reading.title)}</span>
-      <span><strong>今日听力</strong> · ${mock.listening.year} · ${escapeHtml(mock.listening.listening.title)}</span>
+      <span><strong>今日阅读</strong> · ${escapeHtml(mock.reading.label)} · ${escapeHtml(mock.reading.reading.title)}</span>
+      <span><strong>今日听力</strong> · ${escapeHtml(mock.listening.label)} · ${escapeHtml(mock.listening.listening.title)}</span>
     `;
   }
 
@@ -1083,8 +1083,8 @@
 
     root.innerHTML = `
       <div class="exam-pack">
-        ${renderExamPanel(mock.reading.reading, "READING", "daily-reading", false, mock.reading.year)}
-        ${renderExamPanel(mock.listening.listening, "LISTENING", "daily-listening", true, mock.listening.year)}
+        ${renderExamPanel(mock.reading.reading, "READING", "daily-reading", false, mock.reading.label)}
+        ${renderExamPanel(mock.listening.listening, "LISTENING", "daily-listening", true, mock.listening.label)}
       </div>
     `;
     root.querySelectorAll("[data-submit-exam]").forEach((button) =>
@@ -1100,19 +1100,19 @@
           body: panel.querySelector("[data-reader-body]"),
           toolbar: panel.querySelector("[data-reader-toolbar]"),
           text: listening ? buildListeningText(content) : content.passage,
-          label: listening ? `${exam.year} 模拟听力原文` : `${exam.year} 阅读文章`,
-          audioKey: `exam-${exam.year}-${listening ? "listening" : "reading"}`
+          label: listening ? `${exam.label || exam.year} 模拟听力原文` : `${exam.label || exam.year} 阅读文章`,
+          audioKey: `exam-${exam.mockId || exam.year}-${listening ? "listening" : "reading"}`
         })
       );
     });
   }
 
-  function renderExamPanel(content, type, panelId, listening, examYear) {
+  function renderExamPanel(content, type, panelId, listening, examLabel) {
     return `
-      <section class="exam-panel" id="${escapeAttr(panelId)}" data-exam-kind="${listening ? "listening" : "reading"}" data-exam-year="${examYear}">
+      <section class="exam-panel" id="${escapeAttr(panelId)}" data-exam-kind="${listening ? "listening" : "reading"}" data-exam-label="${escapeAttr(examLabel)}">
         <div class="exam-panel__head">
           <h3>${escapeHtml(content.title)}</h3>
-          <span class="exam-type">${examYear} · ${type} · 原创改编</span>
+          <span class="exam-type">${escapeHtml(examLabel)} · ${type}</span>
         </div>
         <div data-reader-toolbar></div>
         ${
