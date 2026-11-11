@@ -5,16 +5,48 @@
   const EXAMS = window.CET4_EXAMS || [];
   const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
+  const WORD_BANK = window.CET4_WORD_BANK || [];
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
 
   DATA.vocabulary.push(...EXTRA_VOCABULARY);
+  const CORE_WORD_KEYS = new Set(DATA.vocabulary.map((item) => item.word));
   DATA.vocabulary.forEach((item) => {
-    item.memory = MEMORY_DATA[item.word] || { type: "context" };
+    item.isCore = true;
+  });
+
+  DATA.vocabulary.push(
+    ...WORD_BANK.filter(([word]) => !CORE_WORD_KEYS.has(word)).map(
+      ([word, meaning, partText, topic, collocations = []]) => ({
+        word,
+        ipa: "",
+        part: String(partText).split(/\s+/).filter(Boolean),
+        level: "四级扩展",
+        meaning,
+        topic: topic || "综合表达",
+        synonyms: [],
+        similar: [],
+        forms: {},
+        example: `The CET-4 passage presents "${word}" as a key word in this context.`,
+        exampleZh: `四级文章在“${topic || "综合表达"}”语境中呈现“${word}”这一关键词。`,
+        collocations,
+        isCore: false
+      })
+    )
+  );
+  DATA.vocabulary.forEach((item) => {
+    item.memory = MEMORY_DATA[item.word] || {
+      type: "context",
+      collocations: item.collocations || []
+    };
   });
 
   const WORD_KEY = "cet4-review.mastered.v1";
   const DAILY_WORD_HISTORY_KEY = "cet4-review.daily-100-history.v1";
+  const DAILY_WORD_COUNT = 100;
+  const DAILY_REVIEW_COUNT = 6;
+  const DAILY_SELECTION_VERSION = 2;
+  const DAILY_REVIEW_POSITIONS = [9, 24, 39, 54, 69, 84];
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
   let dailyWordHistory = readJson(DAILY_WORD_HISTORY_KEY, {});
   let wordDailyEditions = new Map();
@@ -160,39 +192,136 @@
   }
 
   function ensureDailyWordSet(date) {
-    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-    if (dailyWordHistory[key]) return dailyWordHistory[key];
+    const currentKey = dateToKey(date);
+    const keys = [...new Set([...Object.keys(dailyWordHistory), currentKey])].sort();
+    const learnedBeforeToday = new Set();
+    let changed = false;
 
-    const seed = Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
-    const article = DATA.articles[seed % DATA.articles.length];
-    const focusTopic = TOPIC_ORDER[seed % TOPIC_ORDER.length];
-    const slots = [...article.words];
-    const topicWords = DATA.vocabulary.filter(
-      (item) => (WORD_TOPICS[item.word] || item.topic) === focusTopic
-    );
-    if (topicWords.length) {
-      const start = (seed * 7) % topicWords.length;
-      for (let index = 0; index < 10; index += 1) {
-        slots.push(topicWords[(start + index) % topicWords.length].word);
+    keys.forEach((key) => {
+      const stored = dailyWordHistory[key];
+      const editionDate = dateFromKey(key) || date;
+      const seed = Number.isFinite(stored?.seed)
+        ? stored.seed
+        : Math.floor(
+            Date.UTC(
+              editionDate.getFullYear(),
+              editionDate.getMonth(),
+              editionDate.getDate()
+            ) / 86400000
+          );
+      const article =
+        DATA.articles.find((item) => item.id === stored?.articleId) ||
+        DATA.articles[seed % DATA.articles.length];
+      const focusTopic =
+        stored?.focusTopic || TOPIC_ORDER[seed % TOPIC_ORDER.length];
+
+      if (
+        stored?.selectionVersion === DAILY_SELECTION_VERSION &&
+        Array.isArray(stored.newWords) &&
+        Array.isArray(stored.reviewWords) &&
+        Array.isArray(stored.words) &&
+        new Set(stored.words).size === stored.words.length
+      ) {
+        stored.newWords.forEach((word) => learnedBeforeToday.add(word));
+        return;
       }
-    }
 
-    const start = (seed * 23 + 11) % DATA.vocabulary.length;
-    let offset = 0;
-    while (slots.length < 100) {
-      slots.push(DATA.vocabulary[(start + offset * 37) % DATA.vocabulary.length].word);
-      offset += 1;
-    }
+      const reviewWords =
+        learnedBeforeToday.size > 0
+          ? pickDailyWords(
+              [...learnedBeforeToday],
+              seed + 701,
+              DAILY_REVIEW_COUNT
+            )
+          : [];
+      const newWords = pickDailyWords(
+        DATA.vocabulary
+          .filter((item) => !learnedBeforeToday.has(item.word))
+          .map((item) => item.word),
+        seed + 97,
+        DAILY_WORD_COUNT - reviewWords.length
+      );
+      const fallbackWords =
+        newWords.length + reviewWords.length < DAILY_WORD_COUNT
+          ? pickDailyWords(
+              DATA.vocabulary
+                .map((item) => item.word)
+                .filter(
+                  (word) =>
+                    !newWords.includes(word) && !reviewWords.includes(word)
+                ),
+              seed + 1301,
+              DAILY_WORD_COUNT - newWords.length - reviewWords.length
+            )
+          : [];
 
-    dailyWordHistory[key] = {
-      date: key,
-      seed,
-      focusTopic,
-      articleId: article.id,
-      words: slots.slice(0, 100)
-    };
-    localStorage.setItem(DAILY_WORD_HISTORY_KEY, JSON.stringify(dailyWordHistory));
-    return dailyWordHistory[key];
+      dailyWordHistory[key] = {
+        date: key,
+        seed,
+        focusTopic,
+        articleId: article.id,
+        newWords,
+        reviewWords,
+        fallbackWords,
+        words: interleaveReviewWords(
+          [...newWords, ...fallbackWords],
+          reviewWords
+        ),
+        selectionVersion: DAILY_SELECTION_VERSION
+      };
+      newWords.forEach((word) => learnedBeforeToday.add(word));
+      changed = true;
+    });
+
+    if (changed || !dailyWordHistory[currentKey]) {
+      localStorage.setItem(
+        DAILY_WORD_HISTORY_KEY,
+        JSON.stringify(dailyWordHistory)
+      );
+    }
+    return dailyWordHistory[currentKey];
+  }
+
+  function dateToKey(date) {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function dateFromKey(key) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(key);
+    if (!match) return null;
+    return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  }
+
+  function hashText(value) {
+    let hash = 2166136261;
+    for (let index = 0; index < value.length; index += 1) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return hash >>> 0;
+  }
+
+  function pickDailyWords(pool, seed, count) {
+    return [...new Set(pool)]
+      .map((word) => ({ word, order: hashText(`${seed}:${word}`) }))
+      .sort(
+        (left, right) =>
+          left.order - right.order || left.word.localeCompare(right.word)
+      )
+      .slice(0, Math.max(0, count))
+      .map((entry) => entry.word);
+  }
+
+  function interleaveReviewWords(newWords, reviewWords) {
+    const words = [...newWords];
+    reviewWords.forEach((word, index) => {
+      const position = Math.min(
+        words.length,
+        DAILY_REVIEW_POSITIONS[index] ?? words.length
+      );
+      words.splice(position, 0, word);
+    });
+    return words;
   }
 
   function rebuildWordDailyEditionMap() {
@@ -253,17 +382,20 @@
     activeDailyDateKey = edition.date;
     const article = DATA.articles.find((item) => item.id === edition.articleId);
     const articleWords = new Set(article?.words || []);
-    const seen = new Set();
+    const reviewWords = new Set(edition.reviewWords || []);
     const entries = edition.words.map((wordKey) => {
       const item = wordMap.get(wordKey);
-      const kind = seen.has(wordKey)
-        ? "复习复现"
+      const kind = reviewWords.has(wordKey)
+        ? "历史复习"
         : articleWords.has(wordKey)
           ? "文章关联"
-          : "新增累积";
-      seen.add(wordKey);
+          : "今日新词";
       return { item, kind };
     }).filter(({ item }) => item);
+    const newWordCount = entries.filter(
+      ({ kind }) => kind !== "历史复习"
+    ).length;
+    const reviewWordCount = entries.length - newWordCount;
     const partCounts = {
       "n.": entries.filter(({ item }) => item.part.includes("n.")).length,
       "v.": entries.filter(({ item }) => item.part.includes("v.")).length,
@@ -277,10 +409,12 @@
         <div>
           <p class="eyebrow">DAILY 100 · ${escapeHtml(edition.date)}</p>
           <h3 id="dailyVocabTitle">${edition.date === dateKey ? "今日 100 词" : `${formatDay(edition.date)} · 100 词`}</h3>
-          <p>当天 100 个学习项按词性和情景双重分类。关联文章《${escapeHtml(article?.title || "")}》，情景重点是“${escapeHtml(edition.focusTopic)}”；重复词用于间隔复习。</p>
+          <p>当天以 ${newWordCount} 个新词为主，并从过去词中安排 ${reviewWordCount} 个间隔复习；同一天不重复。关联文章《${escapeHtml(article?.title || "")}》，情景重点是“${escapeHtml(edition.focusTopic)}”。</p>
         </div>
         <div class="daily-word-review__stats">
           <span><strong>${entries.length}</strong>学习项</span>
+          <span><strong>${newWordCount}</strong>今日新词</span>
+          <span><strong>${reviewWordCount}</strong>历史复习</span>
           <span><strong>${partCounts["n."]}</strong>名词</span>
           <span><strong>${partCounts["v."]}</strong>动词</span>
           <span><strong>${partCounts["adj."] + partCounts["adv."]}</strong>形/副</span>
@@ -298,7 +432,7 @@
             type="button" data-daily-date="${item.date}" aria-pressed="${item.date === edition.date}">
             <span>${escapeHtml(item.date.slice(5))}</span>
             <strong>${escapeHtml(item.focusTopic)}</strong>
-            <em>100 词</em>
+            <em>${item.newWords?.length || 100} 新 · ${item.reviewWords?.length || 0} 复</em>
           </button>
         `).join("")}
       </div>
@@ -768,7 +902,9 @@
   function renderWordList() {
     const query = wordQuery.trim().toLowerCase();
     const daysByWord = getWordDays();
+    const accumulatedWords = new Set(wordDailyEditions.keys());
     const visible = DATA.vocabulary.filter((item) => {
+      const accumulated = item.isCore || accumulatedWords.has(item.word);
       const partMatch = wordPos === "all" || item.part.includes(wordPos);
       const memoryType = item.memory?.type || "context";
       const memoryMatch = wordMemory === "all" || memoryType === wordMemory;
@@ -781,8 +917,8 @@
         ...(item.memory?.family || []),
         ...(item.memory?.collocations || [])
       ].join(" ");
-      const text = `${item.word} ${item.meaning} ${item.synonyms.join(" ")} ${WORD_TOPICS[item.word] || item.topic || ""} ${memoryText}`.toLowerCase();
-      return partMatch && memoryMatch && dayMatch && (!query || text.includes(query));
+      const text = `${item.word} ${item.meaning} ${(item.synonyms || []).join(" ")} ${WORD_TOPICS[item.word] || item.topic || ""} ${memoryText}`.toLowerCase();
+      return accumulated && partMatch && memoryMatch && dayMatch && (!query || text.includes(query));
     });
     visibleWordCount = visible.length;
 
@@ -860,7 +996,7 @@
           <div>
             <div class="word-card__headline">
               <h3>${escapeHtml(item.word)}</h3>
-              <span class="word-card__ipa">${escapeHtml(item.ipa)}</span>
+              ${item.ipa ? `<span class="word-card__ipa">${escapeHtml(item.ipa)}</span>` : ""}
             </div>
             <p class="word-card__meaning">${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</p>
             <div class="word-card__context">
@@ -888,7 +1024,7 @@
         <div class="word-card__actions">
           <button type="button" data-open-word="${escapeAttr(item.word)}">全部释义与词形</button>
           <button type="button" data-word-audio="${escapeAttr(item.word)}">▶ 朗读单词</button>
-          <button type="button" data-example-audio="${escapeAttr(item.word)}">▶ 朗读例句</button>
+          ${item.example ? `<button type="button" data-example-audio="${escapeAttr(item.word)}">▶ 朗读例句</button>` : ""}
         </div>
       </article>
     `;
@@ -968,12 +1104,22 @@
       .filter(([, value]) => value)
       .map(([pos, value]) => `<dt>${partLabel(pos)}</dt><dd>${escapeHtml(value)}</dd>`)
       .join("");
+    const detailRows = [
+      item.synonyms?.length
+        ? `<dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>`
+        : "",
+      item.similar?.length
+        ? `<dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>`
+        : "",
+      `<dt>百词日期</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => day.slice(5)).join(" · ") || "尚未进入每日百词"}</dd>`,
+      forms
+    ].join("");
 
     document.getElementById("wordDrawerContent").innerHTML = `
       <article class="word-detail">
-        <p class="eyebrow">CET-4 HIGH-FREQUENCY</p>
+        <p class="eyebrow">${item.isCore ? "CET-4 HIGH-FREQUENCY" : "CET-4 EXTENDED BANK"}</p>
         <h2>${escapeHtml(item.word)}</h2>
-        <span class="ipa">${escapeHtml(item.ipa)} · ${item.part.map(escapeHtml).join(" ")}</span>
+        <span class="ipa">${item.ipa ? `${escapeHtml(item.ipa)} · ` : ""}${item.part.map(escapeHtml).join(" ")}</span>
         <div class="word-detail__meaning">${escapeHtml(item.meaning)}</div>
         <div class="word-memory">
           <span class="memory-badge memory-badge--${escapeAttr(memoryType)}">${escapeHtml(memory.label)}</span>
@@ -983,18 +1129,15 @@
           ${item.memory?.collocations?.length ? `<p><strong>高频搭配</strong>${item.memory.collocations.map(escapeHtml).join(" · ")}</p>` : ""}
         </div>
         <dl class="detail-grid">
-          <dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>
-          <dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>
-          <dt>百词日期</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => day.slice(5)).join(" · ") || "尚未进入每日百词"}</dd>
-          ${forms}
+          ${detailRows}
         </dl>
-        <div class="word-example">
+        ${item.example ? `<div class="word-example">
           ${escapeHtml(item.example)}
           <span>${escapeHtml(item.exampleZh)}</span>
-        </div>
+        </div>` : ""}
         <div class="reading-card__footer">
           <button class="reading-button" type="button" data-drawer-word-audio="${escapeAttr(item.word)}">▶ 朗读单词</button>
-          <button class="reading-button" type="button" data-drawer-example-audio="${escapeAttr(item.word)}">▶ 朗读例句</button>
+          ${item.example ? `<button class="reading-button" type="button" data-drawer-example-audio="${escapeAttr(item.word)}">▶ 朗读例句</button>` : ""}
           <button class="reading-button" type="button" data-master-word="${escapeAttr(item.word)}">
             ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
           </button>
@@ -1306,6 +1449,10 @@
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     stopVocabularyAudio();
     const fallback = kind === "word" ? item.word : item.example;
+    if (!item.isCore) {
+      speak(fallback);
+      return;
+    }
     const source =
       kind === "word"
         ? `./audio/words/${encodeURIComponent(item.word)}.mp3`

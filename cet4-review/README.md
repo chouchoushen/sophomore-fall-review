@@ -3,7 +3,7 @@
 一个独立的 CET-4 静态学习网站，包含：
 
 1. 每日轮换的约 200 词四级风格原创英文文章，按“现象—分析—建议”组织内容，并自然复现高频词汇。
-2. 110 个四级词卡组成词汇总库；每天生成 100 个学习项，同时按词性和情景（如心情、建筑与空间）分类。历史百词按真实日期累积，重复词保留为复习项。
+2. 4,443 个四级词卡组成词汇总库；每天生成 100 个不重复学习项，通常为 94 个新词和 6 个过去词复习，同时按词性和情景（如心情、建筑与空间）分类。历史百词按真实日期累积，旧版记录会自动迁移。
 3. 词汇支持词性、语义主题和记忆方式筛选。记忆方式包括词根构词、固定搭配和语境记忆，并补充构词拆解、同族词与高频搭配。
 4. 十套历年真题主题改写的阅读和听力模拟每天独立轮换。听力页面只显示选项，英文题干写入听力稿并由音频朗读。
 5. 每个单词和例句都有独立 MP3：单词使用 Aria 美音，例句使用 Ava 自然美音。文章、模拟阅读和含题干的模拟听力继续使用逐词时间轴高亮。
@@ -15,6 +15,11 @@
 - Bowers & Kirby, *Effects of morphological instruction on vocabulary acquisition*: https://doi.org/10.1007/s11145-009-9172-z
 - Carpenter, Pan & Butler, *The science of effective learning with spacing and retrieval practice*: https://doi.org/10.1038/s44159-022-00089-1
 - Mulder et al., *Context, word, and student predictors in second language vocabulary learning*: https://doi.org/10.1017/s0142716418000504
+
+## 扩展词表来源
+
+- 扩展词义数据来自 KyleBing 的 [english-vocabulary](https://github.com/KyleBing/english-vocabulary)，使用 BSD 3-Clause License。
+- 本站只截取 CET4 词条中的单词、词性、中文释义和少量搭配，并重新生成页面所需的数据格式；许可原文见 `data/licenses/KyleBing-english-vocabulary-LICENSE.txt`。
 
 ## 版权说明
 
