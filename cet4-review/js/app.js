@@ -1446,8 +1446,10 @@
       forms
     ].join("");
     const exampleLabel =
-      item.exampleKind === "collocation"
-        ? "高频搭配"
+      item.exampleKind === "usage"
+        ? "真实用法"
+        : item.exampleKind === "collocation"
+          ? "高频搭配"
         : item.exampleKind === "context"
           ? "语境例句"
           : "CET-4 例句";
