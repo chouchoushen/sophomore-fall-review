@@ -1,7 +1,7 @@
 window.ANALOG_COURSE = {
   title: "普通物理学",
-  subtitle: "静电场 · 导体与电介质 · 电容与电场能量",
-  updatedAt: "2026-11-04",
+  subtitle: "静电场 · 导体与电介质 · 电容与电场能量 · 恒定磁场",
+  updatedAt: "2026-11-11",
   chapters: [
     {
       id: "field",

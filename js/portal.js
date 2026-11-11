@@ -27,7 +27,7 @@
       id: "physics",
       name: "普通物理学",
       href: "./general-physics-review/",
-      total: 71,
+      total: 99,
       key: "general-physics-review.mastered.v1"
     },
     {

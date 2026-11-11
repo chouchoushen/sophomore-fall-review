@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="普通物理学互动复习站：静电场、导体与电介质、电容与电场能量。">
+  <meta name="description" content="普通物理学互动复习站：静电场、导体与电介质、电容与电场能量、恒定磁场。">
   <title>普通物理学 · 静电场知识主线</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
@@ -15,13 +15,13 @@
   <header class="hero">
     <div class="hero__inner">
       <div class="hero__copy">
-        <p class="eyebrow">GENERAL PHYSICS · ELECTROSTATICS</p>
-        <h1>普通物理学<span>静电场主线</span></h1>
+        <p class="eyebrow">GENERAL PHYSICS · ELECTRICITY &amp; MAGNETISM</p>
+        <h1>普通物理学<span>电磁场主线</span></h1>
         <p class="hero__lead">
-          用库仑定律建立场，用高斯面利用对称性，用等势面理解能量，再把场与介质收束到电容。
+          从静电场、介质与电容延伸到恒定磁场：用电流元建立磁场，用安培环路利用对称性，再处理洛伦兹力、安培力和磁介质。
         </p>
         <div class="hero__stats" aria-label="站点统计">
-          <span><strong>3</strong> 个章节</span>
+          <span><strong>4</strong> 个章节</span>
           <span><strong id="totalKnowledge">0</strong> 个知识点</span>
           <span><strong id="totalFigures">0</strong> 张例题图示</span>
           <span><strong id="totalQuizQuestions">0</strong> 道自测</span>
@@ -136,8 +136,8 @@
         </div>
 
         <nav class="rail__actions" aria-label="冲刺入口">
-          <a href="#assessment">通关自测 <span>18 题</span></a>
-          <a href="#formulaSheet">公式速查 <span>13 组</span></a>
+          <a href="#assessment">通关自测 <span>26 题</span></a>
+          <a href="#formulaSheet">公式速查 <span>23 组</span></a>
           <a href="#examWorkflow">解题流程 <span>4 步</span></a>
         </nav>
       </div>
@@ -146,7 +146,7 @@
     <main id="courseContent" class="main">
       <section class="assessment" id="assessment" aria-labelledby="assessmentTitle">
         <div class="assessment__intro">
-          <p class="eyebrow">CHECKPOINT · 18 QUESTIONS</p>
+          <p class="eyebrow">CHECKPOINT · 26 QUESTIONS</p>
           <h2 id="assessmentTitle">用题目暴露“场、势、能”混淆</h2>
           <p>
             每道题提交后立即显示解析。全部完成后会按章节给出正确率，并保留本次作答记录。
@@ -168,7 +168,7 @@
           </div>
           <div class="quiz-dashboard" aria-live="polite">
             <div class="quiz-dashboard__status">
-              <strong id="quizProgressText">已答 0 / 18</strong>
+              <strong id="quizProgressText">已答 0 / 26</strong>
               <span id="quizScoreText">答对 0 题</span>
             </div>
             <div class="quiz-dashboard__track" aria-hidden="true">
@@ -217,7 +217,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">FORMULA SHEET</p>
-            <h2 id="formulaSheetTitle">静电场公式速查</h2>
+            <h2 id="formulaSheetTitle">电磁场公式速查</h2>
           </div>
           <p>公式的右栏比公式本身更重要：有限长、无限大、球内外与介质是否填满都会改变结论。</p>
         </div>
@@ -292,6 +292,56 @@
                 <td>$w_e=\dfrac12\varepsilon E^2$</td>
                 <td>线性各向同性介质；非均匀场需积分。</td>
               </tr>
+              <tr>
+                <td>毕奥－萨伐尔</td>
+                <td>$\mathrm d\vec B=\dfrac{\mu_0}{4\pi}\dfrac{I\,\mathrm d\vec l\times\hat{\vec r}}{r^2}$</td>
+                <td>先由右手叉乘定方向，再用对称性舍去抵消分量。</td>
+              </tr>
+              <tr>
+                <td>磁通与磁高斯</td>
+                <td>$\Phi=\displaystyle\int\vec B\cdot\mathrm d\vec S,\quad\oint\vec B\cdot\mathrm d\vec S=0$</td>
+                <td>磁感线闭合；总磁通为零不代表每点 $B=0$。</td>
+              </tr>
+              <tr>
+                <td>安培环路定理</td>
+                <td>$\oint\vec B\cdot\mathrm d\vec l=\mu_0\sum I_{\rm in}$</td>
+                <td>电流正负按环路绕行方向和右手螺旋确定。</td>
+              </tr>
+              <tr>
+                <td>无限长直导线</td>
+                <td>$B=\dfrac{\mu_0I}{2\pi r}$</td>
+                <td>磁感线是以导线为轴的同心圆。</td>
+              </tr>
+              <tr>
+                <td>长直螺线管</td>
+                <td>$B_{\rm in}=\mu_0nI$</td>
+                <td>$n$ 为单位长度匝数；端口附近存在端部效应。</td>
+              </tr>
+              <tr>
+                <td>洛伦兹力</td>
+                <td>$\vec F_{\rm m}=q\vec v\times\vec B$</td>
+                <td>磁场力不做功；速度平行磁场时力为零。</td>
+              </tr>
+              <tr>
+                <td>圆周运动半径</td>
+                <td>$R=\dfrac{mv}{|q|B}$</td>
+                <td>适用于 $v\perp B$；周期与速率无关。</td>
+              </tr>
+              <tr>
+                <td>安培力</td>
+                <td>$\mathrm d\vec F=I\mathrm d\vec l\times\vec B$</td>
+                <td>均匀磁场中闭合载流回路所受合力为零。</td>
+              </tr>
+              <tr>
+                <td>磁矩与力矩</td>
+                <td>$\vec m=NIS\vec e_n,\quad\vec M=\vec m\times\vec B$</td>
+                <td>$\vec m\perp\vec B$ 时力矩最大，同向时稳定平衡。</td>
+              </tr>
+              <tr>
+                <td>磁介质</td>
+                <td>$\vec H=\dfrac{\vec B}{\mu_0}-\vec M,\quad\vec B=\mu\vec H$</td>
+                <td>$\oint\vec H\cdot\mathrm d\vec l=\sum I_{\rm free,in}$；线性介质才可直接用 $\mu$。</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -301,7 +351,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">ANSWER PROTOCOL</p>
-            <h2 id="examWorkflowTitle">四类题的落笔顺序</h2>
+            <h2 id="examWorkflowTitle">五类题的落笔顺序</h2>
           </div>
           <p>把“电荷分布—对称性—场/势—边界条件”写完整，通常比只写最终公式更稳。</p>
         </div>
@@ -346,6 +396,17 @@
               <li>明确介质是否填满；再判断电源是否连接，决定固定 $Q$ 还是固定 $U$。</li>
             </ol>
           </article>
+          <article>
+            <span>05 · 恒定磁场</span>
+            <h3>先判方向，再积分或选环路</h3>
+            <ol>
+              <li>标出电流方向；毕奥－萨伐尔题先作 $I\mathrm d\vec l\times\vec r$，安培环路题先确定所围电流正负。</li>
+              <li>轴对称场选同心圆环路；长直螺线管选长方形环路并把管外场近似为零。</li>
+              <li>求磁场力时先用叉乘判方向，再处理圆周半径、螺距、安培力或磁力矩大小。</li>
+              <li>含磁介质时先区分自由电流与磁化电流，线性介质再用 $\vec B=\mu\vec H$。</li>
+              <li>用无限长、圆心 $x=0$、远处 $x\gg R$ 和特殊角度检查公式。</li>
+            </ol>
+          </article>
         </div>
       </section>
 
@@ -367,18 +428,20 @@
   </div>
 
   <footer class="footer">
-    <p>普通物理学互动复习站 · 静电场、导体与电介质、电容与电场能量</p>
-    <p>知识卡 · 18 题通关自测 · 公式速查 · 解题流程 · 图文例题</p>
+    <p>普通物理学互动复习站 · 静电场、导体与电介质、电容与电场能量、恒定磁场</p>
+    <p>知识卡 · 26 题通关自测 · 公式速查 · 解题流程 · 图文例题</p>
   </footer>
 
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
   <script defer src="../weekly-quiz.js?v=20261103-weekly"></script>
   <script defer src="./js/course-data.js?v=20261104-examples"></script>
+  <script defer src="./js/magnetism-data.js?v=20261111-steady-magnetic-field"></script>
   <script defer src="./js/quiz-data.js?v=20261103-weekly"></script>
-  <script defer src="./js/weekly-variants.js?v=20261103-weekly"></script>
-  <script defer src="./js/app.js?v=20261104-examples"></script>
-  <script defer src="./js/practice.js?v=20261103-weekly"></script>
+  <script defer src="./js/quiz-magnetism-data.js?v=20261111-steady-magnetic-field"></script>
+  <script defer src="./js/weekly-variants.js?v=20261111-magnetism"></script>
+  <script defer src="./js/app.js?v=20261111-steady-magnetic-field"></script>
+  <script defer src="./js/practice.js?v=20261111-magnetism-fixed"></script>
   <script defer src="../knowledge-annotations.js?v=20261106-annotations-sync2"></script>
   <script defer src="../portal-back.js?v=20261106"></script>
 </body>

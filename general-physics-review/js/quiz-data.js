@@ -1,6 +1,6 @@
 window.ANALOG_QUIZ = {
   title: "普通物理学通关自测",
-  subtitle: "18 道题覆盖静电场、导体与电介质、电容与能量；每题均附诊断解析。",
+  subtitle: "26 道题覆盖静电场、导体与电介质、电容与能量、恒定磁场；每题均附诊断解析。",
   chapterLabels: {
     field: "静电场",
     conductors: "导体与电介质",
