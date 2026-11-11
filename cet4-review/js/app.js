@@ -532,7 +532,7 @@
         <input class="reader-progress" type="range" min="0" max="${lastIndex}" value="0" step="1"
           aria-label="调整${escapeAttr(label)}阅读进度">
         <output class="reader-position" aria-label="当前朗读到第几个单词">1 / ${tokens.length}</output>
-        <span class="reader-audio-tag">${useAudio ? "自然美音 · Ava" : "浏览器朗读"}</span>
+        <span class="reader-audio-tag">${useAudio ? "四级考试声线 · Guy" : "浏览器朗读"}</span>
       </div>
     `;
 
@@ -688,7 +688,7 @@
       const voiceSession = session;
       utterance = new SpeechSynthesisUtterance(text.slice(sourceStart));
       utterance.lang = "en-US";
-      utterance.rate = 0.88;
+      utterance.rate = 0.93;
       utterance.pitch = 1;
 
       utterance.onstart = () => {
