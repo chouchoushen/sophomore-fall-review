@@ -26,7 +26,10 @@
         ipa = "",
         example = "",
         exampleZh = "",
-        exampleKind = "sentence"
+        exampleKind = "sentence",
+        synonyms = [],
+        similar = [],
+        forms = {}
       ]) => ({
         word,
         ipa,
@@ -34,9 +37,9 @@
         level: "四级扩展",
         meaning: compactMeaning(meaning),
         topic: topic || "综合表达",
-        synonyms: [],
-        similar: [],
-        forms: {},
+        synonyms,
+        similar,
+        forms,
         example,
         exampleZh,
         exampleKind,
@@ -144,6 +147,8 @@
   let activeDailyDateKey = null;
   let dailyWordGroupMode = "part";
   let visibleWordCount = 0;
+  let quickWordResults = [];
+  let quickWordActiveIndex = 0;
   let currentArticle = null;
   let articleReader = null;
   let examReaders = [];
@@ -310,6 +315,183 @@
         return true;
       })
       .join("；");
+  }
+
+  const CHINESE_SIMILAR_GROUPS = [
+    ["提高", "提升", "增加", "改善", "加强", "增强", "促进", "上升"],
+    ["减少", "降低", "下降", "削减", "减弱", "缩小"],
+    ["重要", "关键", "必要", "核心", "重大", "主要"],
+    ["改变", "变化", "转变", "调整", "修改", "转换"],
+    ["认为", "相信", "觉得", "主张", "假定", "判断"],
+    ["获得", "得到", "取得", "获取", "赢得", "取得"],
+    ["帮助", "协助", "支持", "促进", "有利于"],
+    ["困难", "难题", "挑战", "障碍", "问题", "艰难"],
+    ["快速", "迅速", "加快", "速度", "立即", "很快"],
+    ["开心", "高兴", "快乐", "愉快", "满意", "幸福"],
+    ["生气", "愤怒", "恼火", "不满", "发怒"],
+    ["担心", "焦虑", "忧虑", "不安", "害怕"],
+    ["漂亮", "美丽", "好看", "优美", "迷人"],
+    ["普通", "一般", "常见", "平常", "常规"],
+    ["明显", "清楚", "显著", "突出", "显而易见"],
+    ["使用", "利用", "采用", "应用", "运用"],
+    ["保持", "维持", "保存", "保留", "持续"],
+    ["建立", "创建", "设立", "成立", "构建"],
+    ["影响", "作用", "效果", "冲击", "改变"],
+    ["选择", "挑选", "决定", "选项", "替代"]
+  ];
+
+  function formEntries(item) {
+    return Object.entries(item.forms || {}).flatMap(([pos, values]) =>
+      (Array.isArray(values) ? values : [values])
+        .filter(Boolean)
+        .map((value) => ({
+          pos,
+          label: partLabel(pos),
+          value: String(value)
+        }))
+    );
+  }
+
+  function compactList(values, count = 2) {
+    return (values || []).filter(Boolean).slice(0, count);
+  }
+
+  function renderDailyWordHints(item) {
+    const forms = formEntries(item)
+      .slice(0, 2)
+      .map((form) => `${form.label} ${form.value}`);
+    const groups = [
+      { label: "形", values: compactList(item.similar, 2) },
+      { label: "搭", values: compactList(item.collocations, 2) },
+      { label: "变", values: forms }
+    ];
+    if (!groups.some((group) => group.values.length)) return "";
+    return `
+      <span class="daily-word-item__hints">
+        ${groups.map((group) => `
+          <span title="${escapeAttr(group.values.join(" · ") || "暂无")}">
+            <b>${group.label}</b>${escapeHtml(group.values.join(" · ") || "—")}
+          </span>
+        `).join("")}
+      </span>
+    `;
+  }
+
+  function normalizeEnglishQuery(value) {
+    return String(value || "").toLowerCase().replace(/[^a-z -]/g, "").trim();
+  }
+
+  function searchVocabulary(query) {
+    const value = String(query || "").trim();
+    if (!value) return [];
+    const isChinese = /[\u3400-\u9fff]/.test(value);
+    const english = normalizeEnglishQuery(value);
+    const groups = isChinese
+      ? CHINESE_SIMILAR_GROUPS.filter((group) =>
+          group.some((term) => term.includes(value) || value.includes(term))
+        )
+      : [];
+    const queryChars = [...new Set(
+      value.replace(/[的地得了和与或是一在有为；，、]/g, "")
+    )];
+
+    return DATA.vocabulary
+      .map((item) => {
+        let score = 0;
+        if (isChinese) {
+          const meaning = `${item.meaning} ${(item.synonyms || []).join(" ")}`;
+          if (meaning.includes(value)) score += 1200;
+          for (const group of groups) {
+            for (const term of group) {
+              if (meaning.includes(term)) score += 260;
+            }
+          }
+          const shared = queryChars.filter((char) => meaning.includes(char)).length;
+          score += shared * 35;
+          if (score) score -= Math.max(0, item.meaning.length - 18);
+        } else {
+          const word = item.word.toLowerCase();
+          if (word === english) score = 5000;
+          else if (word.startsWith(english)) score = 3200 - word.length;
+          else if (word.includes(english)) score = 2400 - word.indexOf(english) * 10;
+          else if (english.length >= 2) {
+            let index = 0;
+            for (const char of word) {
+              if (char === english[index]) index += 1;
+              if (index === english.length) break;
+            }
+            if (index === english.length) score = 900 - word.length;
+          }
+        }
+        return { item, score };
+      })
+      .filter((entry) => entry.score > 0)
+      .sort(
+        (left, right) =>
+          right.score - left.score ||
+          left.item.word.length - right.item.word.length ||
+          left.item.word.localeCompare(right.item.word)
+      )
+      .slice(0, 8)
+      .map((entry) => entry.item);
+  }
+
+  function renderQuickWordResults(query) {
+    const root = document.getElementById("dailyWordQuickResults");
+    quickWordResults = searchVocabulary(query);
+    quickWordActiveIndex = 0;
+    root.hidden = !query || !quickWordResults.length;
+    document.getElementById("dailyWordQuickInput")
+      ?.setAttribute("aria-expanded", String(!root.hidden));
+    if (!query) {
+      root.innerHTML = "";
+      document.getElementById("dailyWordQuickInput")
+        ?.removeAttribute("aria-activedescendant");
+      return;
+    }
+    if (!quickWordResults.length) {
+      root.innerHTML = `<p class="quick-word-empty">没有找到相近单词，试试更短的关键词。</p>`;
+      return;
+    }
+    root.innerHTML = quickWordResults.map((item, index) => `
+      <button class="quick-word-result${index === 0 ? " is-active" : ""}"
+        type="button" role="option" aria-selected="${index === 0}"
+        data-quick-word="${escapeAttr(item.word)}" id="quick-word-option-${index}">
+        <span><strong>${escapeHtml(item.word)}</strong><small>${escapeHtml(item.ipa || "")}</small></span>
+        <em>${escapeHtml(item.part.join(" "))} ${escapeHtml(item.meaning)}</em>
+      </button>
+    `).join("");
+  }
+
+  function moveQuickWordSelection(direction) {
+    if (!quickWordResults.length) return;
+    quickWordActiveIndex =
+      (quickWordActiveIndex + direction + quickWordResults.length) %
+      quickWordResults.length;
+    document.querySelectorAll(".quick-word-result").forEach((button, index) => {
+      const active = index === quickWordActiveIndex;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-selected", String(active));
+    });
+    const active = document.getElementById(`quick-word-option-${quickWordActiveIndex}`);
+    active?.scrollIntoView({ block: "nearest" });
+    document.getElementById("dailyWordQuickInput")
+      ?.setAttribute("aria-activedescendant", active?.id || "");
+  }
+
+  function closeQuickWordResults(clear = false) {
+    const root = document.getElementById("dailyWordQuickResults");
+    if (!root) return;
+    root.hidden = true;
+    document.getElementById("dailyWordQuickInput")
+      ?.setAttribute("aria-expanded", "false");
+    document.getElementById("dailyWordQuickInput")
+      ?.removeAttribute("aria-activedescendant");
+    if (clear) {
+      const input = document.getElementById("dailyWordQuickInput");
+      if (input) input.value = "";
+      quickWordResults = [];
+    }
   }
 
   function dateFromKey(key) {
@@ -486,6 +668,7 @@
                         <i class="memory-badge memory-badge--${escapeAttr(item.memory?.type || "context")}">${escapeHtml(memory.short)}</i>
                         ${mastered.has(item.word) ? '<b aria-label="已掌握">✓</b>' : ""}
                       </span>
+                      ${renderDailyWordHints(item)}
                     </button>
                     <button class="daily-word-item__audio" type="button"
                       data-word-audio="${escapeAttr(item.word)}"
@@ -1128,7 +1311,12 @@
     const memory = MEMORY_META[memoryType];
     const forms = Object.entries(item.forms || {})
       .filter(([, value]) => value)
-      .map(([pos, value]) => `<dt>${partLabel(pos)}</dt><dd>${escapeHtml(value)}</dd>`)
+      .map(([pos, value]) => {
+        const values = (Array.isArray(value) ? value : [value]).filter(Boolean);
+        return values.length
+          ? `<dt>${partLabel(pos)}</dt><dd>${values.map(escapeHtml).join(" · ")}</dd>`
+          : "";
+      })
       .join("");
     const detailRows = [
       item.synonyms?.length
@@ -1178,6 +1366,8 @@
       </article>
     `;
     const drawer = document.getElementById("wordDrawer");
+    const backdrop = document.getElementById("wordDrawerBackdrop");
+    backdrop.hidden = false;
     drawer.classList.add("is-open");
     drawer.setAttribute("aria-hidden", "false");
     drawer.querySelectorAll("[data-drawer-word-audio]").forEach((button) =>
@@ -1197,8 +1387,10 @@
 
   function closeWord() {
     const drawer = document.getElementById("wordDrawer");
+    const backdrop = document.getElementById("wordDrawerBackdrop");
     drawer.classList.remove("is-open");
     drawer.setAttribute("aria-hidden", "true");
+    backdrop.hidden = true;
   }
 
   function toggleMastery(word) {
@@ -1369,6 +1561,51 @@
       renderWordList();
       renderDailyEditions();
     });
+    const quickInput = document.getElementById("dailyWordQuickInput");
+    const quickResults = document.getElementById("dailyWordQuickResults");
+    const quickClear = document.getElementById("dailyWordQuickClear");
+    quickInput.addEventListener("input", () => {
+      quickClear.hidden = !quickInput.value.trim();
+      renderQuickWordResults(quickInput.value);
+    });
+    quickInput.addEventListener("focus", () => {
+      if (quickInput.value.trim()) renderQuickWordResults(quickInput.value);
+    });
+    quickInput.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        moveQuickWordSelection(event.key === "ArrowDown" ? 1 : -1);
+        return;
+      }
+      if (event.key === "Enter" && quickWordResults.length) {
+        event.preventDefault();
+        const item = quickWordResults[quickWordActiveIndex];
+        if (item) openWord(item.word);
+        closeQuickWordResults();
+        quickInput.blur();
+        return;
+      }
+      if (event.key === "Escape") {
+        closeQuickWordResults();
+      }
+    });
+    quickClear.addEventListener("click", () => {
+      quickClear.hidden = true;
+      closeQuickWordResults(true);
+      quickInput.focus();
+    });
+    quickResults.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-quick-word]");
+      if (!button) return;
+      openWord(button.dataset.quickWord);
+      closeQuickWordResults();
+      quickInput.blur();
+    });
+    document.addEventListener("click", (event) => {
+      if (!document.getElementById("dailyWordQuick").contains(event.target)) {
+        closeQuickWordResults();
+      }
+    });
     document.getElementById("wordSearch").addEventListener("input", (event) => {
       wordQuery = event.target.value;
       document.getElementById("clearWordSearch").hidden = !wordQuery;
@@ -1434,6 +1671,7 @@
       }
     });
     document.getElementById("wordDrawerClose").addEventListener("click", closeWord);
+    document.getElementById("wordDrawerBackdrop").addEventListener("click", closeWord);
     document.getElementById("wordDrawer").addEventListener("click", (event) => {
       if (event.target.id === "wordDrawer") closeWord();
     });

@@ -6,7 +6,7 @@
   <meta name="description" content="大学英语四级每日复习站：每日百词、约200词阅读、300词模拟阅读、200词模拟听力、四级考试声线与十套真题主题改编题。">
   <title>英语四级 · 每日复习站</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./css/styles.css?v=20261111-real-examples">
+  <link rel="stylesheet" href="./css/styles.css?v=20261111-word-relations">
 </head>
 <body>
   <a class="skip-link" href="#dailyArticle">跳到每日文章</a>
@@ -104,6 +104,20 @@
         <p>词库覆盖四级阅读、校园、社会、环境与效率等主题。每日以新词为主，并从过去词中安排 6 个间隔复习；同一天不重复，按词性和情景双重分类。</p>
       </div>
 
+      <div class="daily-word-quick" id="dailyWordQuick">
+        <label for="dailyWordQuickInput">
+          <span class="daily-word-quick__icon" aria-hidden="true"></span>
+          <input id="dailyWordQuickInput" type="search" autocomplete="off"
+            role="combobox" aria-autocomplete="list" aria-controls="dailyWordQuickResults"
+            aria-expanded="false" aria-label="快速查找四级单词"
+            placeholder="快速查词：输入英文前缀，或输入中文含义，如“提高”">
+          <button id="dailyWordQuickClear" type="button" hidden>清除</button>
+        </label>
+        <p>英文输入时会持续联想；中文会按相近含义列出单词。</p>
+        <div class="daily-word-quick__results" id="dailyWordQuickResults"
+          role="listbox" aria-label="快速查词结果" hidden></div>
+      </div>
+
       <section class="daily-word-review" id="dailyVocabReview" aria-labelledby="dailyVocabTitle"></section>
       <div class="word-book__overview" id="wordBookSummary"></div>
       <div class="daily-editions" id="dailyEditions"></div>
@@ -163,6 +177,7 @@
     <p>每日 100 词 · 4,400+ 词四级词库 · 6 词间隔复习 · 每日阅读听力模拟 · 四级考试声线</p>
   </footer>
 
+  <div class="word-drawer-backdrop" id="wordDrawerBackdrop" hidden aria-hidden="true"></div>
   <aside class="word-drawer" id="wordDrawer" aria-hidden="true" aria-label="单词详情">
     <button class="word-drawer__close" id="wordDrawerClose" type="button" aria-label="关闭单词详情">×</button>
     <div id="wordDrawerContent"></div>
@@ -170,13 +185,13 @@
 
   <script defer src="./js/content-data.js?v=20261103-cet4"></script>
   <script defer src="./js/extra-vocabulary.js?v=20261106-daily-100"></script>
-  <script defer src="./js/word-bank.js?v=20261111-real-examples2"></script>
+  <script defer src="./js/word-bank.js?v=20261111-word-relations"></script>
   <script defer src="./js/memory-data.js?v=20261106-memory-methods"></script>
   <script defer src="./js/exam-data.js?v=20261103-cet4"></script>
   <script defer src="./js/exam-extra-data.js?v=20261110-daily-mocks"></script>
   <script defer src="./js/exam-difficulty-data.js?v=20261111-real-lengths"></script>
   <script defer src="./js/audio-timings.js?v=20261111-exam-voice"></script>
-  <script defer src="./js/app.js?v=20261111-exam-voice"></script>
+  <script defer src="./js/app.js?v=20261111-word-relations"></script>
   <script defer src="../portal-back.js?v=20261106"></script>
 </body>
 </html>
