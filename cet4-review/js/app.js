@@ -364,7 +364,8 @@
     {
       title: "核心词根",
       items: [
-        ["spect / vis", "看；观察", "inspect, respect, visible"],
+        ["spec / spect / spic", "看；观察；向下偷看后引申为怀疑", "inspect, respect, suspect, suspicious"],
+        ["vis / vid", "看；看见", "visible, vision, video, evidence"],
         ["dict", "说；断言", "predict, dictate, dictionary"],
         ["duc / duct", "引导；带来", "produce, introduce, conduct"],
         ["port", "携带；运送", "transport, import, portable"],
