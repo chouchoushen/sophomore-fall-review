@@ -1771,6 +1771,18 @@ footer p {
   font: .86rem/1.7 var(--serif);
 }
 
+.word-example__label {
+  display: inline-block;
+  margin-bottom: .45rem;
+  color: var(--blue);
+  font: 700 .56rem var(--sans);
+  letter-spacing: .08em;
+}
+
+.word-example p {
+  margin: 0;
+}
+
 .word-example span {
   display: block;
   margin-top: .35rem;

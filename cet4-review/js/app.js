@@ -17,24 +17,36 @@
 
   DATA.vocabulary.push(
     ...WORD_BANK.filter(([word]) => !CORE_WORD_KEYS.has(word)).map(
-      ([word, meaning, partText, topic, collocations = []]) => ({
+      ([
         word,
-        ipa: "",
+        meaning,
+        partText,
+        topic,
+        collocations = [],
+        ipa = "",
+        example = "",
+        exampleZh = "",
+        exampleKind = "sentence"
+      ]) => ({
+        word,
+        ipa,
         part: String(partText).split(/\s+/).filter(Boolean),
         level: "四级扩展",
-        meaning,
+        meaning: compactMeaning(meaning),
         topic: topic || "综合表达",
         synonyms: [],
         similar: [],
         forms: {},
-        example: `The CET-4 passage presents "${word}" as a key word in this context.`,
-        exampleZh: `四级文章在“${topic || "综合表达"}”语境中呈现“${word}”这一关键词。`,
+        example,
+        exampleZh,
+        exampleKind,
         collocations,
         isCore: false
       })
     )
   );
   DATA.vocabulary.forEach((item) => {
+    item.exampleKind = item.exampleKind || "sentence";
     item.memory = MEMORY_DATA[item.word] || {
       type: "context",
       collocations: item.collocations || []
@@ -284,6 +296,20 @@
 
   function dateToKey(date) {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  }
+
+  function compactMeaning(value) {
+    const seen = new Set();
+    return String(value)
+      .split(/[；;]/)
+      .flatMap((part) => part.split(/[，,]/))
+      .map((part) => part.trim())
+      .filter((part) => {
+        if (!part || seen.has(part)) return false;
+        seen.add(part);
+        return true;
+      })
+      .join("；");
   }
 
   function dateFromKey(key) {
@@ -1114,6 +1140,12 @@
       `<dt>百词日期</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => day.slice(5)).join(" · ") || "尚未进入每日百词"}</dd>`,
       forms
     ].join("");
+    const exampleLabel =
+      item.exampleKind === "collocation"
+        ? "高频搭配"
+        : item.exampleKind === "context"
+          ? "语境例句"
+          : "CET-4 例句";
 
     document.getElementById("wordDrawerContent").innerHTML = `
       <article class="word-detail">
@@ -1132,8 +1164,9 @@
           ${detailRows}
         </dl>
         ${item.example ? `<div class="word-example">
-          ${escapeHtml(item.example)}
-          <span>${escapeHtml(item.exampleZh)}</span>
+          <strong class="word-example__label">${exampleLabel}</strong>
+          <p>${escapeHtml(item.example)}</p>
+          ${item.exampleZh ? `<span>${escapeHtml(item.exampleZh)}</span>` : ""}
         </div>` : ""}
         <div class="reading-card__footer">
           <button class="reading-button" type="button" data-drawer-word-audio="${escapeAttr(item.word)}">▶ 朗读单词</button>
