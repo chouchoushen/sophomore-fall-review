@@ -354,4 +354,13 @@
     exam.listening.script = [exam.listening.script, ...addition.listening].join("\n");
     exam.listening.questions.push(addition.listeningQuestion);
   }
+
+  for (const exam of window.CET4_EXAMS || []) {
+    exam.listening.script = exam.listening.script
+      .split("\n")
+      .map((line) =>
+        line.replace(/^([A-Z][A-Za-zÀ-ÿ.' -]{0,28}):\s*/, "— ")
+      )
+      .join("\n");
+  }
 })();

@@ -804,7 +804,10 @@
         : null;
     let useAudio = Boolean(timedTokens && audioKey);
     let audio = useAudio ? new Audio(`./audio/${audioKey}.mp3`) : null;
-    if (audio) audio.preload = "metadata";
+    if (audio) {
+      audio.preload = "metadata";
+      audio.autoplay = false;
+    }
 
     toolbar.innerHTML = `
       <div class="reader-toolbar" role="group" aria-label="${escapeAttr(label)}朗读进度">
@@ -939,7 +942,18 @@
       updateVisual(safeIndex, true);
       mode = "speaking";
       activeReader = reader;
-      audio.play().then(runFrameLoop).catch(() => {
+      const playbackSession = session;
+      audio.play().then(() => {
+        if (
+          playbackSession !== session ||
+          mode !== "speaking" ||
+          activeReader !== reader
+        ) {
+          audio.pause();
+          return;
+        }
+        runFrameLoop();
+      }).catch(() => {
         useAudio = false;
         audioTag.textContent = "浏览器朗读";
         mode = "idle";
@@ -1014,7 +1028,18 @@
     const reader = {
       start() {
         if (mode === "paused" && useAudio && audio) {
-          audio.play().then(runFrameLoop).catch(() => {
+          const playbackSession = session;
+          audio.play().then(() => {
+            if (
+              playbackSession !== session ||
+              mode !== "speaking" ||
+              activeReader !== reader
+            ) {
+              audio.pause();
+              return;
+            }
+            runFrameLoop();
+          }).catch(() => {
             useAudio = false;
             audioTag.textContent = "浏览器朗读";
             startFrom(currentIndex);
@@ -1784,6 +1809,10 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeWord();
     });
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopSpeaking();
+    });
+    window.addEventListener("pagehide", stopSpeaking);
   }
 
   function speak(text) {
