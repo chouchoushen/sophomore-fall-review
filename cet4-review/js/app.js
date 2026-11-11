@@ -747,7 +747,7 @@
       return Math.min(low, lastIndex);
     }
 
-    function updateVisual(index, shouldScroll = false, showReadingPosition = true) {
+    function updateVisual(index, _shouldScroll = false, showReadingPosition = true) {
       const previousIndex = currentIndex;
       currentIndex = Math.max(0, Math.min(Number(index) || 0, lastIndex));
       if (showReadingPosition) hasReadPosition = true;
@@ -776,13 +776,6 @@
               : "▶ 播放朗读";
       stopButton.disabled = mode === "idle" || mode === "finished";
 
-      if (shouldScroll) {
-        tokens[currentIndex]?.element?.scrollIntoView({
-          block: "center",
-          behavior: "smooth",
-          inline: "nearest"
-        });
-      }
     }
 
     function stopFrameLoop() {
@@ -1402,8 +1395,23 @@
       button.classList.toggle("is-mastered", mastered.has(word));
       button.textContent = mastered.has(word) ? "已掌握" : "标记掌握";
     });
+    document.querySelectorAll(".daily-word-item").forEach((item) => {
+      const opener = item.querySelector("[data-daily-word]");
+      if (opener?.dataset.dailyWord !== word) return;
+      const isMastered = mastered.has(word);
+      item.classList.toggle("is-mastered", isMastered);
+      const tags = item.querySelector(".daily-word-item__tags");
+      let check = tags?.querySelector("b");
+      if (isMastered && tags && !check) {
+        check = document.createElement("b");
+        check.setAttribute("aria-label", "已掌握");
+        check.textContent = "✓";
+        tags.appendChild(check);
+      } else if (!isMastered) {
+        check?.remove();
+      }
+    });
     renderWordBookSummary(visibleWordCount, getWordDays());
-    renderDailyReviewWords();
     if (document.getElementById("wordDrawer").classList.contains("is-open")) {
       openWord(word);
     }
