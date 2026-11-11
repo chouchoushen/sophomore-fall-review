@@ -29,7 +29,8 @@
         exampleKind = "sentence",
         synonyms = [],
         similar = [],
-        forms = {}
+        forms = {},
+        memory = null
       ]) => ({
         word,
         ipa,
@@ -40,6 +41,7 @@
         synonyms,
         similar,
         forms,
+        memory,
         example,
         exampleZh,
         exampleKind,
@@ -50,7 +52,7 @@
   );
   DATA.vocabulary.forEach((item) => {
     item.exampleKind = item.exampleKind || "sentence";
-    item.memory = MEMORY_DATA[item.word] || {
+    item.memory = MEMORY_DATA[item.word] || item.memory || {
       type: "context",
       collocations: item.collocations || []
     };
@@ -166,6 +168,7 @@
 
   renderDailyArticle();
   renderWordList();
+  queueMicrotask(renderRootGlossary);
   renderMockLabels();
   renderExam();
   bindEvents();
@@ -317,6 +320,72 @@
       .join("；");
   }
 
+  const ROOT_GLOSSARY_GROUPS = [
+    {
+      title: "高频前缀",
+      items: [
+        ["pre-", "在前；预先", "predict, prepare, prevent"],
+        ["pro-", "向前；向外；支持", "proceed, promote, project"],
+        ["re-", "再次；返回", "review, recover, reproduce"],
+        ["in- / im-", "不；进入", "incorrect, import, involve"],
+        ["un-", "不；相反动作", "unable, unfair, undo"],
+        ["dis-", "分开；否定", "disagree, disconnect, display"],
+        ["sub-", "在下；次级", "submarine, subway, subtitle"],
+        ["inter-", "之间；相互", "international, interact, interrupt"],
+        ["trans-", "横跨；转变", "transport, transform, translate"],
+        ["ex-", "向外；以前", "export, exclude, former"],
+        ["co- / com- / con-", "共同；加强", "cooperate, combine, connect"],
+        ["de-", "向下；去除；相反", "decline, decrease, decode"],
+        ["over- / under-", "过度、在上；不足、在下", "overload, overlook, underground"],
+        ["auto-", "自己；自动", "automatic, automobile, autonomy"],
+        ["bio- / geo- / tele-", "生命；地球；远", "biology, geography, telephone"],
+        ["anti- / mis-", "反对；错误", "antibody, antiwar, misunderstand"]
+      ]
+    },
+    {
+      title: "高频后缀",
+      items: [
+        ["-ment", "名词：行为、结果或状态", "management, development, agreement"],
+        ["-tion / -sion", "名词：行为或结果", "education, information, decision"],
+        ["-ness", "名词：性质或状态", "happiness, weakness, awareness"],
+        ["-ity", "名词：性质或状态", "ability, activity, security"],
+        ["-ance / -ence", "名词：状态或行为", "importance, difference, confidence"],
+        ["-able / -ible", "形容词：能够……的", "acceptable, flexible, visible"],
+        ["-ful / -less", "形容词：充满……；没有……", "useful, careful, careless"],
+        ["-ous / -ive", "形容词：具有……性质", "famous, dangerous, creative"],
+        ["-al / -ic", "形容词：与……有关的", "natural, cultural, academic"],
+        ["-ly", "副词：以……方式", "quickly, carefully, finally"],
+        ["-er / -or / -ist", "名词：人、工具或执行者", "teacher, actor, scientist"],
+        ["-ize / -ise / -en", "动词：使……；变成……", "modernize, organize, strengthen"],
+        ["-ship / -hood", "名词：身份或关系", "friendship, leadership, childhood"],
+        ["-ward / -wise", "方向或方式", "forward, backward, likewise"]
+      ]
+    },
+    {
+      title: "核心词根",
+      items: [
+        ["spect / vis", "看；观察", "inspect, respect, visible"],
+        ["dict", "说；断言", "predict, dictate, dictionary"],
+        ["duc / duct", "引导；带来", "produce, introduce, conduct"],
+        ["port", "携带；运送", "transport, import, portable"],
+        ["form", "形状；形成", "inform, transform, uniform"],
+        ["mit / miss", "送；放出", "submit, transmit, mission"],
+        ["cap / cept / ceive", "拿；抓；接受", "capture, accept, receive"],
+        ["tain / ten", "握住；保持", "maintain, contain, retain"],
+        ["pos / pon", "放置", "compose, deposit, component"],
+        ["tract", "拉；拖", "attract, contract, tractor"],
+        ["ject", "投；扔", "project, reject, inject"],
+        ["struct", "建造", "construct, structure, instruct"],
+        ["scrib / script", "写", "describe, subscribe, manuscript"],
+        ["graph", "写；记录", "paragraph, photograph, biography"],
+        ["mot / mov", "移动", "motion, motivate, remove"],
+        ["vert / vers", "转", "convert, reverse, version"],
+        ["log", "词；语言；道理", "logic, dialogue, biology"],
+        ["phon", "声音", "telephone, microphone, symphony"]
+      ]
+    }
+  ];
+
   const CHINESE_SIMILAR_GROUPS = [
     ["提高", "提升", "增加", "改善", "加强", "增强", "促进", "上升"],
     ["减少", "降低", "下降", "削减", "减弱", "缩小"],
@@ -360,7 +429,17 @@
     const forms = formEntries(item)
       .slice(0, 2)
       .map((form) => `${form.label} ${form.value}`);
+    const memoryMark =
+      item.memory?.type === "roots"
+        ? "根"
+        : item.memory?.type === "collocation"
+          ? "记"
+          : "境";
     const groups = [
+      {
+        label: memoryMark,
+        values: [item.memory?.breakdown || item.memory?.note || ""]
+      },
       { label: "形", values: compactList(item.similar, 2) },
       { label: "搭", values: compactList(item.collocations, 2) },
       { label: "变", values: forms }
@@ -375,6 +454,25 @@
         `).join("")}
       </span>
     `;
+  }
+
+  function renderRootGlossary() {
+    const root = document.getElementById("rootGlossaryContent");
+    if (!root) return;
+    root.innerHTML = ROOT_GLOSSARY_GROUPS.map((group) => `
+      <section class="root-glossary__group">
+        <h3>${escapeHtml(group.title)}</h3>
+        <div class="root-glossary__grid">
+          ${group.items.map(([form, meaning, examples]) => `
+            <article>
+              <strong>${escapeHtml(form)}</strong>
+              <span>${escapeHtml(meaning)}</span>
+              <small>${escapeHtml(examples)}</small>
+            </article>
+          `).join("")}
+        </div>
+      </section>
+    `).join("");
   }
 
   function normalizeEnglishQuery(value) {
