@@ -541,6 +541,11 @@ main {
   --card-accent-soft: rgba(226, 109, 84, .1);
 }
 
+.course-card--linear {
+  --card-accent: #2f7f86;
+  --card-accent-soft: rgba(47, 127, 134, .11);
+}
+
 .course-card--analog {
   --card-accent: var(--blue);
   --card-accent-soft: rgba(94, 142, 173, .11);

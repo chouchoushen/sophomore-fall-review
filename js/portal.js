@@ -10,6 +10,13 @@
       key: "probability-review.mastered.v1"
     },
     {
+      id: "linear",
+      name: "线性代数",
+      href: "./linear-algebra-review/",
+      total: 57,
+      key: "linear-algebra-review.mastered.v1"
+    },
+    {
       id: "analog",
       name: "模拟电子技术",
       href: "./analog-electronics-review/",

@@ -1,0 +1,257 @@
+:root {
+  --accent: #195b73;
+  --accent-soft: #e4f0f3;
+  --forest: #2e6a55;
+  --forest-soft: #e5f0e9;
+  --indigo: #5b5382;
+  --indigo-soft: #ece9f4;
+  --paper: #f3f6f5;
+  --paper-deep: #e8efed;
+  --surface: #fbfdfc;
+  --surface-muted: #f3f8f6;
+  --rule: #d5e0dc;
+  --rule-strong: #b6c9c3;
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 8%, rgba(25, 91, 115, .075), transparent 27rem),
+    linear-gradient(180deg, #f3f6f5 0%, #f8fbfa 42%, #f1f5f3 100%);
+}
+
+.hero {
+  background:
+    linear-gradient(120deg, rgba(251, 253, 252, .97), rgba(226, 239, 238, .9)),
+    repeating-linear-gradient(90deg, transparent 0 73px, rgba(25, 91, 115, .04) 73px 74px);
+}
+
+.orbit--one {
+  border-color: rgba(25, 91, 115, .68);
+  background: rgba(25, 91, 115, .08);
+}
+
+.orbit--two {
+  border-color: rgba(46, 106, 85, .68);
+  background: rgba(46, 106, 85, .08);
+}
+
+.orbit--three {
+  border-color: rgba(91, 83, 130, .66);
+  background: rgba(91, 83, 130, .08);
+}
+
+.formula-float--one {
+  color: var(--accent);
+}
+
+.formula-float--two {
+  color: var(--forest);
+}
+
+.formula-float--three {
+  color: var(--indigo);
+}
+
+.example-diagram.la-diagram {
+  padding: 14px;
+  background:
+    linear-gradient(rgba(25, 91, 115, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(25, 91, 115, .045) 1px, transparent 1px),
+    #f9fcfb;
+  background-size: 24px 24px;
+}
+
+.example-diagram__svg-trigger {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.example-diagram__svg-trigger > span {
+  position: absolute;
+  right: .45rem;
+  bottom: .45rem;
+  padding: .22rem .5rem;
+  border-radius: 999px;
+  background: rgba(30, 69, 77, .84);
+  color: #fff;
+  font: 700 .64rem/1.3 "Microsoft YaHei", sans-serif;
+}
+
+.figure-modal__svg {
+  max-height: 82vh;
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #fbfdfc;
+}
+
+.figure-modal__svg svg {
+  display: block;
+  width: min(1200px, 96vw);
+  height: auto;
+}
+
+.la-svg {
+  min-width: 0;
+}
+
+.la-svg .la-title {
+  fill: #23464e;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.la-svg .la-subtitle {
+  fill: #6a817f;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 12px;
+}
+
+.la-svg .la-label {
+  fill: #294e56;
+  font-family: "Cambria Math", "STIX Two Math", "Noto Serif SC", serif;
+  font-size: 15px;
+}
+
+.la-svg .la-label--small {
+  fill: #728986;
+  font-family: "Noto Sans SC", "Microsoft YaHei", sans-serif;
+  font-size: 11px;
+}
+
+.la-svg .la-label--strong {
+  fill: #8b432d;
+  font-family: "Cambria Math", "STIX Two Math", "Noto Serif SC", serif;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.la-svg .la-panel {
+  fill: #fbfdfc;
+  stroke: #bfd0cb;
+  stroke-width: 1.2;
+}
+
+.la-svg .la-panel--warm {
+  fill: #fffaf2;
+  stroke: #e0cdb0;
+}
+
+.la-svg .la-panel--cool {
+  fill: #eff7f7;
+  stroke: #a8c7c5;
+}
+
+.la-svg .la-bracket {
+  fill: none;
+  stroke: #244e58;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.la-svg .la-grid {
+  fill: none;
+  stroke: #d3e0dc;
+  stroke-width: 1;
+}
+
+.la-svg .la-cell {
+  fill: #f7fbfa;
+  stroke: #c7d7d3;
+  stroke-width: 1;
+}
+
+.la-svg .la-cell--focus {
+  fill: #f6e8df;
+  stroke: #c58162;
+  stroke-width: 1.4;
+}
+
+.la-svg .la-cell--keep {
+  fill: #e6f2ee;
+  stroke: #6d9f8e;
+  stroke-width: 1.2;
+}
+
+.la-svg .la-cell--zero {
+  fill: #eef1f0;
+  stroke: #c6d0cd;
+}
+
+.la-svg .la-arrow {
+  fill: none;
+  stroke: #3f7d79;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.la-svg .la-arrow--warm {
+  stroke: #b56545;
+}
+
+.la-svg .la-arrow--dash {
+  stroke-dasharray: 6 5;
+}
+
+.la-svg .la-mark {
+  fill: #b56545;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.la-svg .la-delete {
+  fill: none;
+  stroke: #b56545;
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+.la-svg .la-sign-plus {
+  fill: #2e6a55;
+  font: 700 17px ui-monospace, Consolas, monospace;
+}
+
+.la-svg .la-sign-minus {
+  fill: #a34f36;
+  font: 700 17px ui-monospace, Consolas, monospace;
+}
+
+.la-caption-note {
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.knowledge-card[data-type="example"] .formula-box {
+  font-size: .96rem;
+}
+
+@media (max-width: 720px) {
+  .example-diagram.la-diagram {
+    padding: 9px;
+  }
+
+  .la-svg .la-title {
+    font-size: 17px;
+  }
+
+  .la-svg .la-subtitle {
+    font-size: 14px;
+  }
+
+  .figure-modal__svg {
+    max-height: 72vh;
+    padding: .55rem;
+  }
+
+  .figure-modal__svg svg {
+    width: 680px;
+  }
+}
