@@ -4,6 +4,7 @@
   const DATA = window.CET4_DATA;
   const EXAMS = window.CET4_EXAMS || [];
   const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
+  const AUDIO_CACHE_VERSION = "20261112-natural-slow";
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
   const WORD_BANK = window.CET4_WORD_BANK || [];
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
@@ -804,7 +805,9 @@
         ? timing.tokens
         : null;
     let useAudio = Boolean(timedTokens && audioKey);
-    let audio = useAudio ? new Audio(`./audio/${audioKey}.mp3`) : null;
+    let audio = useAudio
+      ? new Audio(`./audio/${audioKey}.mp3?v=${AUDIO_CACHE_VERSION}`)
+      : null;
     if (audio) {
       audio.preload = "metadata";
       audio.autoplay = false;
@@ -977,8 +980,7 @@
       const voiceSession = session;
       utterance = new SpeechSynthesisUtterance(text.slice(sourceStart));
       utterance.lang = "en-US";
-      utterance.rate = 0.93;
-      utterance.pitch = 1;
+      configureEnglishUtterance(utterance, 0.78);
 
       utterance.onstart = () => {
         if (voiceSession !== session) return;
@@ -1818,7 +1820,38 @@
     window.addEventListener("pagehide", stopSpeaking);
   }
 
-  function speak(text) {
+  function preferredEnglishVoice() {
+    if (!("speechSynthesis" in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    const priorities = [
+      /Microsoft.*(Aria|Ava|Jenny|Guy).*Online.*Natural/i,
+      /Microsoft.*(Aria|Ava|Jenny|Guy).*Natural/i,
+      /Google US English/i,
+      /Samantha/i,
+      /Microsoft.*English.*United States/i,
+      /^en-US$/i
+    ];
+    for (const pattern of priorities) {
+      const voice = voices.find(
+        (candidate) =>
+          pattern.test(candidate.name) ||
+          pattern.test(candidate.voiceURI) ||
+          pattern.test(candidate.lang)
+      );
+      if (voice) return voice;
+    }
+    return voices.find((candidate) => /^en[-_]/i.test(candidate.lang)) || null;
+  }
+
+  function configureEnglishUtterance(utterance, rate) {
+    utterance.lang = "en-US";
+    utterance.rate = rate;
+    utterance.pitch = 1;
+    const voice = preferredEnglishVoice();
+    if (voice) utterance.voice = voice;
+  }
+
+  function speak(text, rate = 0.78) {
     if (!("speechSynthesis" in window)) {
       window.alert("当前浏览器不支持语音朗读。");
       return;
@@ -1828,8 +1861,7 @@
     stopVocabularyAudio();
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = "en-US";
-    utterance.rate = .88;
+    configureEnglishUtterance(utterance, rate);
     window.speechSynthesis.speak(utterance);
   }
 
@@ -1858,18 +1890,18 @@
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     stopVocabularyAudio();
     const fallback = kind === "word" ? item.word : item.example;
-    if (!item.isCore) {
-      speak(fallback);
-      return;
-    }
+    if (!fallback) return;
+    const fallbackRate = kind === "word" ? 0.82 : 0.74;
+    const fileName = item.word.replace(/[^a-z0-9_-]/gi, "_");
     const source =
       kind === "word"
-        ? `./audio/words/${encodeURIComponent(item.word)}.mp3`
-        : `./audio/examples/${encodeURIComponent(item.word)}.mp3`;
+        ? `./audio/words/${fileName}.mp3?v=${AUDIO_CACHE_VERSION}`
+        : `./audio/examples/${fileName}.mp3?v=${AUDIO_CACHE_VERSION}`;
     vocabularyAudio = new Audio(source);
+    if (kind === "example") vocabularyAudio.playbackRate = 0.94;
     vocabularyAudio.play().catch(() => {
       vocabularyAudio = null;
-      speak(fallback);
+      speak(fallback, fallbackRate);
     });
   }
 
