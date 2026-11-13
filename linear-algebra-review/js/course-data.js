@@ -314,6 +314,247 @@
     320
   );
 
+  const matrixMapFigure = laSvg(
+    "matrix-map",
+    "矩阵的坐标：先看行，再看列",
+    "m×n 矩阵有 m 行、n 列；aᵢⱼ 表示第 i 行与第 j 列的交叉位置。",
+    `
+      ${["j=1", "j=2", "j=3", "j=4"].map((label, index) =>
+        `<text class="la-label--small" x="${88 + index * 82 + 37}" y="91" text-anchor="middle">${label}</text>`
+      ).join("")}
+      ${["i=1", "i=2", "i=3"].map((label, index) =>
+        `<text class="la-label--small" x="59" y="${126 + index * 50}">${label}</text>`
+      ).join("")}
+      ${detMatrix({
+        x: 88,
+        y: 102,
+        rows: [["a₁₁", "a₁₂", "a₁₃", "a₁₄"], ["a₂₁", "a₂₂", "a₂₃", "a₂₄"], ["a₃₁", "a₃₂", "a₃₃", "a₃₄"]],
+        cellW: 82,
+        cellH: 50,
+        classes: { "1,2": "la-cell--focus", "0,0": "la-cell--keep", "2,3": "la-cell--keep" }
+      }).markup}
+      <path class="la-arrow la-arrow--warm" d="M252,154 H435" marker-end="url(#matrix-map-arrow-warm)"></path>
+      <text class="la-label--strong" x="455" y="123">A = (aᵢⱼ)ₘₓₙ</text>
+      <text class="la-label--small" x="455" y="158">高亮：a₂₃ = 第 2 行、第 3 列</text>
+      <text class="la-label--small" x="455" y="190">元素全为实数 → 实矩阵</text>
+      <text class="la-label--small" x="455" y="218">元素含复数 → 复矩阵</text>
+      <text class="la-label--small" x="88" y="278">矩阵是一个整体，不是单个数字；行数写在前面，列数写在后面。</text>
+    `,
+    300
+  );
+
+  const equalityFigure = laSvg(
+    "matrix-equality",
+    "两个矩阵相等：同型且每个位置都相等",
+    "先比较行数和列数，再逐项比较。任何一项不等，两个矩阵就不相等。",
+    `
+      ${detMatrix({
+        x: 126,
+        y: 108,
+        rows: [["2", "4"], ["5", "a"]],
+        cellW: 80,
+        cellH: 52,
+        classes: { "1,1": "la-cell--focus" },
+        label: "A"
+      }).markup}
+      <text class="la-label--strong" x="334" y="167">=</text>
+      ${detMatrix({
+        x: 390,
+        y: 108,
+        rows: [["2", "c"], ["d", "7"]],
+        cellW: 80,
+        cellH: 52,
+        classes: { "0,1": "la-cell--focus", "1,0": "la-cell--focus", "1,1": "la-cell--focus" },
+        label: "B"
+      }).markup}
+      <text class="la-label--strong" x="590" y="135">a = 7</text>
+      <text class="la-label--strong" x="590" y="169">c = 4</text>
+      <text class="la-label--strong" x="590" y="203">d = 5</text>
+      <text class="la-label--small" x="126" y="265">A 与 B 都是 2×2 矩阵，因此先满足“同型”，再令对应元素相等。</text>
+    `,
+    290
+  );
+
+  const matrixProductFigure = laSvg(
+    "matrix-product",
+    "矩阵乘法：左矩阵的行 × 右矩阵的列",
+    "A 的列数必须等于 B 的行数；结果保留 A 的行数和 B 的列数。",
+    `
+      ${detMatrix({
+        x: 64,
+        y: 94,
+        rows: [["2", "3"], ["1", "−2"], ["3", "1"]],
+        cellW: 66,
+        cellH: 43,
+        classes: { "0,0": "la-cell--keep", "0,1": "la-cell--keep" },
+        label: "A₃ₓ₂"
+      }).markup}
+      <text class="la-label--strong" x="213" y="134">×</text>
+      ${detMatrix({
+        x: 252,
+        y: 94,
+        rows: [["1", "−2"], ["2", "−1"]],
+        cellW: 66,
+        cellH: 43,
+        classes: { "0,0": "la-cell--keep", "1,0": "la-cell--keep" },
+        label: "B₂ₓ₂"
+      }).markup}
+      <text class="la-label--strong" x="416" y="134">=</text>
+      ${detMatrix({
+        x: 452,
+        y: 94,
+        rows: [["8", "−7"], ["−3", "0"], ["5", "−7"]],
+        cellW: 66,
+        cellH: 43,
+        classes: { "0,0": "la-cell--focus" },
+        label: "C₃ₓ₂"
+      }).markup}
+      <path class="la-arrow la-arrow--warm" d="M183,206 Q350,278 502,154" marker-end="url(#matrix-product-arrow-warm)"></path>
+      <text class="la-label--strong" x="64" y="250">c₁₁ = 2·1 + 3·2 = 8</text>
+      <text class="la-label--small" x="64" y="278">左行与右列对应元素相乘后求和</text>
+    `,
+    300
+  );
+
+  const transposeFigure = laSvg(
+    "transpose-map",
+    "转置：行列互换，不是把每个元素取倒数",
+    "Aᵀ 的第 i 行第 j 列等于 A 的第 j 行第 i 列。",
+    `
+      ${detMatrix({
+        x: 98,
+        y: 105,
+        rows: [["2", "−3", "1"], ["4", "0", "−1"]],
+        cellW: 76,
+        cellH: 48,
+        classes: { "0,1": "la-cell--focus", "1,1": "la-cell--focus" },
+        label: "A₂ₓ₃"
+      }).markup}
+      <path class="la-arrow" d="M390,154 H475" marker-end="url(#transpose-map-arrow)"></path>
+      ${detMatrix({
+        x: 528,
+        y: 84,
+        rows: [["2", "4"], ["−3", "0"], ["1", "−1"]],
+        cellW: 76,
+        cellH: 48,
+        classes: { "1,0": "la-cell--focus", "1,1": "la-cell--focus" },
+        label: "Aᵀ₃ₓ₂"
+      }).markup}
+      <text class="la-label--small" x="98" y="245">第 1 行 [2, −3, 1] 变成第 1 列</text>
+      <text class="la-label--small" x="528" y="300">(AB)ᵀ = BᵀAᵀ，乘积顺序要倒过来</text>
+    `,
+    320
+  );
+
+  const inverseMapFigure = laSvg(
+    "inverse-map",
+    "逆矩阵：把线性变换抵消回去",
+    "A 可逆等价于 |A|≠0；A⁻¹ 是唯一满足 AA⁻¹=A⁻¹A=E 的矩阵。",
+    `
+      ${detMatrix({
+        x: 112,
+        y: 116,
+        rows: [["3", "2"], ["7", "5"]],
+        cellW: 82,
+        cellH: 54,
+        label: "A"
+      }).markup}
+      <text class="la-label--strong" x="306" y="160">×</text>
+      ${detMatrix({
+        x: 348,
+        y: 116,
+        rows: [["5", "−2"], ["−7", "3"]],
+        cellW: 82,
+        cellH: 54,
+        label: "A⁻¹"
+      }).markup}
+      <text class="la-label--strong" x="548" y="160">= E</text>
+      <text class="la-label--strong" x="112" y="252">|A| = 3·5 − 2·7 = 1 ≠ 0</text>
+      <text class="la-label--small" x="112" y="284">|A|=0 时不存在逆矩阵；此时称为奇异矩阵。</text>
+    `,
+    305
+  );
+
+  const inverseFormulaFigure = laSvg(
+    "inverse-formula",
+    "伴随矩阵法：A⁻¹ = A* / |A|",
+    "先确认 |A|≠0，再求所有代数余子式并转置成伴随矩阵。",
+    `
+      ${detMatrix({
+        x: 94,
+        y: 112,
+        rows: [["a", "b"], ["c", "d"]],
+        cellW: 82,
+        cellH: 52,
+        label: "A"
+      }).markup}
+      <path class="la-arrow" d="M276,158 H360" marker-end="url(#inverse-formula-arrow)"></path>
+      ${detMatrix({
+        x: 402,
+        y: 112,
+        rows: [["d", "−b"], ["−c", "a"]],
+        cellW: 82,
+        cellH: 52,
+        label: "A*"
+      }).markup}
+      <text class="la-label--strong" x="606" y="131">A⁻¹</text>
+      <text class="la-label--strong" x="606" y="165">= A* / |A|</text>
+      <text class="la-label--small" x="94" y="250">二阶：主对角线互换，副对角线变号，再除以 ad−bc。</text>
+      <text class="la-label--small" x="94" y="280">高阶：逐个求代数余子式，按转置位置放入伴随矩阵。</text>
+    `,
+    300
+  );
+
+  const blockMatrixFigure = laSvg(
+    "block-matrix",
+    "分块矩阵：把大矩阵拆成小矩阵",
+    "纵向、横向同时切分后，每个子块可以像“元素”一样参与运算。",
+    `
+      <rect class="la-panel" x="86" y="88" width="340" height="196" rx="10"></rect>
+      <path class="la-delete" d="M256,88 V284"></path>
+      <path class="la-delete" d="M86,186 H426"></path>
+      <rect class="la-panel la-panel--cool" x="100" y="102" width="142" height="70" rx="7"></rect>
+      <rect class="la-panel la-panel--warm" x="270" y="102" width="142" height="70" rx="7"></rect>
+      <rect class="la-panel la-panel--warm" x="100" y="200" width="142" height="70" rx="7"></rect>
+      <rect class="la-panel" x="270" y="200" width="142" height="70" rx="7"></rect>
+      <text class="la-label" x="171" y="144" text-anchor="middle">A₁₁</text>
+      <text class="la-label" x="341" y="144" text-anchor="middle">A₁₂</text>
+      <text class="la-label" x="171" y="242" text-anchor="middle">A₂₁</text>
+      <text class="la-label" x="341" y="242" text-anchor="middle">A₂₂</text>
+      <text class="la-label--strong" x="488" y="135">A = (Aᵢⱼ)₂ₓ₂</text>
+      <text class="la-label--small" x="488" y="171">加法要求对应子块同型</text>
+      <text class="la-label--small" x="488" y="201">乘法要求内部分块尺寸匹配</text>
+      <text class="la-label--small" x="488" y="231">转置时子块本身也要转置</text>
+    `,
+    300
+  );
+
+  const blockInverseFigure = laSvg(
+    "block-inverse",
+    "分块三角矩阵：行列式与逆矩阵",
+    "块三角结构可以把高阶逆矩阵拆成较低阶矩阵的逆。",
+    `
+      <rect class="la-panel" x="90" y="88" width="250" height="190" rx="10"></rect>
+      <path class="la-delete" d="M220,88 V278"></path>
+      <path class="la-delete" d="M90,183 H340"></path>
+      <text class="la-label" x="155" y="141" text-anchor="middle">A</text>
+      <text class="la-label" x="280" y="141" text-anchor="middle">O</text>
+      <text class="la-label" x="155" y="240" text-anchor="middle">C</text>
+      <text class="la-label" x="280" y="240" text-anchor="middle">B</text>
+      <text class="la-label--strong" x="392" y="124">|D| = |A|·|B|</text>
+      <text class="la-label--strong" x="392" y="170">D⁻¹ =</text>
+      <rect class="la-panel la-panel--cool" x="478" y="185" width="100" height="60" rx="6"></rect>
+      <rect class="la-panel" x="590" y="185" width="100" height="60" rx="6"></rect>
+      <rect class="la-panel la-panel--warm" x="478" y="258" width="100" height="60" rx="6"></rect>
+      <rect class="la-panel la-panel--cool" x="590" y="258" width="100" height="60" rx="6"></rect>
+      <text class="la-label" x="528" y="221" text-anchor="middle">A⁻¹</text>
+      <text class="la-label" x="640" y="221" text-anchor="middle">O</text>
+      <text class="la-label" x="528" y="294" text-anchor="middle">−B⁻¹CA⁻¹</text>
+      <text class="la-label" x="640" y="294" text-anchor="middle">B⁻¹</text>
+    `,
+    345
+  );
+
   window.LINEAR_ALGEBRA_COURSE = {
     title: "线性代数",
     subtitle: "排列、逆序数、行列式与克莱姆法则的一条计算主线",
@@ -1165,6 +1406,812 @@ x_1^{n-1}&x_2^{n-1}&\cdots&x_n^{n-1}
                   "用行列性质制造零并化三角形；需要展开时选零最多的行或列，严格核对 $(-1)^{i+j}$。",
                   "遇到线性方程组，先算 $D$；只有 $D\\ne0$ 时才进入克莱姆法则。"
                 ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "matrix-concepts",
+        number: "2.1",
+        title: "矩阵的概念与特殊矩阵",
+        english: "Matrices & Special Forms",
+        accent: "forest",
+        summary: "从实际问题中的数表抽象出矩阵，统一行列位置、同型与相等的语言，再识别行矩阵、列矩阵、方阵、对角矩阵、单位矩阵和三角矩阵。",
+        examFocus: ["矩阵的阶", "元素 aᵢⱼ", "同型与相等", "特殊矩阵识别"],
+        introFigure: {
+          svg: matrixMapFigure,
+          title: "矩阵的行、列与元素位置",
+          caption: "位置由“第 i 行、第 j 列”共同确定；矩阵的阶写作 m×n。"
+        },
+        themes: [
+          {
+            id: "matrix-foundation",
+            title: "从数表到矩阵",
+            summary: "矩阵不是简单的数字堆叠，而是把二维数据、线性方程组和线性变换压缩成同一个整体对象。",
+            cards: [
+              {
+                id: "matrix-definition",
+                type: "definition",
+                title: "矩阵的定义",
+                body: [
+                  "由 $m\\times n$ 个数 $a_{ij}$ 排成 $m$ 行、$n$ 列的数表，称为一个 <strong>m×n 矩阵</strong>。",
+                  "常用大写字母 $A,B,C$ 表示矩阵，并可简写为 $A=(a_{ij})_{m\\times n}$，其中 $a_{ij}$ 是第 $i$ 行第 $j$ 列的元素。"
+                ],
+                note: "“行列”顺序固定：$m$ 行在前、$n$ 列在后。$3\\times4$ 矩阵和 $4\\times3$ 矩阵不是同型矩阵。"
+              },
+              {
+                id: "matrix-element-index",
+                type: "formula",
+                title: "元素的两个下标",
+                body: [
+                  "第一个下标表示行号，第二个下标表示列号。读数时先向下找行，再向右找列。",
+                  "矩阵的某一行对应一个横向数据组；某一列对应一个纵向数据组。"
+                ],
+                formula: String.raw`A=\begin{pmatrix}a_{11}&a_{12}&\cdots&a_{1n}\\a_{21}&a_{22}&\cdots&a_{2n}\\\vdots&\vdots&&\vdots\\a_{m1}&a_{m2}&\cdots&a_{mn}\end{pmatrix}`
+              },
+              {
+                id: "matrix-real-complex",
+                type: "definition",
+                title: "实矩阵与复矩阵",
+                body: [
+                  "所有元素都是实数的矩阵称为<strong>实矩阵</strong>；含有复数元素的矩阵称为<strong>复矩阵</strong>。",
+                  "本章的说理和计算默认矩阵元素为实数；涉及共轭时再切换到复矩阵。"
+                ]
+              },
+              {
+                id: "matrix-equality",
+                type: "judgment",
+                title: "同型矩阵与矩阵相等",
+                body: [
+                  "两个矩阵的行数相同、列数也相同，称它们为<strong>同型矩阵</strong>。",
+                  "同型矩阵 $A=(a_{ij})$、$B=(b_{ij})$ 若每个对应元素都相等，即 $a_{ij}=b_{ij}$，才有 $A=B$。"
+                ],
+                formula: String.raw`A=B\quad\Longleftrightarrow\quad A\text{ 与 }B\text{ 同型，且 }a_{ij}=b_{ij}\ (\forall i,j)`,
+                example: {
+                  title: "由矩阵相等确定未知元素",
+                  body: [
+                    "若两个 $2\\times2$ 矩阵相等，对应位置分别列方程，可直接读出未知量。"
+                  ],
+                  formula: String.raw`\begin{pmatrix}2&4\\5&a\end{pmatrix}=\begin{pmatrix}2&c\\d&7\end{pmatrix}\Rightarrow a=7,\ c=4,\ d=5`,
+                  figures: [{
+                    svg: equalityFigure,
+                    title: "逐位置比较矩阵",
+                    caption: "同型只是前提，逐项相等才使两个矩阵相等。"
+                  }]
+                }
+              },
+              {
+                id: "matrix-from-equations",
+                type: "property",
+                title: "线性方程组对应系数矩阵",
+                body: [
+                  "把线性方程组的未知量系数按方程顺序排列，得到<strong>系数矩阵</strong>。一行对应一个方程，一列对应一个未知量。",
+                  "把常数列追加到系数矩阵最后一列，得到<strong>增广矩阵</strong>。后续化简方程组时，增广矩阵是主要工具。"
+                ],
+                formula: String.raw`\begin{cases}a_{11}x_1+\cdots+a_{1n}x_n=b_1\\\vdots\\a_{m1}x_1+\cdots+a_{mn}x_n=b_m\end{cases}\quad\leadsto\quad\left(\begin{array}{ccc|c}a_{11}&\cdots&a_{1n}&b_1\\\vdots&&\vdots&\vdots\\a_{m1}&\cdots&a_{mn}&b_m\end{array}\right)`
+              },
+              {
+                id: "matrix-data-example",
+                type: "example",
+                title: "商店与产品数量的矩阵表示",
+                body: [
+                  "若行表示商店、列表示产品，则 $a_{ij}$ 表示第 $i$ 个商店中第 $j$ 种产品的数量。",
+                  "这种“行代表一类对象、列代表另一类属性”的约定必须写清楚，否则同一个矩阵可以有不同解释。"
+                ],
+                bullets: [
+                  "行和列不是装饰，它们带有实际含义。",
+                  "交换两行会交换对象顺序，矩阵元素位置也随之改变。",
+                  "矩阵相等必须连同行列含义和对应位置一起比较。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "special-matrices",
+            title: "常见特殊矩阵",
+            summary: "特殊矩阵通过行数、列数或零元素分布获得，是识别运算规律和简化计算的关键。",
+            cards: [
+              {
+                id: "row-column-matrices",
+                type: "definition",
+                title: "行矩阵与列矩阵",
+                body: [
+                  "只有一行的矩阵称为<strong>行矩阵</strong>，形如 $1\\times n$；只有一列的矩阵称为<strong>列矩阵</strong>，形如 $m\\times1$。",
+                  "列矩阵也常写成列向量，但矩阵与向量在不同语境中的角色要区分。"
+                ],
+                formula: String.raw`A=(a_{11},a_{12},\ldots,a_{1n}),\qquad B=\begin{pmatrix}b_{11}\\b_{21}\\\vdots\\b_{m1}\end{pmatrix}`
+              },
+              {
+                id: "zero-square-matrices",
+                type: "definition",
+                title: "零矩阵与方阵",
+                body: [
+                  "所有元素都为零的矩阵称为<strong>零矩阵</strong>，记作 $O$。不同阶的零矩阵统写为 $O$，但参与运算时必须与另一矩阵同型。",
+                  "行数等于列数的矩阵称为<strong>方阵</strong>或 n 阶方阵。只有方阵才谈主对角线、行列式和逆矩阵。"
+                ]
+              },
+              {
+                id: "diagonal-matrix",
+                type: "definition",
+                title: "对角矩阵",
+                body: [
+                  "除主对角线以外，其余元素全为零的方阵称为<strong>对角矩阵</strong>。对角元素允许有零或非零。",
+                  "对角矩阵记作 $\\operatorname{diag}(a_{11},a_{22},\\ldots,a_{nn})$。它的乘法可逐分量处理，计算量很小。"
+                ],
+                formula: String.raw`A=\operatorname{diag}(\lambda_1,\lambda_2,\ldots,\lambda_n)=\begin{pmatrix}\lambda_1&&&\\&\lambda_2&&\\&&\ddots&\\&&&\lambda_n\end{pmatrix}`
+              },
+              {
+                id: "scalar-identity-matrix",
+                type: "definition",
+                title: "数量矩阵与单位矩阵",
+                body: [
+                  "主对角线元素全等于同一个数 $a$ 的对角矩阵称为<strong>数量矩阵</strong>，且 $aE$ 与任意同阶矩阵相乘都可交换。",
+                  "主对角线元素全为 $1$ 的数量矩阵称为<strong>单位矩阵</strong>，记作 $E$ 或 $I$。"
+                ],
+                formula: String.raw`\operatorname{diag}(a,a,\ldots,a)=aE,\qquad EA=AE=A`
+              },
+              {
+                id: "triangular-matrix",
+                type: "definition",
+                title: "上三角矩阵与下三角矩阵",
+                body: [
+                  "主对角线下方全为零的方阵称为<strong>上三角矩阵</strong>；主对角线上方全为零的方阵称为<strong>下三角矩阵</strong>。",
+                  "三角矩阵的行列式等于主对角线元素乘积，这是后续快速计算行列式的重要入口。"
+                ],
+                formula: String.raw`|A|=a_{11}a_{22}\cdots a_{nn}\quad\text{（上、下三角矩阵均成立）}`
+              },
+              {
+                id: "special-matrix-checklist",
+                type: "warning",
+                title: "特殊矩阵识别顺序",
+                body: [
+                  "先判断是不是方阵；不是方阵时，只能讨论行矩阵、列矩阵、零矩阵等。",
+                  "确认方阵后，再看零元素分布：非对角全零是对角矩阵，某侧全零是三角矩阵，对角线全为一是单位矩阵。"
+                ],
+                bullets: [
+                  "“对角矩阵一定是方阵”，但“方阵不一定是对角矩阵”。",
+                  "单位矩阵一定是数量矩阵；数量矩阵不一定是单位矩阵。",
+                  "三角矩阵不要求对角元非零。"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "matrix-operations",
+        number: "2.2",
+        title: "矩阵的运算",
+        english: "Matrix Operations",
+        accent: "indigo",
+        summary: "矩阵加法与数乘按位置进行，矩阵乘法按“左行乘右列”进行；还要掌握乘法不可交换、方阵的幂、转置、对称矩阵和方阵行列式。",
+        examFocus: ["同型才可相加", "乘法维数匹配", "AB≠BA", "转置反序", "|AB|=|A||B|"],
+        introFigure: {
+          svg: matrixProductFigure,
+          title: "矩阵乘法的行列匹配",
+          caption: "左矩阵的第 i 行与右矩阵的第 j 列做内积，得到乘积矩阵的 (i,j) 元素。"
+        },
+        themes: [
+          {
+            id: "matrix-linear-operations",
+            title: "加法、减法与数乘",
+            summary: "线性运算只在同型矩阵之间按对应位置进行，因此比矩阵乘法更接近普通数的加法。",
+            cards: [
+              {
+                id: "matrix-addition",
+                type: "definition",
+                title: "矩阵加法",
+                body: [
+                  "两个 $m\\times n$ 同型矩阵相加，把对应位置元素相加，所得矩阵仍为 $m\\times n$。",
+                  "不同型的矩阵不能相加。"
+                ],
+                formula: String.raw`(A+B)_{ij}=a_{ij}+b_{ij}`
+              },
+              {
+                id: "matrix-scalar-multiplication",
+                type: "definition",
+                title: "数与矩阵相乘",
+                body: [
+                  "数 $k$ 与矩阵 $A$ 相乘时，把 $k$ 乘到矩阵的每一个元素上，得到与 $A$ 同型的矩阵。",
+                  "$kA=Ak$ 只说明数与矩阵的顺序无关，不代表任意两个矩阵乘法可交换。"
+                ],
+                formula: String.raw`(kA)_{ij}=k\,a_{ij}`
+              },
+              {
+                id: "matrix-negative-subtraction",
+                type: "definition",
+                title: "负矩阵与矩阵减法",
+                body: [
+                  "$-A=(-1)A$ 称为矩阵 $A$ 的负矩阵。矩阵减法定义为 $A-B=A+(-B)$。",
+                  "减法仍然要求 $A$、$B$ 同型。"
+                ],
+                formula: String.raw`A-B=A+(-B),\qquad (A-B)_{ij}=a_{ij}-b_{ij}`
+              },
+              {
+                id: "matrix-linear-operation-laws",
+                type: "property",
+                title: "线性运算规律",
+                body: [
+                  "矩阵加法满足交换律、结合律；数乘与加法满足分配律；零矩阵和负矩阵分别是加法的零元与逆元。",
+                  "这些规律成立的前提是参与运算的同型矩阵存在。"
+                ],
+                bullets: [
+                  "$A+B=B+A$",
+                  "$(A+B)+C=A+(B+C)$",
+                  "$k(A+B)=kA+kB$",
+                  "$(k+l)A=kA+lA$",
+                  "$A+O=A$，$A+(-A)=O$"
+                ]
+              },
+              {
+                id: "scalar-zero-product",
+                type: "judgment",
+                title: "由 kA=O 能推出什么",
+                body: [
+                  "若 $k$ 是数、$A$ 是矩阵且 $kA=O$，则 $k=0$ 或 $A=O$。",
+                  "注意：这条规律说的是“数与矩阵相乘”。矩阵乘法 $AB=O$ 不能推出 $A=O$ 或 $B=O$。"
+                ],
+                formula: String.raw`kA=O\quad\Longrightarrow\quad k=0\ \text{或}\ A=O`
+              },
+              {
+                id: "matrix-equation-basic",
+                type: "example",
+                title: "解含未知矩阵的线性方程",
+                body: [
+                  "把未知矩阵 $X$ 像普通未知量一样移项，再利用数乘和同型加法计算。",
+                  "先用等式两边同减已知矩阵，再除以系数 2。"
+                ],
+                formula: String.raw`2X+3B=C\quad\Longrightarrow\quad X=\frac12(C-3B)`
+              }
+            ]
+          },
+          {
+            id: "matrix-multiplication",
+            title: "矩阵乘法、幂与多项式",
+            summary: "矩阵乘法来自线性变换的复合，因此维数匹配、顺序敏感、分配与结合规律都与普通数乘法不同。",
+            cards: [
+              {
+                id: "matrix-product-motivation",
+                type: "property",
+                title: "矩阵乘法为什么是左行乘右列",
+                body: [
+                  "设列向量 $x$ 先经过变换 $B$ 得到 $Bx$，再经过变换 $A$，结果为 $A(Bx)$。",
+                  "若把复合变换记作 $AB$，就必须定义成矩阵乘法，使得 $(AB)x=A(Bx)$。这解释了“行乘列”的求和规则。"
+                ]
+              },
+              {
+                id: "matrix-product-compatibility",
+                type: "judgment",
+                title: "矩阵乘法的维数条件",
+                body: [
+                  "$A$ 的列数必须等于 $B$ 的行数，$AB$ 才有意义。",
+                  "若 $A$ 是 $m\\times l$ 矩阵，$B$ 是 $l\\times n$ 矩阵，则 $AB$ 是 $m\\times n$ 矩阵。"
+                ],
+                formula: String.raw`(m\times l)(l\times n)\longrightarrow(m\times n)`
+              },
+              {
+                id: "matrix-product-entry",
+                type: "formula",
+                title: "乘积元素的求和公式",
+                body: [
+                  "乘积矩阵第 $i$ 行第 $j$ 列元素，等于左矩阵第 $i$ 行与右矩阵第 $j$ 列的对应元素乘积之和。"
+                ],
+                formula: String.raw`c_{ij}=\sum_{k=1}^{l}a_{ik}b_{kj}=a_{i1}b_{1j}+a_{i2}b_{2j}+\cdots+a_{il}b_{lj}`,
+                example: {
+                  title: "3×2 矩阵乘 2×2 矩阵",
+                  body: [
+                    "左矩阵两列、右矩阵两行，维数匹配，乘积为 $3\\times2$ 矩阵。",
+                    "以 $c_{11}$ 为例：$2\\cdot1+3\\cdot2=8$。"
+                  ],
+                  figures: [{
+                    svg: matrixProductFigure,
+                    title: "矩阵乘法的数值计算",
+                    caption: "逐项计算时始终遵循“左行乘右列”。"
+                  }]
+                }
+              },
+              {
+                id: "matrix-product-noncommutative",
+                type: "warning",
+                title: "矩阵乘法一般不可交换",
+                body: [
+                  "即使 $AB$ 与 $BA$ 都有意义，一般也有 $AB\\ne BA$。",
+                  "有些情况下 $AB$ 有意义而 $BA$ 根本没定义，不能用普通数的交换律处理矩阵乘法。"
+                ],
+                formula: String.raw`AB\ne BA\quad\text{（一般情形）}`
+              },
+              {
+                id: "matrix-zero-cancellation",
+                type: "warning",
+                title: "零积与非消去性",
+                body: [
+                  "矩阵乘法中，$AB=O$ 不能推出 $A=O$ 或 $B=O$。",
+                  "类似地，$AB=AC$ 一般也不能消去 $A$ 得到 $B=C$。只有 $A$ 可逆时，才能两边左乘 $A^{-1}$。"
+                ],
+                bullets: [
+                  "$AB=O\\nRightarrow A=O$ 或 $B=O$。",
+                  "$AB=AC\\nRightarrow B=C$。",
+                  "矩阵乘法没有普通数的“消去律”。"
+                ]
+              },
+              {
+                id: "matrix-product-laws",
+                type: "property",
+                title: "矩阵乘法的运算规律",
+                body: [
+                  "在维数允许时，矩阵乘法满足结合律、分配律和单位矩阵恒等律。",
+                  "乘法顺序不能随便交换，但括号可以先结合。"
+                ],
+                bullets: [
+                  "$(AB)C=A(BC)$",
+                  "$A(B+C)=AB+AC$",
+                  "$(B+C)A=BA+CA$",
+                  "$EA=AE=A$（$E$ 为相应阶单位矩阵）",
+                  "$k(AB)=(kA)B=A(kB)$"
+                ]
+              },
+              {
+                id: "square-matrix-powers",
+                type: "definition",
+                title: "方阵的幂",
+                body: [
+                  "只有方阵才能自乘。$A^k$ 表示 $k$ 个 $A$ 相乘，并约定 $A^0=E$。",
+                  "若 $k,l$ 是非负整数，则 $A^kA^l=A^{k+l}$，$(A^k)^l=A^{kl}$。"
+                ],
+                formula: String.raw`A^k=\underbrace{A\,A\cdots A}_{k\text{ 个}},\qquad A^0=E`
+              },
+              {
+                id: "matrix-power-warning",
+                type: "warning",
+                title: "一般 (AB)^k≠A^kB^k",
+                body: [
+                  "因为矩阵乘法不可交换，$(AB)^2=ABAB$，通常不能整理成 $A^2B^2$。",
+                  "若已知 $A$ 与 $B$ 可交换，即 $AB=BA$，才可进一步合并幂。"
+                ],
+                formula: String.raw`(AB)^k=A^kB^k\quad\text{仅在某些可交换情形下成立，不能默认使用}`
+              },
+              {
+                id: "matrix-polynomial",
+                type: "definition",
+                title: "矩阵多项式",
+                body: [
+                  "把方阵 $A$ 代入多项式 $f(x)=a_mx^m+\\cdots+a_1x+a_0$ 时，常数项要替换成 $a_0E$，保证每一项都是同阶方阵。",
+                  "矩阵多项式常用于构造逆矩阵和证明矩阵恒等式。"
+                ],
+                formula: String.raw`f(A)=a_mA^m+\cdots+a_1A+a_0E`
+              }
+            ]
+          },
+          {
+            id: "transpose-determinant",
+            title: "转置、对称与方阵行列式",
+            summary: "转置交换行列，对称矩阵要求转置后不变；方阵行列式把整个方阵映成一个数，并与乘法保持联系。",
+            cards: [
+              {
+                id: "matrix-transpose",
+                type: "definition",
+                title: "转置矩阵及其性质",
+                body: [
+                  "把 $A$ 的第 $i$ 行换成第 $i$ 列，得到转置矩阵 $A^T$。$m\\times n$ 矩阵转置后变为 $n\\times m$。",
+                  "乘积转置时顺序反转：$(AB)^T=B^TA^T$。"
+                ],
+                formula: String.raw`(A^T)_{ij}=a_{ji},\qquad (AB)^T=B^TA^T`,
+                example: {
+                  title: "转置的行列互换",
+                  body: [
+                    "$2\\times3$ 矩阵转置后成为 $3\\times2$ 矩阵，原第一行成为新第一列。"
+                  ],
+                  figures: [{
+                    svg: transposeFigure,
+                    title: "矩阵转置示意",
+                    caption: "每个元素移动到行列下标互换的位置。"
+                  }]
+                }
+              },
+              {
+                id: "transpose-properties",
+                type: "property",
+                title: "转置的运算性质",
+                body: [
+                  "转置对加法、数乘保持结构；遇到乘积时反序。"
+                ],
+                bullets: [
+                  "$(A^T)^T=A$",
+                  "$(A+B)^T=A^T+B^T$",
+                  "$(kA)^T=kA^T$",
+                  "$(AB)^T=B^TA^T$",
+                  "$(A_1A_2\\cdots A_k)^T=A_k^T\\cdots A_2^TA_1^T$"
+                ]
+              },
+              {
+                id: "symmetric-matrix",
+                type: "definition",
+                title: "对称矩阵",
+                body: [
+                  "若 n 阶方阵满足 $A^T=A$，称 $A$ 为<strong>对称矩阵</strong>。其关于主对角线对称的两个元素相等。",
+                  "任意矩阵 $A$，$A^TA$ 与 $AA^T$ 都是对称矩阵；两个对称矩阵之和、差仍对称，但乘积不一定对称。"
+                ],
+                formula: String.raw`A^T=A\quad\Longleftrightarrow\quad a_{ij}=a_{ji}`
+              },
+              {
+                id: "square-matrix-determinant",
+                type: "definition",
+                title: "方阵的行列式",
+                body: [
+                  "方阵 $A$ 的元素按原位置构成的行列式，称为方阵 $A$ 的行列式，记作 $|A|$ 或 $\\det A$。",
+                  "方阵是数表，行列式是一个数；$|A|$ 不是把矩阵“变成”矩阵，而是给方阵附加一个数值。"
+                ],
+                formula: String.raw`|A|=\det A`
+              },
+              {
+                id: "determinant-product-rule",
+                type: "formula",
+                title: "方阵行列式的三条乘法规则",
+                body: [
+                  "转置不改变行列式；数乘整个 n 阶方阵时，每一行都提出该数，因此提出 $n$ 次；乘积的行列式等于行列式相乘。"
+                ],
+                formula: String.raw`|A^T|=|A|,\qquad |kA|=k^n|A|,\qquad |AB|=|A||B|`,
+                note: "注意 $|A+B|\\ne|A|+|B|$。行列式对矩阵乘法友好，但对矩阵加法不按元素展开。"
+              },
+              {
+                id: "complex-conjugate-matrix",
+                type: "definition",
+                title: "共轭矩阵",
+                body: [
+                  "对复矩阵 $A$ 的每个元素取共轭，得到共轭矩阵 $\\overline A$。",
+                  "共轭与加法、数乘和乘法相容，但数乘时标量也要共轭。"
+                ],
+                formula: String.raw`\overline{A+B}=\overline A+\overline B,\qquad \overline{AB}=\overline A\,\overline B,\qquad \overline{kA}=\overline k\,\overline A`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "inverse-matrices",
+        number: "2.3",
+        title: "逆矩阵",
+        english: "Inverse Matrices",
+        accent: "brick",
+        summary: "可逆矩阵相当于可逆线性变换；核心判定是 |A|≠0，核心公式是 A⁻¹=A*/|A|，并能用逆矩阵解矩阵方程。",
+        examFocus: ["逆矩阵定义", "|A|≠0", "伴随矩阵", "二阶逆公式", "矩阵方程"],
+        introFigure: {
+          svg: inverseMapFigure,
+          title: "逆矩阵与可逆判定",
+          caption: "逆矩阵抵消原变换；方阵不可逆时对应线性变换发生信息压缩。"
+        },
+        themes: [
+          {
+            id: "inverse-foundation",
+            title: "定义、唯一性与基本性质",
+            summary: "逆矩阵必须与原矩阵双向相乘都得到单位矩阵；可逆与行列式非零是同一件事。",
+            cards: [
+              {
+                id: "inverse-definition",
+                type: "definition",
+                title: "逆矩阵的定义",
+                body: [
+                  "设 $A$ 是 n 阶方阵。若存在 n 阶方阵 $B$，使 $AB=BA=E$，则称 $A$ 可逆，并称 $B$ 是 $A$ 的逆矩阵，记作 $A^{-1}$。",
+                  "可逆矩阵必须先是方阵。"
+                ],
+                formula: String.raw`AA^{-1}=A^{-1}A=E`
+              },
+              {
+                id: "inverse-unique",
+                type: "property",
+                title: "逆矩阵若存在则唯一",
+                body: [
+                  "若 $B$、$C$ 都是 $A$ 的逆矩阵，则 $B=BE=B(AC)=(BA)C=EC=C$。",
+                  "因此写 $A^{-1}$ 不会产生歧义。"
+                ]
+              },
+              {
+                id: "inverse-determinant-criterion",
+                type: "formula",
+                title: "可逆的充要条件",
+                body: [
+                  "n 阶方阵 $A$ 可逆，当且仅当 $|A|\\ne0$。",
+                  "若 $A$ 可逆，则 $|A||A^{-1}|=|E|=1$，所以 $|A^{-1}|=1/|A|$。"
+                ],
+                formula: String.raw`A\text{ 可逆}\quad\Longleftrightarrow\quad |A|\ne0`
+              },
+              {
+                id: "singular-nonsingular",
+                type: "definition",
+                title: "非奇异矩阵与奇异矩阵",
+                body: [
+                  "行列式非零的方阵称为<strong>非奇异矩阵</strong>；行列式为零的方阵称为<strong>奇异矩阵</strong>。",
+                  "非奇异矩阵可逆；奇异矩阵不可逆。"
+                ]
+              },
+              {
+                id: "inverse-properties",
+                type: "property",
+                title: "逆矩阵的运算性质",
+                body: [
+                  "逆矩阵遇到数乘、转置和乘积时都有固定规律；其中乘积逆的顺序必须反转。"
+                ],
+                bullets: [
+                  "$(A^{-1})^{-1}=A$",
+                  "$(kA)^{-1}=k^{-1}A^{-1}$，$k\\ne0$",
+                  "$(AB)^{-1}=B^{-1}A^{-1}$",
+                  "$(A_1A_2\\cdots A_m)^{-1}=A_m^{-1}\\cdots A_2^{-1}A_1^{-1}$",
+                  "$(A^T)^{-1}=(A^{-1})^T$"
+                ]
+              },
+              {
+                id: "inverse-one-side-check",
+                type: "judgment",
+                title: "验证逆矩阵只检查一侧够不够",
+                body: [
+                  "若 $A,B$ 都是同阶方阵且 $AB=E$，则由 $|A||B|=1$ 可得 $|A|\\ne0$，所以 $A$ 可逆。",
+                  "于是 $B=EB=(A^{-1}A)B=A^{-1}(AB)=A^{-1}$。因此对同阶方阵，验证 $AB=E$ 或 $BA=E$ 的一侧就足够。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "adjugate-inverse",
+            title: "伴随矩阵与逆矩阵计算",
+            summary: "先把代数余子式按转置位置排成伴随矩阵，再除以行列式，就得到逆矩阵。",
+            cards: [
+              {
+                id: "adjugate-matrix",
+                type: "definition",
+                title: "伴随矩阵",
+                body: [
+                  "设 $A_{ij}$ 是元素 $a_{ij}$ 的代数余子式。把代数余子式按“转置位置”排成矩阵，称为 $A$ 的伴随矩阵，记作 $A^*$。",
+                  "伴随矩阵第 i 行第 j 列放的是 $A_{ji}$，不是 $A_{ij}$。"
+                ],
+                formula: String.raw`A^*=\begin{pmatrix}A_{11}&A_{21}&\cdots&A_{n1}\\A_{12}&A_{22}&\cdots&A_{n2}\\\vdots&\vdots&&\vdots\\A_{1n}&A_{2n}&\cdots&A_{nn}\end{pmatrix}`
+              },
+              {
+                id: "inverse-adjugate-formula",
+                type: "formula",
+                title: "伴随矩阵法求逆",
+                body: [
+                  "若 $|A|\\ne0$，则 $A$ 可逆，并且 $A^{-1}=A^*/|A|$。",
+                  "使用前先算行列式。若 $|A|=0$，伴随矩阵仍然可以存在，但不能用它构造逆矩阵。"
+                ],
+                formula: String.raw`A^{-1}=\frac{1}{|A|}A^*`,
+                example: {
+                  title: "二阶矩阵的逆公式",
+                  body: [
+                    "二阶情形可以直接交换主对角线、把副对角线变号，再除以 $ad-bc$。"
+                  ],
+                  formula: String.raw`\begin{pmatrix}a&b\\c&d\end{pmatrix}^{-1}=\frac{1}{ad-bc}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}`,
+                  figures: [{
+                    svg: inverseFormulaFigure,
+                    title: "二阶伴随矩阵结构",
+                    caption: "主对角线交换，副对角线变号。"
+                  }]
+                }
+              },
+              {
+                id: "inverse-2x2-check",
+                type: "example",
+                title: "用二阶公式快速求逆",
+                body: [
+                  "对 $A=\\begin{pmatrix}3&2\\\\7&5\\end{pmatrix}$，先算 $|A|=15-14=1$。",
+                  "交换主对角线，副对角线变号，得到 $A^{-1}=\\begin{pmatrix}5&-2\\\\-7&3\\end{pmatrix}$。"
+                ],
+                formula: String.raw`\begin{pmatrix}3&2\\7&5\end{pmatrix}^{-1}=\begin{pmatrix}5&-2\\-7&3\end{pmatrix}`
+              },
+              {
+                id: "inverse-3x3-procedure",
+                type: "example",
+                title: "三阶矩阵求逆的固定流程",
+                body: [
+                  "先用行列式判断是否可逆；再逐个计算九个数对应的代数余子式；按转置位置组成伴随矩阵；最后整体除以 $|A|$。",
+                  "符号最容易在这里出错，建议画 3×3 符号棋盘：第一行 + − +，第二行 − + −，第三行 + − +。"
+                ],
+                formula: String.raw`A^{-1}=\frac1{|A|}\begin{pmatrix}A_{11}&A_{21}&A_{31}\\A_{12}&A_{22}&A_{32}\\A_{13}&A_{23}&A_{33}\end{pmatrix}`
+              },
+              {
+                id: "adjugate-determinant",
+                type: "formula",
+                title: "伴随矩阵的行列式",
+                body: [
+                  "由 $AA^*=|A|E$ 可推出 $|A^*|=|A|^{n-1}$。",
+                  "当 $|A|\\ne0$ 时，也可以从 $A^*=|A|A^{-1}$ 两边取行列式验证。"
+                ],
+                formula: String.raw`|A^*|=|A|^{\,n-1}`
+              },
+              {
+                id: "inverse-transpose-combination",
+                type: "judgment",
+                title: "逆与转置可以先做哪一个",
+                body: [
+                  "可逆矩阵的转置也可逆，并且先转置再求逆与先求逆再转置结果相同：$(A^T)^{-1}=(A^{-1})^T$。",
+                  "这说明逆运算与转置运算可交换，但与矩阵乘法整体交换时仍需逆序。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "matrix-equations",
+            title: "逆矩阵解方程与结构应用",
+            summary: "矩阵方程不能随手“除 A”，必须明确从左乘还是右乘逆矩阵；特殊恒等式可反向构造逆矩阵。",
+            cards: [
+              {
+                id: "solve-axb",
+                type: "example",
+                title: "解矩阵方程 AXB=C",
+                body: [
+                  "若 $A,B$ 都可逆，则先在左边乘 $A^{-1}$，再在右边乘 $B^{-1}$。",
+                  "注意顺序不能互换，也不能把逆矩阵当成数字随意除数。"
+                ],
+                formula: String.raw`AXB=C\quad\Longrightarrow\quad X=A^{-1}CB^{-1}`
+              },
+              {
+                id: "solve-ax-equals-b",
+                type: "judgment",
+                title: "AX=B 与 XA=B 的解法不同",
+                body: [
+                  "若 $A$ 可逆，$AX=B$ 左乘 $A^{-1}$，得到 $X=A^{-1}B$。",
+                  "若 $A$ 可逆，$XA=B$ 右乘 $A^{-1}$，得到 $X=BA^{-1}$。左右位置由未知矩阵在乘积中的位置决定。"
+                ]
+              },
+              {
+                id: "inverse-from-polynomial",
+                type: "example",
+                title: "由矩阵恒等式构造逆矩阵",
+                body: [
+                  "若已知 $A^2-3A+4E=O$，可把它整理为 $A(A-E)=3E$，于是 $A$ 可逆。",
+                  "一般做法是把含目标矩阵的因子凑到一侧，右侧化成非零数量乘单位矩阵。"
+                ],
+                formula: String.raw`A^2-3A+4E=O\quad\Longrightarrow\quad A\cdot\frac{A-E}{3}=E\quad\Longrightarrow\quad A^{-1}=\frac{A-E}{3}`
+              },
+              {
+                id: "inverse-power-diagonal",
+                type: "formula",
+                title: "对角矩阵的幂与逆",
+                body: [
+                  "对角矩阵的乘法只作用在对应对角元素上，因此幂和逆都可逐项计算。",
+                  "这一结构是后续矩阵对角化的核心动机：若能把矩阵化成相似对角矩阵，就能快速求高次幂。"
+                ],
+                formula: String.raw`\Lambda^m=\operatorname{diag}(\lambda_1^m,\ldots,\lambda_n^m),\qquad \Lambda^{-1}=\operatorname{diag}(\lambda_1^{-1},\ldots,\lambda_n^{-1})`
+              },
+              {
+                id: "inverse-similarity-preview",
+                type: "example",
+                title: "利用 AP=PΛ 计算 Aⁿ",
+                body: [
+                  "若 $P$ 可逆且 $AP=P\\Lambda$，则 $A=P\\Lambda P^{-1}$，从而 $A^n=P\\Lambda^nP^{-1}$。",
+                  "当 $\\Lambda$ 为对角矩阵时，计算 $\\Lambda^n$ 只需把每个对角元素分别取 n 次幂。",
+                  "这个公式本节先会推导即可，完整对角化理论将在后续章节展开。"
+                ],
+                formula: String.raw`A=P\Lambda P^{-1}\quad\Longrightarrow\quad A^n=P\Lambda^nP^{-1}`
+              },
+              {
+                id: "inverse-summary",
+                type: "warning",
+                title: "求逆检查清单",
+                body: [
+                  "先确认是方阵，再判断 $|A|\\ne0$；计算伴随矩阵时检查转置位置和符号；最后可用 $AA^{-1}=E$ 做抽检。",
+                  "如果题目只需要判断可逆性，通常算行列式最快；如果还要求逆，再继续算伴随矩阵或使用特殊结构公式。"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "block-matrices",
+        number: "2.4",
+        title: "分块矩阵",
+        english: "Block Matrices",
+        summary: "把矩阵切成子块后，许多高阶运算可以按低阶矩阵处理；重点是分块方式匹配、块乘法相容和分块三角结构。",
+        examFocus: ["子块与分块", "分块乘法条件", "分块转置", "分块对角", "分块三角逆"],
+        accent: "forest",
+        introFigure: {
+          svg: blockMatrixFigure,
+          title: "矩阵的分块结构",
+          caption: "分块方式可以变化，但子块的尺寸必须与后续运算相容。"
+        },
+        themes: [
+          {
+            id: "block-foundation",
+            title: "分块、加法与乘法",
+            summary: "子块是矩阵内部的小矩阵；分块运算看起来像普通矩阵运算，但每个位置都要满足对应的维数条件。",
+            cards: [
+              {
+                id: "block-matrix-definition",
+                type: "definition",
+                title: "分块矩阵与子块",
+                body: [
+                  "用若干纵线和横线把矩阵 $A$ 切成多个小矩阵，每个小矩阵称为<strong>子块</strong>。",
+                  "以子块为元素得到的矩阵称为<strong>分块矩阵</strong>。同一个矩阵可以按不同方式分块，应根据运算结构选择。"
+                ]
+              },
+              {
+                id: "block-addition-scalar",
+                type: "property",
+                title: "分块加法与数乘",
+                body: [
+                  "两个同型矩阵如果采用完全相同的分块方式，则对应子块相加即可。",
+                  "数与分块矩阵相乘，把数乘到每一个子块上。"
+                ],
+                formula: String.raw`A+B=\begin{pmatrix}A_{11}+B_{11}&\cdots&A_{1s}+B_{1s}\\\vdots&&\vdots\\A_{r1}+B_{r1}&\cdots&A_{rs}+B_{rs}\end{pmatrix}`
+              },
+              {
+                id: "block-multiplication",
+                type: "judgment",
+                title: "分块乘法的匹配条件",
+                body: [
+                  "把 $A,B$ 分块后，左矩阵每一行的纵向分法与右矩阵每一列的纵向分法必须对应，保证每个内层子块乘积有定义。",
+                  "外层按普通矩阵乘法进行，内层按子矩阵加法和乘法进行。"
+                ],
+                formula: String.raw`C_{ij}=\sum_{k=1}^{s}A_{ik}B_{kj}`
+              },
+              {
+                id: "block-transpose",
+                type: "formula",
+                title: "分块矩阵转置",
+                body: [
+                  "分块矩阵转置时，先像普通矩阵一样交换子块的行列位置，再把每一个子块本身转置。",
+                  "只交换子块位置、忘记子块内部转置，是常见错误。"
+                ],
+                formula: String.raw`\begin{pmatrix}A&B\\C&D\end{pmatrix}^{T}=\begin{pmatrix}A^T&C^T\\B^T&D^T\end{pmatrix}`
+              }
+            ]
+          },
+          {
+            id: "special-block-matrices",
+            title: "分块对角与分块三角矩阵",
+            summary: "零子块把高阶矩阵解耦成若干低阶问题；分块对角行列式相乘，分块三角逆可用回代公式。",
+            cards: [
+              {
+                id: "block-diagonal-matrix",
+                type: "definition",
+                title: "分块对角矩阵",
+                body: [
+                  "非对角位置全为零矩阵、对角位置为方阵的分块矩阵，称为分块对角矩阵。",
+                  "加法、数乘、乘法、转置、行列式和求逆都可以逐块进行。"
+                ],
+                formula: String.raw`A=\operatorname{diag}(A_1,A_2,\ldots,A_m)`
+              },
+              {
+                id: "block-diagonal-inverse",
+                type: "formula",
+                title: "分块对角矩阵的行列式与逆",
+                body: [
+                  "行列式等于各对角子块行列式的乘积。",
+                  "当每个对角子块都可逆时，分块对角矩阵可逆，其逆矩阵由各子块的逆组成。"
+                ],
+                formula: String.raw`|A|=\prod_{i=1}^{m}|A_i|,\qquad A^{-1}=\operatorname{diag}(A_1^{-1},\ldots,A_m^{-1})`
+              },
+              {
+                id: "block-triangular-determinant",
+                type: "formula",
+                title: "分块三角矩阵的行列式",
+                body: [
+                  "分块上三角或分块下三角矩阵的行列式，等于对角两个方阵行列式的乘积。",
+                  "$C$ 的取值不影响行列式结果。"
+                ],
+                formula: String.raw`\begin{vmatrix}A&O\\C&B\end{vmatrix}=|A||B|,\qquad \begin{vmatrix}A&C\\O&B\end{vmatrix}=|A||B|`
+              },
+              {
+                id: "block-triangular-inverse",
+                type: "example",
+                title: "分块下三角矩阵求逆",
+                body: [
+                  "设 $A,B$ 都可逆。通过把逆矩阵也写成同形状分块矩阵，并逐块比较 $DD^{-1}=E$，可得左下块为 $-B^{-1}CA^{-1}$。",
+                  "这一公式把高阶求逆转化为两个低阶求逆和若干矩阵乘法，是工程计算和结构分析中常见的降阶思路。"
+                ],
+                formula: String.raw`\begin{pmatrix}A&O\\C&B\end{pmatrix}^{-1}=\begin{pmatrix}A^{-1}&O\\-B^{-1}CA^{-1}&B^{-1}\end{pmatrix}`,
+                example: {
+                  title: "分块三角求逆结构",
+                  body: [
+                    "不为零的 $C$ 只会修正逆矩阵的左下块；右上块仍为零。"
+                  ],
+                  figures: [{
+                    svg: blockInverseFigure,
+                    title: "分块三角矩阵的逆",
+                    caption: "行列式只看两个对角块，逆矩阵需要额外处理左下耦合块。"
+                  }]
+                }
               }
             ]
           }

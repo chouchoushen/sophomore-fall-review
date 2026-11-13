@@ -61,6 +61,17 @@ body {
   background-size: 24px 24px;
 }
 
+.chapter-introduction-figure__trigger > .la-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  background:
+    linear-gradient(rgba(25, 91, 115, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(25, 91, 115, .045) 1px, transparent 1px),
+    #f9fcfb;
+  background-size: 24px 24px;
+}
+
 .example-diagram__svg-trigger {
   position: relative;
   display: block;

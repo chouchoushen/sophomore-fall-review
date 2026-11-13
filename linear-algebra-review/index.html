@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="线性代数第一章复习站：排列、逆序数、n阶行列式、行列式性质、按行展开、拉普拉斯定理与克莱姆法则。">
-  <title>线性代数知识主线</title>
+  <meta name="description" content="线性代数复习站：排列与逆序数、行列式、矩阵概念、矩阵运算、逆矩阵和分块矩阵。">
+  <title>线性代数：行列式与矩阵</title>
   <link rel="stylesheet" href="../probability-review/vendor/katex/katex.min.css">
   <link rel="stylesheet" href="../probability-review/css/styles.css?v=20261106-annotations-sync2">
-  <link rel="stylesheet" href="./css/linear-algebra.css?v=20261112">
+  <link rel="stylesheet" href="./css/linear-algebra.css?v=20261113-matrices">
 </head>
 <body>
   <a class="skip-link" href="#courseContent">跳到知识内容</a>
@@ -16,9 +16,9 @@
     <div class="hero__inner">
       <div class="hero__copy">
         <p class="eyebrow">LINEAR ALGEBRA NOTES · 2026</p>
-        <h1>线性代数<span>行列式知识主线</span></h1>
+        <h1>线性代数<span>行列式与矩阵运算</span></h1>
         <p class="hero__lead">
-          从排列的奇偶性出发，建立 <em>n</em> 阶行列式定义，再依次掌握转置、行列变换、代数余子式、拉普拉斯展开和克莱姆法则。每一步都配重新绘制的矩阵结构图。
+          从排列的奇偶性和 <em>n</em> 阶行列式出发，继续建立矩阵语言：掌握加法、数乘、乘法、转置、逆矩阵与分块结构，并用生成式图解把抽象运算串成一条主线。
         </p>
         <div class="hero__stats" aria-label="站点统计">
           <span><strong id="totalChapters">0</strong> 个章节</span>
@@ -33,9 +33,9 @@
         <span class="orbit orbit--one"></span>
         <span class="orbit orbit--two"></span>
         <span class="orbit orbit--three"></span>
-        <span class="formula-float formula-float--one">det(A)</span>
+        <span class="formula-float formula-float--one">AB = Cₘₓₙ</span>
         <span class="formula-float formula-float--two">τ(p₁…pₙ)</span>
-        <span class="formula-float formula-float--three">xᵢ = Dᵢ / D</span>
+        <span class="formula-float formula-float--three">A⁻¹ = A* / |A|</span>
       </div>
     </div>
   </header>
@@ -66,7 +66,7 @@
 
         <div class="rail__note">
           <strong>阅读方法</strong>
-          <p>先看定义与公式，再展开例题中的矩阵结构图。行列式题重点追踪“换行是否变号”和“展开项的符号”。</p>
+          <p>先看定义与公式，再展开例题中的矩阵结构图。行列式重点追踪“换行是否变号”，矩阵运算重点检查“维数是否匹配”和“乘法顺序”。</p>
         </div>
       </div>
     </aside>
@@ -75,7 +75,7 @@
       <section class="toolbar" aria-label="知识查询工具">
         <label class="search-box">
           <span class="search-box__icon" aria-hidden="true"></span>
-          <input id="searchInput" type="search" placeholder="搜索排列、逆序数、余子式、克莱姆法则…" autocomplete="off">
+          <input id="searchInput" type="search" placeholder="搜索行列式、矩阵乘法、转置、逆矩阵、分块矩阵…" autocomplete="off">
           <button id="clearSearch" class="search-clear" type="button" aria-label="清空搜索" hidden>清除</button>
         </label>
         <div class="toolbar__actions">
@@ -112,14 +112,14 @@
   </div>
 
   <footer class="footer">
-    <p>线性代数互动复习站 · 排列、行列式与克莱姆法则</p>
+    <p>线性代数互动复习站 · 行列式、矩阵运算与逆矩阵</p>
     <p>例题结构图由网页代码生成，不使用课件截图 · 进度仅保存在当前浏览器</p>
   </footer>
 
   <script defer src="../probability-review/vendor/katex/katex.min.js"></script>
   <script defer src="../probability-review/vendor/katex/contrib/auto-render.min.js"></script>
-  <script defer src="./js/course-data.js?v=20261112"></script>
-  <script defer src="./js/app.js?v=20261112"></script>
+  <script defer src="./js/course-data.js?v=20261113-matrices"></script>
+  <script defer src="./js/app.js?v=20261113-matrices"></script>
   <script defer src="../knowledge-annotations.js?v=20261106-annotations-sync2"></script>
   <script defer src="../portal-back.js?v=20261106"></script>
 </body>

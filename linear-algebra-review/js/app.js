@@ -342,14 +342,25 @@
   function renderChapterFigure(figure) {
     return `
       <figure class="chapter-introduction-figure">
-        <button class="chapter-introduction-figure__trigger" type="button"
-          data-figure-src="${escapeAttribute(figure.src)}"
-          data-figure-title="${escapeAttribute(figure.title)}"
-          data-figure-caption="${escapeAttribute(figure.caption || "")}"
-          aria-label="放大查看：${escapeAttribute(figure.title)}">
-          <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy" decoding="async">
-          <span class="chapter-introduction-figure__hint">章节总览 · 点击放大</span>
-        </button>
+        ${figure.svg ? `
+          <button class="chapter-introduction-figure__trigger" type="button"
+            data-inline-figure="true"
+            data-figure-title="${escapeAttribute(figure.title)}"
+            data-figure-caption="${escapeAttribute(figure.caption || "")}"
+            aria-label="放大查看：${escapeAttribute(figure.title)}">
+            ${figure.svg}
+            <span class="chapter-introduction-figure__hint">章节总览 · 点击放大</span>
+          </button>
+        ` : `
+          <button class="chapter-introduction-figure__trigger" type="button"
+            data-figure-src="${escapeAttribute(figure.src)}"
+            data-figure-title="${escapeAttribute(figure.title)}"
+            data-figure-caption="${escapeAttribute(figure.caption || "")}"
+            aria-label="放大查看：${escapeAttribute(figure.title)}">
+            <img src="${escapeAttribute(figure.src)}" alt="${escapeAttribute(figure.title)}" loading="lazy" decoding="async">
+            <span class="chapter-introduction-figure__hint">章节总览 · 点击放大</span>
+          </button>
+        `}
         <figcaption>
           <strong>${figure.title}</strong>
           <span>${figure.caption}</span>
