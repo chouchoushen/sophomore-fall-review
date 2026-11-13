@@ -8,6 +8,7 @@
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
   const WORD_BANK = window.CET4_WORD_BANK || [];
   const EXAMPLE_OVERRIDES = window.CET4_EXAMPLE_OVERRIDES || {};
+  const RELATION_OVERRIDES = window.CET4_RELATION_OVERRIDES || {};
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
   const WORD_LEXICON = window.CET4_WORD_LEXICON || {};
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
@@ -59,12 +60,16 @@
       type: "context",
       collocations: item.collocations || []
     };
+    if (!item.similar?.length && RELATION_OVERRIDES[item.word]?.similar?.length) {
+      item.similar = RELATION_OVERRIDES[item.word].similar;
+    }
   });
 
   const WORD_KEY = "cet4-review.mastered.v1";
   const DAILY_WORD_HISTORY_KEY = "cet4-review.daily-100-history.v1";
   const DAILY_WORD_COUNT = 100;
   const DAILY_REVIEW_COUNT = 6;
+  const SPELLING_GROUP_SIZE = 10;
   const DAILY_SELECTION_VERSION = 2;
   const DAILY_REVIEW_POSITIONS = [9, 24, 39, 54, 69, 84];
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
@@ -160,6 +165,10 @@
   let activeDay = 0;
   let activeDailyDateKey = null;
   let dailyWordGroupMode = "part";
+  let currentDailyWordEntries = [];
+  let spellingSession = null;
+  let spellingAdvanceTimer = 0;
+  let spellingSpeechTimer = 0;
   let visibleWordCount = 0;
   let quickWordResults = [];
   let quickWordActiveIndex = 0;
@@ -711,6 +720,7 @@
           : "今日新词";
       return { item, kind };
     }).filter(({ item }) => item);
+    currentDailyWordEntries = entries;
     const newWordCount = entries.filter(
       ({ kind }) => kind !== "历史复习"
     ).length;
@@ -738,6 +748,9 @@
           <span><strong>${partCounts["v."]}</strong>动词</span>
           <span><strong>${partCounts["adj."] + partCounts["adv."]}</strong>形/副</span>
         </div>
+        <button class="spelling-practice-open" type="button" data-open-spelling>
+          ⌨ 拼写本期百词
+        </button>
       </div>
       <div class="daily-word-group-modes" role="group" aria-label="百词分类方式">
         <button class="${dailyWordGroupMode === "part" ? "is-active" : ""}" type="button"
@@ -800,6 +813,234 @@
         <a href="https://doi.org/10.1017/s0142716418000504" target="_blank" rel="noopener">语境线索研究</a>
       </p>
     `;
+  }
+
+  function ensureSpellingPanel() {
+    let panel = document.getElementById("spellingPractice");
+    if (panel) return panel;
+    document.body.insertAdjacentHTML("beforeend", `
+      <div class="spelling-practice" id="spellingPractice" hidden>
+        <section class="spelling-practice__card" role="dialog" aria-modal="true" aria-labelledby="spellingPracticeTitle">
+          <button class="spelling-practice__close" type="button" aria-label="关闭拼写练习">×</button>
+          <header class="spelling-practice__head">
+            <p class="eyebrow">DAILY 100 · SPELLING</p>
+            <h2 id="spellingPracticeTitle">今日百词拼写</h2>
+            <p id="spellingGroupStatus"></p>
+          </header>
+          <div class="spelling-practice__progress" aria-hidden="true"><i></i></div>
+          <div class="spelling-practice__prompt">
+            <span id="spellingPart"></span>
+            <strong id="spellingMeaning"></strong>
+          </div>
+          <button class="spelling-practice__audio" type="button" data-spelling-audio>🔊 再听一次</button>
+          <label class="spelling-practice__input">
+            <span>输入英文拼写</span>
+            <input id="spellingAnswer" type="text" autocomplete="off" autocorrect="off"
+              autocapitalize="none" spellcheck="false" inputmode="text">
+          </label>
+          <button class="spelling-practice__check" type="button">检查拼写</button>
+          <div class="spelling-practice__feedback" id="spellingFeedback" role="status" aria-live="polite"></div>
+          <p class="spelling-practice__hint">每 10 词一组。拼错后停留在当前词，拼对后该词会在本组末尾再次出现。</p>
+        </section>
+      </div>
+    `);
+    panel = document.getElementById("spellingPractice");
+    const input = panel.querySelector("#spellingAnswer");
+    panel.querySelector(".spelling-practice__close").addEventListener("click", closeSpellingPractice);
+    panel.querySelector("[data-spelling-audio]").addEventListener("click", () => {
+      const item = currentSpellingItem();
+      if (item) playVocabularyAudio(item.word, "word");
+    });
+    panel.querySelector(".spelling-practice__check").addEventListener("click", checkSpellingAnswer);
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        checkSpellingAnswer();
+      }
+    });
+    panel.addEventListener("click", (event) => {
+      if (event.target === panel) closeSpellingPractice();
+    });
+    return panel;
+  }
+
+  function openSpellingPractice() {
+    const items = currentDailyWordEntries.map(({ item }) => item).filter(Boolean);
+    if (!items.length) return;
+    if (!spellingSession || spellingSession.key !== activeDailyDateKey) {
+      const groups = [];
+      for (let index = 0; index < items.length; index += SPELLING_GROUP_SIZE) {
+        groups.push(items.slice(index, index + SPELLING_GROUP_SIZE));
+      }
+      spellingSession = {
+        key: activeDailyDateKey,
+        groups,
+        total: items.length,
+        groupIndex: 0,
+        queue: [...groups[0]],
+        index: 0,
+        retryRound: 0,
+        nextRetry: new Set(),
+        currentHadError: false,
+        locked: false,
+        complete: false
+      };
+    }
+    const panel = ensureSpellingPanel();
+    closeWord();
+    panel.hidden = false;
+    document.body.classList.add("spelling-open");
+    renderSpellingQuestion(true);
+  }
+
+  function closeSpellingPractice() {
+    const panel = document.getElementById("spellingPractice");
+    if (!panel) return;
+    window.clearTimeout(spellingAdvanceTimer);
+    window.clearTimeout(spellingSpeechTimer);
+    spellingAdvanceTimer = 0;
+    spellingSpeechTimer = 0;
+    panel.hidden = true;
+    document.body.classList.remove("spelling-open");
+  }
+
+  function currentSpellingItem() {
+    if (!spellingSession || spellingSession.complete) return null;
+    return spellingSession.queue[spellingSession.index] || null;
+  }
+
+  function renderSpellingQuestion(autoSpeak = true) {
+    const panel = ensureSpellingPanel();
+    const session = spellingSession;
+    if (!session || panel.hidden) return;
+    if (session.complete) {
+      panel.querySelector("#spellingGroupStatus").textContent =
+        `已完成 ${session.total} 个单词`;
+      panel.querySelector(".spelling-practice__progress i").style.width = "100%";
+      panel.querySelector("#spellingPart").textContent = "";
+      panel.querySelector("#spellingMeaning").textContent = "今日百词拼写全部完成";
+      panel.querySelector("[data-spelling-audio]").hidden = true;
+      panel.querySelector(".spelling-practice__input").hidden = true;
+      panel.querySelector(".spelling-practice__check").hidden = true;
+      panel.querySelector("#spellingFeedback").className = "spelling-practice__feedback is-correct";
+      panel.querySelector("#spellingFeedback").textContent = "所有分组和重拼词均已完成。";
+      return;
+    }
+    const item = currentSpellingItem();
+    if (!item) {
+      advanceSpellingGroup();
+      return;
+    }
+    session.locked = false;
+    session.currentHadError = false;
+    const groupNumber = session.groupIndex + 1;
+    const retryText = session.retryRound
+      ? ` · 重拼第 ${session.retryRound} 轮`
+      : "";
+    panel.querySelector("#spellingGroupStatus").textContent =
+      `第 ${groupNumber} / ${session.groups.length} 组 · ` +
+      `${session.index + 1} / ${session.queue.length}${retryText}`;
+    panel.querySelector(".spelling-practice__progress i").style.width =
+      `${session.queue.length ? (session.index / session.queue.length) * 100 : 0}%`;
+    panel.querySelector("#spellingPart").textContent =
+      item.part.map((part) => part).join(" ");
+    panel.querySelector("#spellingMeaning").textContent = item.meaning;
+    const input = panel.querySelector("#spellingAnswer");
+    const audioButton = panel.querySelector("[data-spelling-audio]");
+    input.hidden = false;
+    audioButton.hidden = false;
+    panel.querySelector(".spelling-practice__input").hidden = false;
+    panel.querySelector(".spelling-practice__check").hidden = false;
+    input.value = "";
+    input.disabled = false;
+    input.focus({ preventScroll: true });
+    const feedback = panel.querySelector("#spellingFeedback");
+    feedback.className = "spelling-practice__feedback";
+    feedback.textContent = "";
+    if (autoSpeak) {
+      window.clearTimeout(spellingSpeechTimer);
+      const expected = item.word;
+      spellingSpeechTimer = window.setTimeout(() => {
+        if (
+          currentSpellingItem()?.word === expected &&
+          !panel.hidden
+        ) {
+          playVocabularyAudio(expected, "word");
+        }
+      }, 180);
+    }
+  }
+
+  function checkSpellingAnswer() {
+    const session = spellingSession;
+    const item = currentSpellingItem();
+    if (!session || !item || session.locked || session.complete) return;
+    const panel = document.getElementById("spellingPractice");
+    const input = panel.querySelector("#spellingAnswer");
+    const feedback = panel.querySelector("#spellingFeedback");
+    const normalize = (value) =>
+      String(value || "")
+        .trim()
+        .toLowerCase()
+        .replaceAll("’", "'")
+        .replace(/\s+/g, " ");
+    if (normalize(input.value) !== normalize(item.word)) {
+      session.currentHadError = true;
+      feedback.className = "spelling-practice__feedback is-wrong";
+      feedback.innerHTML =
+        `拼写错误，正确拼写是：<strong>${escapeHtml(item.word)}</strong>`;
+      input.focus({ preventScroll: true });
+      input.select();
+      return;
+    }
+    if (session.currentHadError) session.nextRetry.add(item.word);
+    session.locked = true;
+    input.disabled = true;
+    feedback.className = "spelling-practice__feedback is-correct";
+    feedback.textContent = "拼写正确。";
+    window.clearTimeout(spellingAdvanceTimer);
+    spellingAdvanceTimer = window.setTimeout(() => {
+      session.index += 1;
+      if (session.index < session.queue.length) {
+        renderSpellingQuestion(true);
+        return;
+      }
+      if (session.nextRetry.size) {
+        const retryWords = new Set(session.nextRetry);
+        session.nextRetry.clear();
+        session.queue = [...retryWords]
+          .map((word) => wordMap.get(word))
+          .filter(Boolean);
+        session.retryRound += 1;
+        session.index = 0;
+        renderSpellingQuestion(true);
+        return;
+      }
+      advanceSpellingGroup();
+    }, 650);
+  }
+
+  function advanceSpellingGroup() {
+    const session = spellingSession;
+    if (!session) return;
+    const panel = ensureSpellingPanel();
+    if (session.groupIndex + 1 >= session.groups.length) {
+      session.complete = true;
+      renderSpellingQuestion(false);
+      return;
+    }
+    const feedback = panel.querySelector("#spellingFeedback");
+    feedback.className = "spelling-practice__feedback is-correct";
+    feedback.textContent = "本组已全部拼对，正在进入下一组。";
+    window.clearTimeout(spellingAdvanceTimer);
+    spellingAdvanceTimer = window.setTimeout(() => {
+      session.groupIndex += 1;
+      session.queue = [...session.groups[session.groupIndex]];
+      session.index = 0;
+      session.retryRound = 0;
+      session.nextRetry.clear();
+      renderSpellingQuestion(true);
+    }, 900);
   }
 
   function createSpeechReader({ body, toolbar, text, targetWords = [], label, audioKey }) {
@@ -1587,13 +1828,28 @@
           : "";
       })
       .join("");
+    const derivedRelations = [...new Set([
+      ...Object.values(item.forms || {}).flatMap((value) =>
+        Array.isArray(value) ? value : [value]
+      ),
+      ...(item.memory?.family || []),
+      ...(item.similar || [])
+    ].filter(Boolean).filter((word) =>
+      String(word).toLowerCase() !== item.word.toLowerCase()
+    ))];
+    const synonymRow = item.synonyms?.length
+      ? `<dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>`
+      : derivedRelations.length
+        ? `<dt>相关词</dt><dd>${derivedRelations.slice(0, 6).map(escapeHtml).join(" · ")}</dd>`
+        : "";
+    const similarRow = item.similar?.length
+      ? `<dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>`
+      : derivedRelations.length
+        ? `<dt>词族形式</dt><dd>${derivedRelations.slice(0, 6).map(escapeHtml).join(" · ")}</dd>`
+        : "";
     const detailRows = [
-      item.synonyms?.length
-        ? `<dt>近义词</dt><dd>${item.synonyms.map(escapeHtml).join(" · ")}</dd>`
-        : "",
-      item.similar?.length
-        ? `<dt>形近词</dt><dd>${item.similar.map(escapeHtml).join(" · ")}</dd>`
-        : "",
+      synonymRow,
+      similarRow,
       `<dt>百词日期</dt><dd>${(wordDailyEditions.get(item.word) || []).slice(0, 12).map((day) => day.slice(5)).join(" · ") || "尚未进入每日百词"}</dd>`,
       forms
     ].join("");
@@ -1998,6 +2254,10 @@
       renderWordList();
     });
     document.getElementById("dailyVocabReview").addEventListener("click", (event) => {
+      if (event.target.closest("[data-open-spelling]")) {
+        openSpellingPractice();
+        return;
+      }
       const audioButton = event.target.closest("[data-word-audio]");
       if (audioButton) {
         playVocabularyAudio(audioButton.dataset.wordAudio, "word");

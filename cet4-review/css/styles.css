@@ -944,6 +944,202 @@ main {
   font: 700 .95rem var(--serif);
 }
 
+.spelling-practice-open {
+  grid-column: 1 / -1;
+  justify-self: end;
+  padding: .48rem .78rem;
+  border: 1px solid #b9c9ea;
+  border-radius: 999px;
+  background: #eef4ff;
+  color: #2950ad;
+  cursor: pointer;
+  font: 700 .7rem/1.4 var(--sans);
+}
+
+.spelling-practice-open:hover,
+.spelling-practice-open:focus-visible {
+  border-color: #7696d8;
+  outline: none;
+  background: #e3edff;
+}
+
+body.spelling-open {
+  overflow: hidden;
+}
+
+.spelling-practice {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 27, 46, .58);
+  backdrop-filter: blur(8px);
+}
+
+.spelling-practice[hidden] {
+  display: none;
+}
+
+.spelling-practice__card {
+  position: relative;
+  width: min(610px, 100%);
+  max-height: calc(100vh - 2rem);
+  padding: 1.5rem;
+  overflow-y: auto;
+  border: 1px solid #d3deee;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(14, 31, 55, .28);
+}
+
+.spelling-practice__close {
+  position: absolute;
+  top: .7rem;
+  right: .8rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.spelling-practice__head {
+  padding-right: 2.2rem;
+}
+
+.spelling-practice__head h2 {
+  margin: 0;
+  font: 600 1.55rem/1.35 var(--serif);
+}
+
+.spelling-practice__head p:last-child {
+  margin: .35rem 0 0;
+  color: var(--muted);
+  font: .72rem/1.5 var(--mono);
+}
+
+.spelling-practice__progress {
+  height: 5px;
+  margin: .9rem 0 1.25rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e7edf7;
+}
+
+.spelling-practice__progress i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #3157bc, #5e8ee7);
+  transition: width .22s ease;
+}
+
+.spelling-practice__prompt {
+  display: grid;
+  gap: .35rem;
+  min-height: 7.5rem;
+  place-content: center;
+  padding: 1rem;
+  border: 1px solid #ccd9f0;
+  border-radius: 10px;
+  background: #f2f6ff;
+  text-align: center;
+}
+
+.spelling-practice__prompt span {
+  color: #5873a4;
+  font: .74rem var(--mono);
+}
+
+.spelling-practice__prompt strong {
+  color: #203759;
+  font: 600 1.3rem/1.65 var(--serif);
+}
+
+.spelling-practice__audio {
+  display: block;
+  margin: .8rem 0;
+  padding: .42rem .7rem;
+  border: 1px solid #c1d0ea;
+  border-radius: 999px;
+  background: #fff;
+  color: #3157bc;
+  cursor: pointer;
+  font: 700 .7rem var(--sans);
+}
+
+.spelling-practice__input {
+  display: grid;
+  gap: .35rem;
+  color: var(--muted);
+  font: .68rem var(--sans);
+}
+
+.spelling-practice__input input {
+  width: 100%;
+  padding: .78rem .85rem;
+  border: 1px solid #bfcde5;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: var(--ink);
+  font: 1.1rem/1.4 var(--mono);
+  letter-spacing: .03em;
+}
+
+.spelling-practice__input input:focus {
+  border-color: #3157bc;
+  box-shadow: 0 0 0 3px rgba(49, 87, 188, .1);
+}
+
+.spelling-practice__check {
+  width: 100%;
+  margin-top: .65rem;
+  padding: .68rem .9rem;
+  border: 0;
+  border-radius: 8px;
+  background: #3157bc;
+  color: #fff;
+  cursor: pointer;
+  font: 700 .78rem var(--sans);
+}
+
+.spelling-practice__feedback {
+  min-height: 2.6rem;
+  margin-top: .7rem;
+  padding: .55rem .7rem;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: .76rem;
+  line-height: 1.55;
+}
+
+.spelling-practice__feedback.is-wrong {
+  background: #fff0ed;
+  color: #a3352a;
+}
+
+.spelling-practice__feedback.is-correct {
+  background: #ebf7ef;
+  color: #2f6b46;
+}
+
+.spelling-practice__feedback strong {
+  font-family: var(--mono);
+}
+
+.spelling-practice__hint {
+  margin: .55rem 0 0;
+  color: var(--faint);
+  font-size: .66rem;
+  line-height: 1.6;
+}
+
 .daily-word-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2265,6 +2461,20 @@ footer p {
 
   .daily-word-review__stats {
     justify-content: flex-start;
+  }
+
+  .spelling-practice {
+    padding: .45rem;
+  }
+
+  .spelling-practice__card {
+    max-height: calc(100vh - .9rem);
+    padding: 1.15rem .95rem;
+    border-radius: 12px;
+  }
+
+  .spelling-practice__prompt strong {
+    font-size: 1.1rem;
   }
 
   .daily-word-grid {
