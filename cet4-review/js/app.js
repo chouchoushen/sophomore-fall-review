@@ -8,6 +8,7 @@
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
   const WORD_BANK = window.CET4_WORD_BANK || [];
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
+  const WORD_LEXICON = window.CET4_WORD_LEXICON || {};
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
 
   DATA.vocabulary.push(...EXTRA_VOCABULARY);
@@ -66,6 +67,15 @@
   const DAILY_SELECTION_VERSION = 2;
   const DAILY_REVIEW_POSITIONS = [9, 24, 39, 54, 69, 84];
   const wordMap = new Map(DATA.vocabulary.map((item) => [item.word, item]));
+  const globalFormToWord = buildGlobalFormMap();
+  const ASSOCIATION_MEMORY = {
+    thread: "through（通过）+ read（阅读）：通过阅读理清“思路” = 线、脉络、思路",
+    classroom: "class（班级、课堂）+ room（房间）：上课的房间 = 教室",
+    breakfast: "break（打破）+ fast（禁食）：打破一夜的禁食 = 早餐",
+    weekend: "week（星期）+ end（末尾）：一周的末尾 = 周末",
+    notebook: "note（笔记）+ book（本子）：记笔记的本子 = 笔记本",
+    sunlight: "sun（太阳）+ light（光）：太阳发出的光 = 日光"
+  };
   let dailyWordHistory = readJson(DAILY_WORD_HISTORY_KEY, {});
   let wordDailyEditions = new Map();
   const mastered = new Set(readJson(WORD_KEY, []));
@@ -185,7 +195,7 @@
       : `今日 · ${dateKey}`;
     document.getElementById("articleTopic").textContent = article.topic;
     document.getElementById("articleWordCount").textContent = `${countWords(article.body)} words`;
-    document.getElementById("articleTitle").textContent = article.title;
+    document.getElementById("articleTitle").innerHTML = linkifyEnglishWords(article.title);
     document.getElementById("articleSummary").textContent = article.summaryZh;
     document.getElementById("articleWords").innerHTML = article.words
       .map((word) => {
@@ -205,7 +215,7 @@
       audioKey: `article-${article.id}`
     });
 
-    document.querySelectorAll("#articleBody mark, #articleWords [data-word]").forEach((button) => {
+    document.querySelectorAll("#articleWords [data-word]").forEach((button) => {
       button.addEventListener("click", () => openWord(button.dataset.word));
     });
     renderDailyEditions();
@@ -1189,9 +1199,11 @@
         for (const match of paragraph.text.matchAll(wordPattern)) {
           paragraphHtml += escapeHtml(paragraph.text.slice(cursor, match.index));
           const wordKey = formToWord.get(match[0].toLowerCase());
+          const lookupKey = normalizeLookupKey(match[0]);
+          const lookupWord = `<span class="inline-word-link" data-lookup-word="${escapeAttr(lookupKey)}" data-lookup-display="${escapeAttr(match[0])}">${escapeHtml(match[0])}</span>`;
           const marked = wordKey
-            ? `<mark data-word="${escapeAttr(wordKey)}">${escapeHtml(match[0])}</mark>`
-            : escapeHtml(match[0]);
+            ? `<mark data-word="${escapeAttr(wordKey)}">${lookupWord}</mark>`
+            : lookupWord;
           const index = tokens.length;
           tokens.push({
             index,
@@ -1207,6 +1219,140 @@
       .join("");
 
     return { html, tokens };
+  }
+
+  function normalizeLookupKey(value) {
+    return String(value)
+      .toLowerCase()
+      .replaceAll("’", "'")
+      .replace(/^[^a-z]+|[^a-z'-]+$/g, "");
+  }
+
+  function buildGlobalFormMap() {
+    const formMap = new Map();
+    DATA.vocabulary.forEach((item) => {
+      formMap.set(item.word.toLowerCase(), item.word);
+      Object.values(item.forms || {}).forEach((formValue) => {
+        const forms = Array.isArray(formValue) ? formValue : [formValue];
+        forms.filter(Boolean).forEach((form) =>
+          formMap.set(String(form).toLowerCase(), item.word)
+        );
+      });
+      if ((item.part || []).includes("v.")) {
+        inflectedVerbForms(item.word).forEach((form) =>
+          formMap.set(form.toLowerCase(), item.word)
+        );
+      }
+    });
+    return formMap;
+  }
+
+  function lookupCandidates(word) {
+    const key = normalizeLookupKey(word);
+    const candidates = new Set([key]);
+    const irregular = {
+      am: "be", is: "be", are: "be", was: "be", were: "be", been: "be",
+      has: "have", had: "have", does: "do", did: "do", done: "do",
+      went: "go", gone: "go", made: "make", said: "say", saw: "see",
+      seen: "see", took: "take", taken: "take", came: "come",
+      became: "become", began: "begin", begun: "begin", brought: "bring",
+      bought: "buy", thought: "think", found: "find", left: "leave",
+      kept: "keep", built: "build", sent: "send", spent: "spend",
+      held: "hold", stood: "stand", understood: "understand", felt: "feel",
+      met: "meet", paid: "pay", ran: "run", grew: "grow", grown: "grow",
+      knew: "know", known: "know", children: "child", men: "man",
+      women: "woman", better: "good", best: "good", worse: "bad",
+      worst: "bad", chose: "choose", forbidden: "forbid", gave: "give",
+      meant: "mean", thrown: "throw", written: "write"
+    };
+    if (key.endsWith("'s")) candidates.add(key.slice(0, -2));
+    if (irregular[key]) candidates.add(irregular[key]);
+    const suffixRules = [
+      ["ies", ["y"]],
+      ["ied", ["y"]],
+      ["ing", ["", "e"]],
+      ["ed", ["", "e"]],
+      ["es", ["", "e"]],
+      ["s", [""]],
+      ["er", ["", "e"]],
+      ["est", ["", "e"]],
+      ["ly", [""]],
+      ["ally", ["al"]],
+      ["ness", [""]],
+      ["ment", [""]],
+      ["tion", ["t", "te"]],
+      ["ation", ["ate"]]
+    ];
+    suffixRules.forEach(([suffix, replacements]) => {
+      if (!key.endsWith(suffix)) return;
+      const stem = key.slice(0, -suffix.length);
+      replacements.forEach((replacement) => candidates.add(stem + replacement));
+    });
+    return [...candidates].filter(Boolean);
+  }
+
+  function resolveWordLookup(value) {
+    const key = normalizeLookupKey(value);
+    for (const candidate of lookupCandidates(key)) {
+      const mappedWord = globalFormToWord.get(candidate);
+      const item = mappedWord ? wordMap.get(mappedWord) : wordMap.get(candidate);
+      if (item) {
+        return {
+          queryKey: key,
+          baseKey: item.word,
+          isForm: key !== item.word.toLowerCase(),
+          item,
+          ipa: item.ipa,
+          meaning: `${item.part.map((part) => part).join(" ")} ${item.meaning}`.trim()
+        };
+      }
+      if (WORD_LEXICON[candidate]) {
+        return {
+          queryKey: key,
+          baseKey: candidate,
+          isForm: key !== candidate,
+          item: null,
+          ipa: "",
+          meaning: WORD_LEXICON[candidate]
+        };
+      }
+    }
+    return {
+      queryKey: key,
+      baseKey: key,
+      isForm: false,
+      item: null,
+      ipa: "",
+      meaning: "暂未收录独立释义，请结合上下文理解。"
+    };
+  }
+
+  function linkifyEnglishWords(value, extraClass = "") {
+    const source = String(value || "");
+    const wordPattern = /\p{L}+(?:['’-]\p{L}+)*/gu;
+    let cursor = 0;
+    let html = "";
+    for (const match of source.matchAll(wordPattern)) {
+      html += escapeHtml(source.slice(cursor, match.index));
+      const lookupKey = normalizeLookupKey(match[0]);
+      html +=
+        `<span class="inline-word-link${extraClass ? ` ${extraClass}` : ""}" ` +
+        `data-lookup-word="${escapeAttr(lookupKey)}" ` +
+        `data-lookup-display="${escapeAttr(match[0])}">${escapeHtml(match[0])}</span>`;
+      cursor = match.index + match[0].length;
+    }
+    return html + escapeHtml(source.slice(cursor));
+  }
+
+  function linkifyDrawerWords(root) {
+    if (!root) return;
+    root.querySelectorAll(
+      ".detail-grid dd, .word-memory p, .word-example p, .word-example > span, .word-association, .lookup-only__meaning"
+    ).forEach((element) => {
+      if (element.dataset.lookupLinked === "true") return;
+      element.innerHTML = linkifyEnglishWords(element.textContent, "inline-word-link--drawer");
+      element.dataset.lookupLinked = "true";
+    });
   }
 
   function createTargetWordMap(targetWords) {
@@ -1426,8 +1572,10 @@
   function openWord(wordKey) {
     const item = wordMap.get(wordKey);
     if (!item) return;
+    hideWordMeaningPopover();
     const memoryType = item.memory?.type || "context";
     const memory = MEMORY_META[memoryType];
+    const association = ASSOCIATION_MEMORY[item.word];
     const forms = Object.entries(item.forms || {})
       .filter(([, value]) => value)
       .map(([pos, value]) => {
@@ -1462,6 +1610,7 @@
         <h2>${escapeHtml(item.word)}</h2>
         <span class="ipa">${item.ipa ? `${escapeHtml(item.ipa)} · ` : ""}${item.part.map(escapeHtml).join(" ")}</span>
         <div class="word-detail__meaning">${escapeHtml(item.meaning)}</div>
+        ${association ? `<p class="word-association"><strong>联想助记</strong>${escapeHtml(association)}</p>` : ""}
         <div class="word-memory">
           <span class="memory-badge memory-badge--${escapeAttr(memoryType)}">${escapeHtml(memory.label)}</span>
           ${item.memory?.breakdown ? `<p><strong>构词拆解</strong>${escapeHtml(item.memory.breakdown)}</p>` : ""}
@@ -1504,11 +1653,78 @@
     drawer.querySelectorAll("[data-master-word]").forEach((button) =>
       button.addEventListener("click", () => toggleMastery(button.dataset.masterWord))
     );
+    linkifyDrawerWords(drawer);
+  }
+
+  function openWordLookup(anchor) {
+    const entry = resolveWordLookup(anchor.dataset.lookupWord);
+    if (entry.item) {
+      openWord(entry.item.word);
+      return;
+    }
+    const display = anchor.dataset.lookupDisplay || entry.queryKey;
+    document.getElementById("wordDrawerContent").innerHTML = `
+      <article class="word-detail lookup-only">
+        <p class="eyebrow">CET-4 FULL-SITE LOOKUP</p>
+        <h2>${escapeHtml(display)}</h2>
+        <p class="lookup-only__meta">
+          ${entry.isForm
+            ? `词形还原：${escapeHtml(entry.queryKey)} → ${escapeHtml(entry.baseKey)}`
+            : "点击正文任意英文单词后显示的词义"}
+        </p>
+        <div class="lookup-only__meaning">${escapeHtml(entry.meaning)}</div>
+      </article>
+    `;
+    const drawer = document.getElementById("wordDrawer");
+    document.getElementById("wordDrawerBackdrop").hidden = false;
+    drawer.classList.add("is-open");
+    drawer.setAttribute("aria-hidden", "false");
+    linkifyDrawerWords(drawer);
+    hideWordMeaningPopover();
+  }
+
+  function showWordMeaningPopover(anchor) {
+    const entry = resolveWordLookup(anchor.dataset.lookupWord);
+    const popover = document.getElementById("wordMeaningPopover");
+    const display = anchor.dataset.lookupDisplay || entry.queryKey;
+    popover.innerHTML = `
+      <strong>${escapeHtml(display)}</strong>
+      <span>${entry.isForm
+        ? `${escapeHtml(entry.queryKey)} → ${escapeHtml(entry.baseKey)}`
+        : "轻量词义"}</span>
+      <p>${escapeHtml(entry.meaning)}</p>
+    `;
+    popover.hidden = false;
+    popover.classList.remove("is-below");
+    const rect = anchor.getBoundingClientRect();
+    const popoverRect = popover.getBoundingClientRect();
+    let left = rect.left + rect.width / 2 - popoverRect.width / 2;
+    left = Math.max(12, Math.min(left, window.innerWidth - popoverRect.width - 12));
+    let top = rect.top - popoverRect.height - 10;
+    if (top < 8) {
+      top = rect.bottom + 10;
+      popover.classList.add("is-below");
+    }
+    const arrowX = Math.max(
+      14,
+      Math.min(rect.left + rect.width / 2 - left - 5, popoverRect.width - 24)
+    );
+    popover.style.left = `${Math.round(left)}px`;
+    popover.style.top = `${Math.round(top)}px`;
+    popover.style.setProperty("--popover-arrow-x", `${Math.round(arrowX)}px`);
+  }
+
+  function hideWordMeaningPopover() {
+    const popover = document.getElementById("wordMeaningPopover");
+    if (!popover) return;
+    popover.hidden = true;
+    popover.innerHTML = "";
   }
 
   function closeWord() {
     const drawer = document.getElementById("wordDrawer");
     const backdrop = document.getElementById("wordDrawerBackdrop");
+    hideWordMeaningPopover();
     drawer.classList.remove("is-open");
     drawer.setAttribute("aria-hidden", "true");
     backdrop.hidden = true;
@@ -1561,8 +1777,8 @@
       return;
     }
     root.innerHTML = `
-      <span><strong>今日阅读</strong> · ${escapeHtml(mock.reading.label)} · ${escapeHtml(mock.reading.reading.title)}</span>
-      <span><strong>今日听力</strong> · ${escapeHtml(mock.listening.label)} · ${escapeHtml(mock.listening.listening.title)}</span>
+      <span><strong>今日阅读</strong> · ${escapeHtml(mock.reading.label)} · ${linkifyEnglishWords(mock.reading.reading.title)}</span>
+      <span><strong>今日听力</strong> · ${escapeHtml(mock.listening.label)} · ${linkifyEnglishWords(mock.listening.listening.title)}</span>
     `;
   }
 
@@ -1615,7 +1831,7 @@
     return `
       <section class="exam-panel" id="${escapeAttr(panelId)}" data-exam-kind="${listening ? "listening" : "reading"}" data-exam-label="${escapeAttr(examLabel)}">
         <div class="exam-panel__head">
-          <h3>${escapeHtml(content.title)}</h3>
+          <h3>${linkifyEnglishWords(content.title)}</h3>
           <span class="exam-type">${escapeHtml(examLabel)} · ${type}</span>
         </div>
         <div data-reader-toolbar></div>
@@ -1642,13 +1858,13 @@
       <div class="exam-question" data-question="${index}">
         ${listening
           ? `<p class="exam-question__cue">第 ${index + 1} 题 · 题干已在听力音频中朗读</p>`
-          : `<p>${index + 1}. ${escapeHtml(question.prompt)}</p>`}
+          : `<p>${index + 1}. ${linkifyEnglishWords(question.prompt)}</p>`}
         ${question.options
           .map(
             (option, optionIndex) => `
               <label class="exam-option">
                 <input type="radio" name="${escapeAttr(panelId)}-${index}" value="${optionIndex}">
-                <span>${String.fromCharCode(65 + optionIndex)}. ${escapeHtml(option)}</span>
+                <span>${String.fromCharCode(65 + optionIndex)}. ${linkifyEnglishWords(option)}</span>
               </label>
             `
           )
@@ -1806,13 +2022,36 @@
         playVocabularyAudio(exampleAudio.dataset.exampleAudio, "example");
       }
     });
+    document.addEventListener("click", (event) => {
+      const anchor = event.target.closest("[data-lookup-word]");
+      if (anchor) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (anchor.closest("#wordDrawer")) {
+          showWordMeaningPopover(anchor);
+        } else {
+          openWordLookup(anchor);
+        }
+        return;
+      }
+      if (!event.target.closest("#wordMeaningPopover")) {
+        hideWordMeaningPopover();
+      }
+    });
     document.getElementById("wordDrawerClose").addEventListener("click", closeWord);
     document.getElementById("wordDrawerBackdrop").addEventListener("click", closeWord);
     document.getElementById("wordDrawer").addEventListener("click", (event) => {
       if (event.target.id === "wordDrawer") closeWord();
     });
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeWord();
+      if (event.key === "Escape") {
+        hideWordMeaningPopover();
+        closeWord();
+      }
+    });
+    window.addEventListener("scroll", hideWordMeaningPopover, {
+      passive: true,
+      capture: true
     });
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) stopSpeaking();

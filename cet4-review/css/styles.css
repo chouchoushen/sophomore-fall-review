@@ -458,6 +458,47 @@ main {
   color: inherit;
 }
 
+.inline-word-link {
+  color: inherit;
+  cursor: pointer;
+  text-decoration: underline dotted rgba(49, 87, 189, .32);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: background-color .12s ease, color .12s ease;
+}
+
+.inline-word-link:hover,
+.inline-word-link:focus-visible {
+  border-radius: 3px;
+  outline: none;
+  background: #e9f1ff;
+  color: #234dbd;
+  text-decoration-color: currentColor;
+}
+
+.inline-word-link--drawer {
+  text-decoration-color: rgba(73, 102, 170, .26);
+}
+
+.word-association {
+  margin: .75rem 0 0;
+  padding: .7rem .8rem;
+  border-left: 3px solid #c59a3d;
+  border-radius: 0 6px 6px 0;
+  background: #fff9e9;
+  color: #4c4536;
+  font-size: .76rem;
+  line-height: 1.7;
+}
+
+.word-association strong {
+  display: block;
+  margin-bottom: .18rem;
+  color: #8a6416;
+  font: 700 .68rem var(--sans);
+  letter-spacing: .08em;
+}
+
 .reader-toolbar {
   display: grid;
   grid-template-columns: auto auto minmax(8rem, 1fr) auto auto;
@@ -1965,6 +2006,77 @@ footer p {
   font-size: 1.4rem;
 }
 
+.word-meaning-popover {
+  position: fixed;
+  z-index: 80;
+  width: min(285px, calc(100vw - 24px));
+  padding: .68rem .76rem;
+  border: 1px solid #ccd8ec;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(24, 43, 72, .24);
+  color: #26374c;
+  font: .74rem/1.58 var(--sans);
+}
+
+.word-meaning-popover::after {
+  content: "";
+  position: absolute;
+  left: var(--popover-arrow-x, 1rem);
+  bottom: -6px;
+  width: 10px;
+  height: 10px;
+  transform: rotate(45deg);
+  border-right: 1px solid #ccd8ec;
+  border-bottom: 1px solid #ccd8ec;
+  background: #fff;
+}
+
+.word-meaning-popover.is-below::after {
+  top: -6px;
+  bottom: auto;
+  border: 1px solid #ccd8ec;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.word-meaning-popover strong {
+  display: block;
+  margin-bottom: .15rem;
+  color: #1d3f78;
+  font: 700 .84rem/1.4 var(--serif);
+}
+
+.word-meaning-popover span {
+  display: block;
+  color: #57687b;
+  font-size: .67rem;
+}
+
+.word-meaning-popover p {
+  margin: .2rem 0 0;
+}
+
+.lookup-only {
+  display: grid;
+  gap: .8rem;
+}
+
+.lookup-only__meta {
+  color: var(--muted);
+  font-size: .74rem;
+}
+
+.lookup-only__meaning {
+  padding: .9rem 1rem;
+  border: 1px solid #d4dff0;
+  border-radius: 8px;
+  background: #f5f8ff;
+  color: #263b5b;
+  font-size: .9rem;
+  line-height: 1.8;
+}
+
 .word-detail h2 {
   margin: 0;
   font: 500 3rem/1.1 var(--serif);
@@ -2041,7 +2153,7 @@ footer p {
   margin: 0;
 }
 
-.word-example span {
+.word-example > span {
   display: block;
   margin-top: .35rem;
   color: var(--muted);
