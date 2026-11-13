@@ -566,6 +566,11 @@ main {
   --card-accent-soft: rgba(141, 118, 181, .11);
 }
 
+.course-card--python {
+  --card-accent: #2d6685;
+  --card-accent-soft: rgba(45, 102, 133, .11);
+}
+
 .course-card--english {
   --card-accent: #3c67e8;
   --card-accent-soft: rgba(60, 103, 232, .1);

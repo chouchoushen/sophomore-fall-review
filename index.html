@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="大二上复习资料总入口：概率论、模拟电子技术、数字电子技术、普通物理学、数学物理方法、英语四级和习概。">
+  <meta name="description" content="大二上复习资料总入口：概率论、线性代数、模拟电子技术、数字电子技术、普通物理学、数学物理方法、Python 3、英语四级和习概。">
   <title>大二上复习资料</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./css/styles.css?v=20261112-linear">
+  <link rel="stylesheet" href="./css/styles.css?v=20261113-python">
 </head>
 <body>
   <a class="skip-link" href="#library">跳到站点列表</a>
@@ -20,7 +20,7 @@
         <span>大二上复习资料</span>
       </a>
       <div class="topbar__links">
-        <a href="#library">八门课程</a>
+        <a href="#library">九门课程</a>
         <a href="#overview">本周总览</a>
       </div>
       <span class="topbar__term">2026 · FALL</span>
@@ -28,10 +28,10 @@
 
     <div class="hero__body">
       <div class="hero__copy">
-        <p class="eyebrow">EIGHT COURSES · ONE REVIEW DESK</p>
+        <p class="eyebrow">NINE COURSES · ONE REVIEW DESK</p>
         <h1>大二上<span>复习资料</span></h1>
         <p class="hero__lead">
-          八门课程独立成站，统一从这里进入。知识卡、公式、自测、每日英语文章和思政专题都保存在同一入口，复习进度也由你掌控。
+          九门课程独立成站，统一从这里进入。知识卡、公式、自测、每日英语文章和思政专题都保存在同一入口，复习进度也由你掌控。
         </p>
         <div class="hero__actions">
           <button class="button button--primary" id="continueButton" type="button">从概率论开始</button>
@@ -78,9 +78,9 @@
     </div>
 
     <div class="hero__stats" aria-label="复习资料统计">
-      <div><strong>8</strong><span>门独立课程站</span></div>
-      <div><strong id="totalCards">5108</strong><span>个知识卡</span></div>
-      <div><strong>112</strong><span>道通关自测</span></div>
+      <div><strong>9</strong><span>门独立课程站</span></div>
+      <div><strong id="totalCards">5171</strong><span>个知识卡</span></div>
+      <div><strong>123</strong><span>道通关自测</span></div>
       <div><strong>174</strong><span>组资料图</span></div>
     </div>
   </header>
@@ -90,7 +90,7 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">COURSE LIBRARY</p>
-          <h2 id="libraryTitle">八门课程，各走各的主线</h2>
+          <h2 id="libraryTitle">九门课程，各走各的主线</h2>
         </div>
         <p>选择一个站点进入。每门课的知识点、自测和原始笔记彼此独立，不会混在一起。</p>
       </div>
@@ -102,9 +102,10 @@
           <button id="clearSearch" type="button" hidden>清除</button>
         </label>
         <div class="filters" role="group" aria-label="课程分类">
-          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 8</button>
+          <button class="is-active" type="button" data-filter="all" aria-pressed="true">全部 9</button>
           <button type="button" data-filter="electronics" aria-pressed="false">电类 2</button>
           <button type="button" data-filter="science" aria-pressed="false">数理 3</button>
+          <button type="button" data-filter="programming" aria-pressed="false">编程 1</button>
           <button type="button" data-filter="statistics" aria-pressed="false">统计 1</button>
           <button type="button" data-filter="language" aria-pressed="false">语言 1</button>
           <button type="button" data-filter="theory" aria-pressed="false">思政 1</button>
@@ -285,6 +286,34 @@
         </a>
 
         <a
+          class="course-card course-card--python"
+          href="./python-review/"
+          data-site="python"
+          data-category="programming"
+          data-search="Python 3 编程 变量 字符串 列表 元组 字典 集合 条件 循环 函数 文件 JSON CSV 异常 模块 面向对象 类 继承 生成器 装饰器 requests 爬虫 Flask 项目"
+        >
+          <div class="course-card__top">
+            <span class="course-icon" aria-hidden="true">Py</span>
+            <span class="course-index">07 / PYTHON</span>
+          </div>
+          <div class="course-card__body">
+            <p class="course-label">PYTHON 3</p>
+            <h3>Python 3</h3>
+            <p>从变量、数据结构和流程控制，到文件处理、面向对象与实战项目。</p>
+          </div>
+          <div class="course-card__meta">
+            <span>12 章</span>
+            <span>63 个知识点</span>
+            <span>50 段代码</span>
+          </div>
+          <div class="course-progress">
+            <div><span>学习进度</span><strong data-progress-label="python">0 / 63</strong></div>
+            <i><span data-progress-bar="python"></span></i>
+          </div>
+          <span class="course-card__enter">进入课程 <b>→</b></span>
+        </a>
+
+        <a
           class="course-card course-card--english"
           href="./cet4-review/"
           data-site="cet4"
@@ -293,7 +322,7 @@
         >
           <div class="course-card__top">
             <span class="course-icon" aria-hidden="true">C4</span>
-            <span class="course-index">07 / ENGLISH</span>
+            <span class="course-index">08 / ENGLISH</span>
           </div>
           <div class="course-card__body">
             <p class="course-label">CET-4 ENGLISH</p>
@@ -321,7 +350,7 @@
         >
           <div class="course-card__top">
             <span class="course-icon" aria-hidden="true">习</span>
-            <span class="course-index">08 / THEORY</span>
+            <span class="course-index">09 / THEORY</span>
           </div>
           <div class="course-card__body">
             <p class="course-label">XI GENERAL INTRODUCTION</p>
@@ -362,8 +391,8 @@
         </article>
         <article class="overview-card">
           <p>MASTERY</p>
-          <h3><strong id="totalMastered">0</strong> / 5108</h3>
-          <span>八个站点合计掌握进度</span>
+          <h3><strong id="totalMastered">0</strong> / 5171</h3>
+          <span>九个站点合计掌握进度</span>
           <div class="overview-bar" aria-hidden="true"><i id="totalMasteryBar"></i></div>
         </article>
         <article class="overview-card">
@@ -378,7 +407,7 @@
         <div>
           <span>01</span>
           <strong>课程彼此独立</strong>
-          <p>八门课使用各自的章节、题型和学习体系，不在一个页面里混杂。</p>
+          <p>九门课使用各自的章节、题型和学习体系，不在一个页面里混杂。</p>
         </div>
         <div>
           <span>02</span>
@@ -397,12 +426,12 @@
   <footer>
     <div>
       <strong>大二上复习资料</strong>
-      <span>八个站点 · 一套入口 · 离线可用</span>
+      <span>九个站点 · 一套入口 · 离线可用</span>
     </div>
     <p>知识卡 · 公式速查 · 通关自测 · 图文例题</p>
   </footer>
 
   <script defer src="./weekly-quiz.js?v=20261104-amplifiers"></script>
-  <script defer src="./js/portal.js?v=20261112-linear"></script>
+  <script defer src="./js/portal.js?v=20261113-python"></script>
 </body>
 </html>

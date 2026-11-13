@@ -45,6 +45,13 @@
       key: "math-physics-methods-review.mastered.v1"
     },
     {
+      id: "python",
+      name: "Python 3",
+      href: "./python-review/",
+      total: 63,
+      key: "python-review.mastered.v1"
+    },
+    {
       id: "cet4",
       name: "英语四级",
       href: "./cet4-review/",
