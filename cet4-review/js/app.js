@@ -4,9 +4,10 @@
   const DATA = window.CET4_DATA;
   const EXAMS = window.CET4_EXAMS || [];
   const AUDIO_TIMINGS = window.CET4_AUDIO_TIMINGS || {};
-  const AUDIO_CACHE_VERSION = "20261112-natural-slow";
+  const AUDIO_CACHE_VERSION = "20261113-natural-examples";
   const EXTRA_VOCABULARY = window.CET4_EXTRA_VOCABULARY || [];
   const WORD_BANK = window.CET4_WORD_BANK || [];
+  const EXAMPLE_OVERRIDES = window.CET4_EXAMPLE_OVERRIDES || {};
   const MEMORY_DATA = window.CET4_MEMORY_DATA || {};
   const WORD_LEXICON = window.CET4_WORD_LEXICON || {};
   if (!DATA) throw new Error("CET-4 content data was not loaded.");
@@ -44,9 +45,9 @@
         similar,
         forms,
         memory,
-        example,
-        exampleZh,
-        exampleKind,
+        example: EXAMPLE_OVERRIDES[word]?.[0] || example,
+        exampleZh: EXAMPLE_OVERRIDES[word]?.[1] || exampleZh,
+        exampleKind: EXAMPLE_OVERRIDES[word]?.[2] || exampleKind,
         collocations,
         isCore: false
       })
@@ -1294,8 +1295,9 @@
   function resolveWordLookup(value) {
     const key = normalizeLookupKey(value);
     for (const candidate of lookupCandidates(key)) {
+      const directItem = wordMap.get(candidate);
       const mappedWord = globalFormToWord.get(candidate);
-      const item = mappedWord ? wordMap.get(mappedWord) : wordMap.get(candidate);
+      const item = directItem || (mappedWord ? wordMap.get(mappedWord) : null);
       if (item) {
         return {
           queryKey: key,
@@ -1329,7 +1331,7 @@
 
   function linkifyEnglishWords(value, extraClass = "") {
     const source = String(value || "");
-    const wordPattern = /\p{L}+(?:['’-]\p{L}+)*/gu;
+    const wordPattern = /[A-Za-z]+(?:['’-][A-Za-z]+)*/g;
     let cursor = 0;
     let html = "";
     for (const match of source.matchAll(wordPattern)) {
@@ -1688,7 +1690,13 @@
     const popover = document.getElementById("wordMeaningPopover");
     const display = anchor.dataset.lookupDisplay || entry.queryKey;
     popover.innerHTML = `
-      <strong>${escapeHtml(display)}</strong>
+      <div class="word-meaning-popover__head">
+        <strong>${escapeHtml(display)}</strong>
+        <button type="button" class="word-meaning-popover__audio"
+          data-popover-audio="${escapeAttr(display)}"
+          data-popover-display="${escapeAttr(display)}"
+          aria-label="朗读 ${escapeAttr(display)}">🔊 朗读</button>
+      </div>
       <span>${entry.isForm
         ? `${escapeHtml(entry.queryKey)} → ${escapeHtml(entry.baseKey)}`
         : "轻量词义"}</span>
@@ -2023,6 +2031,16 @@
       }
     });
     document.addEventListener("click", (event) => {
+      const popoverAudio = event.target.closest("[data-popover-audio]");
+      if (popoverAudio) {
+        event.preventDefault();
+        event.stopPropagation();
+        playLookupPronunciation(
+          popoverAudio.dataset.popoverAudio,
+          popoverAudio.dataset.popoverDisplay
+        );
+        return;
+      }
       const anchor = event.target.closest("[data-lookup-word]");
       if (anchor) {
         event.preventDefault();
@@ -2142,6 +2160,16 @@
       vocabularyAudio = null;
       speak(fallback, fallbackRate);
     });
+  }
+
+  function playLookupPronunciation(wordKey, display) {
+    const exactKey = normalizeLookupKey(display || wordKey);
+    const item = wordMap.get(exactKey);
+    if (item) {
+      playVocabularyAudio(item.word, "word");
+      return;
+    }
+    speak(display || wordKey, 0.82);
   }
 
   function partLabel(pos) {

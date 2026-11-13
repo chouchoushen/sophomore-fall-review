@@ -2041,10 +2041,33 @@ footer p {
 }
 
 .word-meaning-popover strong {
-  display: block;
-  margin-bottom: .15rem;
   color: #1d3f78;
   font: 700 .84rem/1.4 var(--serif);
+}
+
+.word-meaning-popover__head {
+  display: flex;
+  gap: .55rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.word-meaning-popover__audio {
+  flex: 0 0 auto;
+  padding: .22rem .46rem;
+  border: 1px solid #c8d6ec;
+  border-radius: 999px;
+  background: #f4f7ff;
+  color: #3157bc;
+  cursor: pointer;
+  font: 700 .64rem/1.3 var(--sans);
+}
+
+.word-meaning-popover__audio:hover,
+.word-meaning-popover__audio:focus-visible {
+  border-color: #7897d2;
+  outline: none;
+  background: #e9f1ff;
 }
 
 .word-meaning-popover span {
