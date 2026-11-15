@@ -13,7 +13,7 @@
       id: "linear",
       name: "线性代数",
       href: "./linear-algebra-review/",
-      total: 116,
+      total: 145,
       key: "linear-algebra-review.mastered.v1"
     },
     {

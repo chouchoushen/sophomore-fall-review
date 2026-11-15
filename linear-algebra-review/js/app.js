@@ -5,6 +5,41 @@
   if (!COURSE) {
     throw new Error("Linear algebra course data was not loaded.");
   }
+  if (Array.isArray(window.LINEAR_ALGEBRA_CHAPTER_3)) {
+    COURSE.chapters.push(...window.LINEAR_ALGEBRA_CHAPTER_3);
+  }
+
+  const PART_META = {
+    "1": {
+      id: "part-1",
+      number: "第一章",
+      title: "行列式",
+      english: "Determinants",
+      accent: "brick",
+      summary: "从排列与逆序数出发，建立 n 阶行列式的定义、性质、按行（列）展开和克莱姆法则，形成完整的行列式计算与方程组求解工具。",
+      examFocus: ["排列与奇偶性", "行列式定义", "行列式性质", "按行列展开", "拉普拉斯定理", "克莱姆法则"]
+    },
+    "2": {
+      id: "part-2",
+      number: "第二章",
+      title: "矩阵",
+      english: "Matrices",
+      accent: "forest",
+      summary: "从矩阵的概念和特殊类型出发，掌握线性运算、乘法、转置、逆矩阵、伴随矩阵和分块矩阵，建立矩阵方程与结构运算的基本语言。",
+      examFocus: ["矩阵乘法", "转置与对称", "逆矩阵", "伴随矩阵", "矩阵方程", "分块矩阵"]
+    },
+    "3": {
+      id: "part-3",
+      number: "第三章",
+      title: "矩阵的初等变换与线性方程组",
+      english: "Elementary Operations and Linear Systems",
+      accent: "indigo",
+      summary: "用初等变换化简矩阵，借助初等矩阵理解行列操作的代数意义，再以矩阵的秩判断线性方程组的解并完成参数讨论。",
+      examFocus: ["初等变换", "初等矩阵", "矩阵的秩", "有解判定", "齐次方程组", "参数讨论"]
+    }
+  };
+
+  const COURSE_GROUPS = buildCourseGroups();
 
   const TYPE_META = {
     definition: { label: "定义", filter: "定义与概念" },
@@ -17,13 +52,15 @@
 
   const STORAGE_KEYS = {
     mastered: "linear-algebra-review.mastered.v1",
-    openChapter: "linear-algebra-review.open-chapter.v1"
+    openChapter: "linear-algebra-review.open-chapter.v2",
+    openSections: "linear-algebra-review.open-sections.v1"
   };
 
   const state = {
     query: "",
     type: "all",
     mastered: readJson(STORAGE_KEYS.mastered, {}),
+    openSections: new Set(readJson(STORAGE_KEYS.openSections, [])),
     openChapter: null,
     activeChapter: null
   };
@@ -52,7 +89,7 @@
   );
 
   document.getElementById("totalKnowledge").textContent = allCards.length;
-  document.getElementById("totalChapters").textContent = COURSE.chapters.length;
+  document.getElementById("totalChapters").textContent = COURSE_GROUPS.length;
   const totalExamples = document.getElementById("totalExamples");
   const totalDiagrams = document.getElementById("totalDiagrams");
   if (totalExamples) totalExamples.textContent = allExamples.length;
@@ -79,17 +116,25 @@
   });
 
   document.getElementById("expandAll").addEventListener("click", () => {
-    document.querySelectorAll(".chapter").forEach((chapter) =>
-      setChapterOpen(chapter, true)
-    );
+    document.querySelectorAll(".chapter").forEach((chapter) => {
+      setChapterOpen(chapter, true);
+    });
+    document.querySelectorAll(".course-section").forEach((section) => {
+      setSectionOpen(section, true);
+    });
   });
 
   document.getElementById("collapseAll").addEventListener("click", () => {
     document.querySelectorAll(".chapter").forEach((chapter) =>
       setChapterOpen(chapter, false)
     );
+    document.querySelectorAll(".course-section").forEach((section) =>
+      setSectionOpen(section, false, false)
+    );
+    state.openSections.clear();
     state.openChapter = null;
     localStorage.removeItem(STORAGE_KEYS.openChapter);
+    localStorage.removeItem(STORAGE_KEYS.openSections);
   });
 
   document.getElementById("resetProgress").addEventListener("click", () => {
@@ -137,16 +182,16 @@
   });
 
   function buildSidebar() {
-    COURSE.chapters.forEach((chapter) => {
+    COURSE_GROUPS.forEach((group) => {
       const button = document.createElement("button");
       button.className = "chapter-nav__item";
       button.type = "button";
-      button.dataset.chapter = chapter.id;
+      button.dataset.chapter = group.id;
       button.innerHTML =
-        `<span>${chapter.number}</span>` +
-        `<span>${chapter.title}</span>` +
-        `<span>${countChapterCards(chapter)}</span>`;
-      button.addEventListener("click", () => openChapterFromNav(chapter.id));
+        `<span>${group.number}</span>` +
+        `<span>${group.title}</span>` +
+        `<span>${countGroupCards(group)}</span>`;
+      button.addEventListener("click", () => openChapterFromNav(group.id));
       chapterNav.appendChild(button);
     });
   }
@@ -182,14 +227,21 @@
   }
 
   function renderChapters() {
-    chapterRoot.innerHTML = COURSE.chapters
-      .map((chapter) => renderChapter(chapter))
+    chapterRoot.innerHTML = COURSE_GROUPS
+      .map((group) => renderChapter(group))
       .join("");
 
     chapterRoot.querySelectorAll(".chapter-toggle").forEach((button) => {
       button.addEventListener("click", () => {
         const chapter = button.closest(".chapter");
         setChapterOpen(chapter, !chapter.classList.contains("is-open"));
+      });
+    });
+
+    chapterRoot.querySelectorAll(".course-section__toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const section = button.closest(".course-section");
+        setSectionOpen(section, !section.classList.contains("is-open"));
       });
     });
 
@@ -201,32 +253,62 @@
     updateResultCount(allCards.length);
   }
 
-  function renderChapter(chapter) {
-    const total = countChapterCards(chapter);
+  function renderChapter(group) {
+    const total = countGroupCards(group);
     return `
-      <section class="chapter" id="${chapter.id}" data-chapter="${chapter.id}" data-accent="${chapter.accent}">
-        <button class="chapter-toggle" type="button" aria-expanded="false" aria-controls="${chapter.id}-panel">
-          <span class="chapter__number">${chapter.number}</span>
+      <section class="chapter chapter--collection" id="${group.id}" data-chapter="${group.id}" data-accent="${group.accent}">
+        <button class="chapter-toggle" type="button" aria-expanded="false" aria-controls="${group.id}-panel">
+          <span class="chapter__number">${group.number}</span>
           <span class="chapter__heading">
-            <span class="chapter__kicker">${chapter.english}</span>
-            <span class="chapter__title">${chapter.title}</span>
+            <span class="chapter__kicker">${group.english}</span>
+            <span class="chapter__title">${group.title}</span>
             <span class="chapter__meta">
-              <span>${chapter.themes.length} 个主题</span>
+              <span>${group.chapters.length} 个小节</span>
               <span>${total} 个知识点</span>
             </span>
           </span>
           <span class="chapter__side">
-            <span class="chapter__mastery" data-chapter-mastery="${chapter.id}">0 / ${total}</span>
+            <span class="chapter__mastery" data-chapter-mastery="${group.id}">0 / ${total}</span>
             <span class="chevron" aria-hidden="true"></span>
           </span>
         </button>
-        <div class="chapter-panel" id="${chapter.id}-panel" hidden>
+        <div class="chapter-panel" id="${group.id}-panel" hidden>
           <div class="chapter-intro">
             <p>
               <span class="chapter-intro__label">本章主线</span>
-              ${chapter.summary}
+              ${group.summary}
             </p>
             <div class="focus-list" aria-label="重点">
+              ${group.examFocus.map((item) => `<span>${item}</span>`).join("")}
+            </div>
+          </div>
+          <div class="course-section-list">
+            ${group.chapters.map((chapter) => renderSection(chapter)).join("")}
+          </div>
+        </div>
+      </section>
+    `;
+  }
+
+  function renderSection(chapter) {
+    return `
+      <section class="course-section" id="${chapter.id}" data-section="${chapter.id}">
+        <button class="course-section__toggle" type="button" aria-expanded="false" aria-controls="${chapter.id}-panel">
+          <span class="course-section__number">${chapter.number}</span>
+          <span class="course-section__heading">
+            <strong>${chapter.title}</strong>
+            <small>${chapter.english}</small>
+          </span>
+          <span class="course-section__meta">${chapter.themes.length} 个主题 · ${countChapterCards(chapter)} 个知识点</span>
+          <span class="course-section__chevron" aria-hidden="true"></span>
+        </button>
+        <div class="course-section__panel" id="${chapter.id}-panel" hidden>
+          <div class="chapter-intro section-intro">
+            <p>
+              <span class="chapter-intro__label">小节导览</span>
+              ${chapter.summary}
+            </p>
+            <div class="focus-list" aria-label="小节重点">
               ${chapter.examFocus.map((item) => `<span>${item}</span>`).join("")}
             </div>
           </div>
@@ -432,6 +514,29 @@
     updateActiveNav();
   }
 
+  function setSectionOpen(section, open, persist = true) {
+    if (!section) return;
+    section.classList.toggle("is-open", open);
+    const toggle = section.querySelector(".course-section__toggle");
+    const panel = section.querySelector(".course-section__panel");
+    toggle.setAttribute("aria-expanded", String(open));
+    panel.hidden = !open;
+
+    const sectionId = section.dataset.section;
+    if (open) {
+      setChapterOpen(section.closest(".chapter"), true, persist);
+      state.openSections.add(sectionId);
+    } else {
+      state.openSections.delete(sectionId);
+    }
+    if (persist) {
+      localStorage.setItem(
+        STORAGE_KEYS.openSections,
+        JSON.stringify([...state.openSections])
+      );
+    }
+  }
+
   function openChapterFromNav(chapterId) {
     const chapter = document.getElementById(chapterId);
     if (!chapter) return;
@@ -446,16 +551,30 @@
     const saved = localStorage.getItem(STORAGE_KEYS.openChapter);
     const target = hash || saved;
     if (target && document.getElementById(target)) {
-      setChapterOpen(document.getElementById(target), true, false);
+      const targetNode = document.getElementById(target);
+      if (targetNode.classList.contains("course-section")) {
+        setSectionOpen(targetNode, true, false);
+      } else {
+        setChapterOpen(targetNode, true, false);
+      }
     }
+    state.openSections.forEach((sectionId) => {
+      const section = document.getElementById(sectionId);
+      if (section?.classList.contains("course-section")) {
+        setSectionOpen(section, true, false);
+      }
+    });
   }
 
   function handleHash() {
     const id = window.location.hash.replace("#", "");
     if (!id) return;
-    const chapter = document.getElementById(id);
-    if (chapter && chapter.classList.contains("chapter")) {
+    const target = document.getElementById(id);
+    if (target?.classList.contains("chapter")) {
       openChapterFromNav(id);
+    } else if (target?.classList.contains("course-section")) {
+      setSectionOpen(target, true);
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }
 
@@ -482,12 +601,13 @@
     document.getElementById("masteryBar").style.width =
       `${total ? (mastered / total) * 100 : 0}%`;
 
-    COURSE.chapters.forEach((chapter) => {
-      const chapterTotal = countChapterCards(chapter);
-      const chapterMastered = chapter.themes
+    COURSE_GROUPS.forEach((group) => {
+      const chapterTotal = countGroupCards(group);
+      const chapterMastered = group.chapters
+        .flatMap((chapter) => chapter.themes)
         .flatMap((theme) => theme.cards)
         .filter((card) => state.mastered[card.id]).length;
-      const label = document.querySelector(`[data-chapter-mastery="${chapter.id}"]`);
+      const label = document.querySelector(`[data-chapter-mastery="${group.id}"]`);
       if (label) label.textContent = `${chapterMastered} / ${chapterTotal}`;
     });
 
@@ -506,20 +626,28 @@
 
     document.querySelectorAll(".chapter").forEach((chapterNode) => {
       let chapterMatches = 0;
-      chapterNode.querySelectorAll(".theme-block").forEach((themeNode) => {
-        let themeMatches = 0;
-        themeNode.querySelectorAll(".knowledge-card").forEach((card) => {
-          const matchesType = state.type === "all" || card.dataset.type === state.type;
-          const matchesQuery = !state.query || card.dataset.search.includes(state.query);
-          const show = matchesType && matchesQuery;
-          card.hidden = !show;
-          if (show) {
-            visible += 1;
-            chapterMatches += 1;
-            themeMatches += 1;
-          }
+      chapterNode.querySelectorAll(".course-section").forEach((sectionNode) => {
+        let sectionMatches = 0;
+        sectionNode.querySelectorAll(".theme-block").forEach((themeNode) => {
+          let themeMatches = 0;
+          themeNode.querySelectorAll(".knowledge-card").forEach((card) => {
+            const matchesType = state.type === "all" || card.dataset.type === state.type;
+            const matchesQuery = !state.query || card.dataset.search.includes(state.query);
+            const show = matchesType && matchesQuery;
+            card.hidden = !show;
+            if (show) {
+              visible += 1;
+              chapterMatches += 1;
+              sectionMatches += 1;
+              themeMatches += 1;
+            }
+          });
+          themeNode.hidden = themeMatches === 0;
         });
-        themeNode.hidden = themeMatches === 0;
+        sectionNode.hidden = sectionMatches === 0;
+        if ((state.query || state.type !== "all") && sectionMatches > 0) {
+          setSectionOpen(sectionNode, true, false);
+        }
       });
 
       chapterNode.hidden = chapterMatches === 0;
@@ -563,8 +691,36 @@
     });
   }
 
+  function buildCourseGroups() {
+    const groups = new Map();
+    COURSE.chapters.forEach((chapter) => {
+      const partNumber = String(chapter.number).split(".")[0];
+      const meta = PART_META[partNumber] || {
+        id: `part-${partNumber}`,
+        number: `第 ${partNumber} 章`,
+        title: chapter.title,
+        english: chapter.english,
+        accent: chapter.accent,
+        summary: chapter.summary,
+        examFocus: chapter.examFocus
+      };
+      if (!groups.has(partNumber)) {
+        groups.set(partNumber, { ...meta, chapters: [] });
+      }
+      groups.get(partNumber).chapters.push(chapter);
+    });
+    return [...groups.values()];
+  }
+
   function countChapterCards(chapter) {
     return chapter.themes.reduce((sum, theme) => sum + theme.cards.length, 0);
+  }
+
+  function countGroupCards(group) {
+    return group.chapters.reduce(
+      (sum, chapter) => sum + countChapterCards(chapter),
+      0
+    );
   }
 
   function escapeMathSource(value) {
