@@ -66,6 +66,8 @@
   });
 
   const WORD_KEY = "cet4-review.mastered.v1";
+  const MARKED_WORD_KEY = "cet4-review.marked.v1";
+  const MARKED_REVIEW_KEY = "cet4-review.marked-review.v1";
   const DAILY_WORD_HISTORY_KEY = "cet4-review.daily-100-history.v1";
   const DAILY_WORD_COUNT = 100;
   const DAILY_REVIEW_COUNT = 6;
@@ -85,6 +87,11 @@
   let dailyWordHistory = readJson(DAILY_WORD_HISTORY_KEY, {});
   let wordDailyEditions = new Map();
   const mastered = new Set(readJson(WORD_KEY, []));
+  const storedMarkedWords = readJson(MARKED_WORD_KEY, []);
+  const markedWords = new Set(
+    (Array.isArray(storedMarkedWords) ? storedMarkedWords : [])
+      .filter((word) => wordMap.has(word))
+  );
   const MEMORY_META = {
     roots: { label: "词根构词", short: "词根" },
     collocation: { label: "搭配记忆", short: "搭配" },
@@ -162,6 +169,9 @@
   let wordQuery = "";
   let wordPos = "all";
   let wordMemory = "all";
+  let markedGroupMode = "memory";
+  let markedReviewSession = null;
+  let markedReviewCompleted = new Set();
   let activeDay = 0;
   let activeDailyDateKey = null;
   let dailyWordGroupMode = "part";
@@ -181,6 +191,10 @@
   const now = new Date();
   const dayIndex = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
   const dateKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  const storedMarkedReview = readJson(MARKED_REVIEW_KEY, {});
+  if (storedMarkedReview.date === dateKey && Array.isArray(storedMarkedReview.reviewed)) {
+    markedReviewCompleted = new Set(storedMarkedReview.reviewed);
+  }
   document.getElementById("headerDate").textContent = dateKey;
   document.getElementById("vocabularyCount").textContent = DATA.vocabulary.length;
   activeDailyDateKey = dateKey;
@@ -188,6 +202,7 @@
   rebuildWordDailyEditionMap();
 
   renderDailyArticle();
+  renderMarkedWords();
   renderWordList();
   queueMicrotask(renderRootGlossary);
   renderMockLabels();
@@ -779,7 +794,7 @@
               ${group.entries.map(({ item, kind }) => {
                 const memory = MEMORY_META[item.memory?.type || "context"];
                 return `
-                  <div class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}">
+                  <div class="daily-word-item${mastered.has(item.word) ? " is-mastered" : ""}${markedWords.has(item.word) ? " is-bookmarked" : ""}">
                     <button class="daily-word-item__open" type="button"
                       data-daily-word="${escapeAttr(item.word)}"
                       aria-label="查看 ${escapeAttr(item.word)} 的释义和记忆方式">
@@ -794,9 +809,12 @@
                       </span>
                       ${renderDailyWordHints(item)}
                     </button>
-                    <button class="daily-word-item__audio" type="button"
-                      data-word-audio="${escapeAttr(item.word)}"
-                      aria-label="朗读单词 ${escapeAttr(item.word)}" title="朗读单词">🔊</button>
+                    <div class="daily-word-item__actions">
+                      ${renderBookmarkIcon(item)}
+                      <button class="daily-word-item__audio" type="button"
+                        data-word-audio="${escapeAttr(item.word)}"
+                        aria-label="朗读单词 ${escapeAttr(item.word)}" title="朗读单词">🔊</button>
+                    </div>
                   </div>
                 `;
               }).join("")}
@@ -1708,7 +1726,7 @@
     const memoryType = item.memory?.type || "context";
     const memory = MEMORY_META[memoryType];
     return `
-      <article class="word-card" id="word-${escapeAttr(item.word)}" data-card="${escapeAttr(item.word)}" data-memory="${escapeAttr(memoryType)}">
+      <article class="word-card${markedWords.has(item.word) ? " is-bookmarked" : ""}" id="word-${escapeAttr(item.word)}" data-card="${escapeAttr(item.word)}" data-memory="${escapeAttr(memoryType)}">
         <div class="word-card__main">
           <div>
             <div class="word-card__headline">
@@ -1733,9 +1751,12 @@
               </div>
             ` : ""}
           </div>
-          <button class="master-word${mastered.has(item.word) ? " is-mastered" : ""}" type="button" data-master-word="${escapeAttr(item.word)}">
-            ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
-          </button>
+          <div class="word-card__marks">
+            ${renderBookmarkIcon(item)}
+            <button class="master-word${mastered.has(item.word) ? " is-mastered" : ""}" type="button" data-master-word="${escapeAttr(item.word)}">
+              ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
+            </button>
+          </div>
         </div>
         ${item.memory?.note ? `<p class="word-card__memory">${escapeHtml(item.memory.note)}</p>` : ""}
         <div class="word-card__actions">
@@ -1745,6 +1766,314 @@
         </div>
       </article>
     `;
+  }
+
+  function renderBookmarkIcon(item) {
+    const active = markedWords.has(item.word);
+    const action = active ? "取消每日复习标记" : "加入每日复习";
+    return `
+      <button class="bookmark-word${active ? " is-bookmarked" : ""}" type="button"
+        data-bookmark-word="${escapeAttr(item.word)}" aria-pressed="${active}"
+        aria-label="${action}：${escapeAttr(item.word)}" title="${action}">
+        <span class="bookmark-word__icon" aria-hidden="true">${active ? "★" : "☆"}</span>
+      </button>
+    `;
+  }
+
+  function renderBookmarkTextButton(item) {
+    const active = markedWords.has(item.word);
+    const action = active ? "取消每日复习标记" : "加入每日复习";
+    return `
+      <button class="reading-button bookmark-word bookmark-word--text${active ? " is-bookmarked" : ""}" type="button"
+        data-bookmark-word="${escapeAttr(item.word)}" aria-pressed="${active}"
+        aria-label="${action}：${escapeAttr(item.word)}" title="${action}">
+        <span class="bookmark-word__icon" aria-hidden="true">${active ? "★" : "☆"}</span>
+        <span class="bookmark-word__text">${active ? "已加入每日复习" : "加入每日复习"}</span>
+      </button>
+    `;
+  }
+
+  function getMarkedItems() {
+    return [...markedWords].map((word) => wordMap.get(word)).filter(Boolean);
+  }
+
+  function markedGroupKey(item, mode) {
+    if (mode === "part") return item.part?.[0] || "other";
+    if (mode === "topic") return WORD_TOPICS[item.word] || item.topic || "其他主题";
+    return item.memory?.type || "context";
+  }
+
+  function getMarkedGroups(items) {
+    const groups = new Map();
+    items.forEach((item) => {
+      const key = markedGroupKey(item, markedGroupMode);
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
+    });
+
+    let order;
+    let labels;
+    if (markedGroupMode === "part") {
+      order = [...POS_META.map((part) => part.id), "other"];
+      labels = new Map(POS_META.map((part) => [part.id, part.label]));
+      labels.set("other", "其他词性");
+    } else if (markedGroupMode === "topic") {
+      order = [
+        ...TOPIC_ORDER,
+        ...[...groups.keys()].filter((key) => !TOPIC_ORDER.includes(key))
+      ];
+      labels = new Map();
+    } else {
+      order = ["roots", "collocation", "context"];
+      labels = new Map(Object.entries(MEMORY_META).map(([key, meta]) => [key, meta.label]));
+    }
+
+    return order
+      .filter((key) => groups.has(key))
+      .map((key) => ({
+        key,
+        label: labels.get(key) || key,
+        items: groups.get(key)
+      }));
+  }
+
+  function renderMarkedWords() {
+    const root = document.getElementById("markedWordGroups");
+    const empty = document.getElementById("markedWordEmpty");
+    const start = document.getElementById("startMarkedReview");
+    const clear = document.querySelector("[data-clear-marked]");
+    if (!root || !empty || !start || !clear) return;
+
+    const items = getMarkedItems();
+    const reviewedCount = items.filter((item) =>
+      markedReviewCompleted.has(item.word)
+    ).length;
+    const groups = getMarkedGroups(items);
+    document.getElementById("markedWordCount").textContent = items.length;
+    document.getElementById("markedWordReviewedCount").textContent = reviewedCount;
+    start.disabled = items.length === 0;
+    start.textContent = items.length
+      ? reviewedCount >= items.length
+        ? "再次浏览今日词"
+        : "开始今日复习"
+      : "暂无标记词";
+    clear.disabled = items.length === 0;
+    empty.hidden = items.length > 0;
+
+    root.innerHTML = groups.map((group) => `
+      <section class="marked-word-group">
+        <div class="marked-word-group__head">
+          <h4>${escapeHtml(group.label)}</h4>
+          <span>${group.items.length} 词</span>
+        </div>
+        <div class="marked-word-grid">
+          ${group.items.map((item) => {
+            const memoryType = item.memory?.type || "context";
+            const memory = MEMORY_META[memoryType];
+            const topic = WORD_TOPICS[item.word] || item.topic || "综合表达";
+            const reviewed = markedReviewCompleted.has(item.word);
+            return `
+              <article class="marked-word-item${reviewed ? " is-reviewed" : ""}">
+                <button class="marked-word-item__open" type="button"
+                  data-open-word="${escapeAttr(item.word)}"
+                  aria-label="查看 ${escapeAttr(item.word)} 的释义">
+                  <span class="marked-word-item__title">
+                    <strong>${escapeHtml(item.word)}</strong>
+                    ${item.ipa ? `<small>${escapeHtml(item.ipa)}</small>` : ""}
+                    ${reviewed ? '<b class="marked-word-item__done">今日 ✓</b>' : ""}
+                  </span>
+                  <span class="marked-word-item__meaning">${item.part.map(escapeHtml).join(" ")} ${escapeHtml(item.meaning)}</span>
+                  <span class="marked-word-item__tags">
+                    <i>${escapeHtml(topic)}</i>
+                    <i class="memory-badge memory-badge--${escapeAttr(memoryType)}">${escapeHtml(memory.short)}</i>
+                  </span>
+                </button>
+                ${renderBookmarkIcon(item)}
+              </article>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    `).join("");
+  }
+
+  function persistMarkedReview() {
+    localStorage.setItem(
+      MARKED_REVIEW_KEY,
+      JSON.stringify({
+        date: dateKey,
+        reviewed: [...markedReviewCompleted]
+      })
+    );
+  }
+
+  function orderedMarkedItems() {
+    return getMarkedItems().sort((left, right) => {
+      const leftOrder = hashText(`${dateKey}:${left.word}`);
+      const rightOrder = hashText(`${dateKey}:${right.word}`);
+      return leftOrder - rightOrder || left.word.localeCompare(right.word);
+    });
+  }
+
+  function openMarkedReview(startIndex = 0) {
+    const words = orderedMarkedItems();
+    if (!words.length) return;
+    const unreviewedIndex = words.findIndex(
+      (item) => !markedReviewCompleted.has(item.word)
+    );
+    markedReviewSession = {
+      words,
+      index: Math.max(0, unreviewedIndex >= 0 ? unreviewedIndex : startIndex),
+      revealed: false
+    };
+    renderMarkedReview();
+    const overlay = document.getElementById("markedReviewOverlay");
+    overlay.hidden = false;
+    document.body.classList.add("is-marked-review-open");
+    document.getElementById("markedReviewClose").focus();
+  }
+
+  function closeMarkedReview() {
+    const overlay = document.getElementById("markedReviewOverlay");
+    if (!overlay) return;
+    overlay.hidden = true;
+    document.body.classList.remove("is-marked-review-open");
+    markedReviewSession = null;
+  }
+
+  function renderMarkedReview() {
+    const body = document.getElementById("markedReviewBody");
+    if (!body || !markedReviewSession) return;
+    const session = markedReviewSession;
+    session.words = session.words.filter((item) => markedWords.has(item.word));
+    if (!session.words.length) {
+      closeMarkedReview();
+      renderMarkedWords();
+      return;
+    }
+    session.index = Math.min(session.index, session.words.length - 1);
+    const item = session.words[session.index];
+    const memoryType = item.memory?.type || "context";
+    const memory = MEMORY_META[memoryType];
+    const topic = WORD_TOPICS[item.word] || item.topic || "综合表达";
+    const reviewedCount = session.words.filter((word) =>
+      markedReviewCompleted.has(word.word)
+    ).length;
+    const allReviewed = reviewedCount === session.words.length;
+    const currentReviewed = markedReviewCompleted.has(item.word);
+
+    body.innerHTML = `
+      <header class="marked-review-dialog__head">
+        <div>
+          <p class="eyebrow">DAILY REVIEW · ${escapeHtml(dateKey)}</p>
+          <h2 id="markedReviewTitle">今日标记词复习</h2>
+        </div>
+        <span class="marked-review-dialog__counter">${reviewedCount} / ${session.words.length}</span>
+      </header>
+      <div class="marked-review-progress" aria-label="今日复习进度">
+        <span style="width:${session.words.length ? (reviewedCount / session.words.length) * 100 : 0}%"></span>
+      </div>
+      <article class="marked-review-card${session.revealed ? " is-revealed" : ""}">
+        <div class="marked-review-card__top">
+          <span class="marked-review-card__position">${session.index + 1} / ${session.words.length}</span>
+          <span class="marked-review-card__state">${allReviewed ? "今日已完成" : currentReviewed ? "本词已复习" : "先回忆，再查看释义"}</span>
+        </div>
+        <button class="marked-review-card__audio" type="button"
+          data-marked-review-audio="${escapeAttr(item.word)}"
+          aria-label="朗读 ${escapeAttr(item.word)}">🔊</button>
+        <h3>${escapeHtml(item.word)}</h3>
+        <p class="marked-review-card__meta">${item.ipa ? `${escapeHtml(item.ipa)} · ` : ""}${item.part.map(escapeHtml).join(" ")}</p>
+        <div class="marked-review-card__tags">
+          <span>${escapeHtml(topic)}</span>
+          <span class="memory-badge memory-badge--${escapeAttr(memoryType)}">${escapeHtml(memory.label)}</span>
+        </div>
+        <div class="marked-review-card__answer" ${session.revealed ? "" : "hidden"}>
+          <p class="marked-review-card__meaning">${escapeHtml(item.meaning)}</p>
+          ${item.example ? `<p class="marked-review-card__example">${escapeHtml(item.example)}</p>` : ""}
+          ${item.memory?.note ? `<p class="marked-review-card__note">${escapeHtml(item.memory.note)}</p>` : ""}
+        </div>
+        ${session.revealed ? "" : `
+          <button class="marked-review-card__reveal" type="button" data-marked-review-reveal>
+            显示释义与例句
+          </button>
+        `}
+      </article>
+      <div class="marked-review-dialog__actions">
+        <button type="button" data-marked-review-nav="-1">← 上一词</button>
+        <button class="is-primary${currentReviewed ? " is-complete" : ""}" type="button"
+          data-marked-review-complete${currentReviewed ? " disabled" : ""}>
+          ${currentReviewed ? "今日已复习 ✓" : "已复习，下一词"}
+        </button>
+        <button type="button" data-marked-review-nav="1">下一词 →</button>
+      </div>
+      <div class="marked-review-dialog__secondary">
+        <button type="button" data-marked-review-detail="${escapeAttr(item.word)}">查看完整词卡</button>
+        ${renderBookmarkTextButton(item)}
+        ${allReviewed ? '<button type="button" data-marked-review-restart>从第一词再看一遍</button>' : ""}
+      </div>
+    `;
+  }
+
+  function completeCurrentMarkedWord() {
+    if (!markedReviewSession) return;
+    const current = markedReviewSession.words[markedReviewSession.index];
+    if (!current) return;
+    markedReviewCompleted.add(current.word);
+    persistMarkedReview();
+    const nextUnreviewed = markedReviewSession.words.findIndex(
+      (item, index) =>
+        index !== markedReviewSession.index &&
+        !markedReviewCompleted.has(item.word)
+    );
+    if (nextUnreviewed >= 0) markedReviewSession.index = nextUnreviewed;
+    markedReviewSession.revealed = false;
+    renderMarkedReview();
+    renderMarkedWords();
+  }
+
+  function toggleBookmark(word) {
+    if (!wordMap.has(word)) return;
+    if (markedWords.has(word)) {
+      markedWords.delete(word);
+      markedReviewCompleted.delete(word);
+    } else {
+      markedWords.add(word);
+    }
+    localStorage.setItem(MARKED_WORD_KEY, JSON.stringify([...markedWords]));
+    persistMarkedReview();
+
+    document.querySelectorAll("[data-bookmark-word]").forEach((button) => {
+      if (button.dataset.bookmarkWord !== word) return;
+      const active = markedWords.has(word);
+      const action = active ? "取消每日复习标记" : "加入每日复习";
+      button.classList.toggle("is-bookmarked", active);
+      button.setAttribute("aria-pressed", String(active));
+      button.setAttribute("aria-label", `${action}：${word}`);
+      button.title = action;
+      const icon = button.querySelector(".bookmark-word__icon");
+      const text = button.querySelector(".bookmark-word__text");
+      if (icon) icon.textContent = active ? "★" : "☆";
+      if (text) text.textContent = active ? "已加入每日复习" : "加入每日复习";
+    });
+    document.querySelectorAll(`.word-card[data-card]`).forEach((card) => {
+      if (card.dataset.card === word) {
+        card.classList.toggle("is-bookmarked", markedWords.has(word));
+      }
+    });
+    document.querySelectorAll(".daily-word-item").forEach((card) => {
+      const opener = card.querySelector("[data-daily-word]");
+      if (opener?.dataset.dailyWord === word) {
+        card.classList.toggle("is-bookmarked", markedWords.has(word));
+      }
+    });
+
+    if (markedReviewSession) {
+      markedReviewSession.words = markedReviewSession.words.filter((item) =>
+        markedWords.has(item.word)
+      );
+      renderMarkedReview();
+    }
+    renderMarkedWords();
   }
 
   function getWordDays() {
@@ -1890,6 +2219,7 @@
           <button class="reading-button" type="button" data-master-word="${escapeAttr(item.word)}">
             ${mastered.has(item.word) ? "已掌握" : "标记掌握"}
           </button>
+          ${renderBookmarkTextButton(item)}
         </div>
       </article>
     `;
@@ -1910,6 +2240,9 @@
     );
     drawer.querySelectorAll("[data-master-word]").forEach((button) =>
       button.addEventListener("click", () => toggleMastery(button.dataset.masterWord))
+    );
+    drawer.querySelectorAll("[data-bookmark-word]").forEach((button) =>
+      button.addEventListener("click", () => toggleBookmark(button.dataset.bookmarkWord))
     );
     linkifyDrawerWords(drawer);
   }
@@ -2253,9 +2586,51 @@
       });
       renderWordList();
     });
+    document.getElementById("markedWordReview").addEventListener("click", (event) => {
+      const modeButton = event.target.closest("[data-marked-group-mode]");
+      if (modeButton) {
+        markedGroupMode = modeButton.dataset.markedGroupMode;
+        document.querySelectorAll("[data-marked-group-mode]").forEach((button) => {
+          const active = button === modeButton;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+        renderMarkedWords();
+        return;
+      }
+      if (event.target.closest("[data-start-marked-review]")) {
+        openMarkedReview();
+        return;
+      }
+      if (event.target.closest("[data-clear-marked]")) {
+        if (
+          markedWords.size &&
+          window.confirm("确定清空所有每日复习标记吗？此操作无法撤销。")
+        ) {
+          markedWords.clear();
+          markedReviewCompleted.clear();
+          localStorage.setItem(MARKED_WORD_KEY, "[]");
+          persistMarkedReview();
+          renderMarkedWords();
+        }
+        return;
+      }
+      const bookmark = event.target.closest("[data-bookmark-word]");
+      if (bookmark) {
+        toggleBookmark(bookmark.dataset.bookmarkWord);
+        return;
+      }
+      const open = event.target.closest("[data-open-word]");
+      if (open) openWord(open.dataset.openWord);
+    });
     document.getElementById("dailyVocabReview").addEventListener("click", (event) => {
       if (event.target.closest("[data-open-spelling]")) {
         openSpellingPractice();
+        return;
+      }
+      const bookmark = event.target.closest("[data-bookmark-word]");
+      if (bookmark) {
+        toggleBookmark(bookmark.dataset.bookmarkWord);
         return;
       }
       const audioButton = event.target.closest("[data-word-audio]");
@@ -2281,10 +2656,12 @@
     document.getElementById("wordList").addEventListener("click", (event) => {
       const open = event.target.closest("[data-open-word]");
       const master = event.target.closest("[data-master-word]");
+      const bookmark = event.target.closest("[data-bookmark-word]");
       const wordAudio = event.target.closest("[data-word-audio]");
       const exampleAudio = event.target.closest("[data-example-audio]");
       if (open) openWord(open.dataset.openWord);
       if (master) toggleMastery(master.dataset.masterWord);
+      if (bookmark) toggleBookmark(bookmark.dataset.bookmarkWord);
       if (wordAudio) playVocabularyAudio(wordAudio.dataset.wordAudio, "word");
       if (exampleAudio) {
         playVocabularyAudio(exampleAudio.dataset.exampleAudio, "example");
@@ -2318,6 +2695,54 @@
     });
     document.getElementById("wordDrawerClose").addEventListener("click", closeWord);
     document.getElementById("wordDrawerBackdrop").addEventListener("click", closeWord);
+    document.getElementById("markedReviewClose").addEventListener("click", closeMarkedReview);
+    document.getElementById("markedReviewOverlay").addEventListener("click", (event) => {
+      if (event.target.id === "markedReviewOverlay") closeMarkedReview();
+    });
+    document.getElementById("markedReviewBody").addEventListener("click", (event) => {
+      if (!markedReviewSession) return;
+      if (event.target.closest("[data-marked-review-reveal]")) {
+        markedReviewSession.revealed = true;
+        renderMarkedReview();
+        return;
+      }
+      const nav = event.target.closest("[data-marked-review-nav]");
+      if (nav) {
+        const direction = Number(nav.dataset.markedReviewNav);
+        const length = markedReviewSession.words.length;
+        markedReviewSession.index =
+          (markedReviewSession.index + direction + length) % length;
+        markedReviewSession.revealed = false;
+        renderMarkedReview();
+        return;
+      }
+      if (event.target.closest("[data-marked-review-complete]")) {
+        completeCurrentMarkedWord();
+        return;
+      }
+      const audio = event.target.closest("[data-marked-review-audio]");
+      if (audio) {
+        playVocabularyAudio(audio.dataset.markedReviewAudio, "word");
+        return;
+      }
+      const bookmark = event.target.closest("[data-bookmark-word]");
+      if (bookmark) {
+        toggleBookmark(bookmark.dataset.bookmarkWord);
+        return;
+      }
+      const detail = event.target.closest("[data-marked-review-detail]");
+      if (detail) {
+        const word = detail.dataset.markedReviewDetail;
+        closeMarkedReview();
+        openWord(word);
+        return;
+      }
+      if (event.target.closest("[data-marked-review-restart]")) {
+        markedReviewSession.index = 0;
+        markedReviewSession.revealed = false;
+        renderMarkedReview();
+      }
+    });
     document.getElementById("wordDrawer").addEventListener("click", (event) => {
       if (event.target.id === "wordDrawer") closeWord();
     });
@@ -2325,6 +2750,7 @@
       if (event.key === "Escape") {
         hideWordMeaningPopover();
         closeWord();
+        closeMarkedReview();
       }
     });
     window.addEventListener("scroll", hideWordMeaningPopover, {

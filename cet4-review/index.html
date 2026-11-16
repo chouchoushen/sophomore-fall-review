@@ -127,6 +127,35 @@
         <div id="rootGlossaryContent"></div>
       </details>
 
+      <section class="marked-word-review" id="markedWordReview" aria-labelledby="markedWordReviewTitle">
+        <div class="marked-word-review__head">
+          <div>
+            <p class="eyebrow">MY DAILY WORD LIST</p>
+            <h3 id="markedWordReviewTitle">我的标记 · 每日复习</h3>
+            <p>在词卡或单词详情中点击 ☆，单词会保存在本机浏览器；每天按下面的属性分组复习。</p>
+          </div>
+          <div class="marked-word-review__stats" aria-live="polite">
+            <span><strong id="markedWordCount">0</strong>已标记</span>
+            <span><strong id="markedWordReviewedCount">0</strong>今日已复习</span>
+          </div>
+          <button class="marked-word-review__start" id="startMarkedReview" type="button" data-start-marked-review>
+            开始今日复习
+          </button>
+        </div>
+        <div class="marked-word-review__tools">
+          <div class="filters marked-word-group-filters" role="group" aria-label="标记单词分类方式">
+            <button class="is-active" type="button" data-marked-group-mode="memory" aria-pressed="true">按记忆法</button>
+            <button type="button" data-marked-group-mode="part" aria-pressed="false">按词性</button>
+            <button type="button" data-marked-group-mode="topic" aria-pressed="false">按主题</button>
+          </div>
+          <button class="marked-word-review__clear" type="button" data-clear-marked>清空标记</button>
+        </div>
+        <div class="marked-word-groups" id="markedWordGroups"></div>
+        <p class="marked-word-review__empty" id="markedWordEmpty">
+          还没有标记单词。在下方任意词卡右上角点击 ☆，它就会出现在这里。
+        </p>
+      </section>
+
       <section class="daily-word-review" id="dailyVocabReview" aria-labelledby="dailyVocabTitle"></section>
       <div class="word-book__overview" id="wordBookSummary"></div>
       <div class="daily-editions" id="dailyEditions"></div>
@@ -192,6 +221,12 @@
     <div id="wordDrawerContent"></div>
   </aside>
   <div class="word-meaning-popover" id="wordMeaningPopover" role="status" aria-live="polite" hidden></div>
+  <div class="marked-review-overlay" id="markedReviewOverlay" hidden>
+    <section class="marked-review-dialog" role="dialog" aria-modal="true" aria-labelledby="markedReviewTitle">
+      <button class="marked-review-dialog__close" id="markedReviewClose" type="button" aria-label="关闭今日复习">×</button>
+      <div id="markedReviewBody"></div>
+    </section>
+  </div>
 
   <script defer src="./js/content-data.js?v=20261103-cet4"></script>
   <script defer src="./js/extra-vocabulary.js?v=20261106-daily-100"></script>
@@ -204,7 +239,7 @@
   <script defer src="./js/exam-difficulty-data.js?v=20261111-no-speaker-autoplay"></script>
   <script defer src="./js/audio-timings.js?v=20261112-natural-slow"></script>
   <script defer src="./js/lexicon-data.js?v=20261113-wordlookup"></script>
-  <script defer src="./js/app.js?v=20261113-spelling"></script>
+  <script defer src="./js/app.js?v=20261116-marked-review"></script>
   <script defer src="../portal-back.js?v=20261106"></script>
 </body>
 </html>
