@@ -778,7 +778,11 @@ main {
 .marked-word-groups {
   display: grid;
   gap: .75rem;
+  max-height: 38rem;
   margin-top: .8rem;
+  padding-right: .25rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .marked-word-group {
