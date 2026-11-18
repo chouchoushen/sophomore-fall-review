@@ -841,11 +841,11 @@ f(z)=(z-z_0)^{n-m}\frac{\phi_1(z)}{\psi_1(z)}`
     {
       id: "pde",
       number: "04",
-      title: "数学物理方程与定解条件",
-      english: "PDEs & Well-Posed Problems",
+      title: "数学物理方程、定解问题与行波法",
+      english: "PDEs, Conditions & Traveling Waves",
       accent: "rose",
-      summary: "先由物理守恒或运动规律建立波动、热传导和静电场方程，再用初始条件与边界条件确定唯一物理过程。",
-      examFocus: ["三类典型方程", "初始条件数量", "三类边界条件", "定解问题的完整表述"],
+      summary: "先由物理规律建立三类方程，再把物理描述翻译成定解问题；对无界弦，用行波法把扰动看成向左、向右传播的两列波。",
+      examFocus: ["三类典型方程", "初始与边界条件", "定解问题类型", "达朗贝尔公式", "强迫振动叠加"],
       themes: [
         {
           id: "pde-models",
@@ -1153,6 +1153,166 @@ u(x,0)=\varphi(x), & 0\le x\le l.
                 "给泊松方程硬加时间初始条件。",
                 "在区间两端漏写边界条件，或把绝热误写成温度为零。",
                 "边界条件和初始条件在角落处相互矛盾，例如固定弦端却有非零初始位移。"
+              ]
+            }
+          ]
+        },
+        {
+          id: "traveling-wave",
+          title: "行波法与达朗贝尔公式",
+          summary: "无界弦没有边界，只用两个初始条件；把波动方程变成两个方向传播的波形，再用初值确定它们。",
+          cards: [
+            {
+              id: "unbounded-string-problem",
+              type: "definition",
+              title: "无界弦：没有端点，只需要初始条件",
+              body: [
+                "当弦很长，而观察时间还不够让端点影响传过来时，可以近似看成 $ -\\infty<x<\\infty$。",
+                "没有端点就没有边界条件，但波动方程对时间求了二阶导数，所以仍要初始形状和初始速度两个条件。"
+              ],
+              formula: String.raw`\begin{cases}
+u_{tt}=a^2u_{xx}, & -\infty<x<\infty,\ t>0,\\
+u(x,0)=\varphi(x),\\
+u_t(x,0)=\psi(x).
+\end{cases}`
+            },
+            {
+              id: "wave-factorization",
+              type: "formula",
+              title: "因式分解：二阶导数可以拆成两次一阶操作",
+              body: [
+                "把 $\\partial_t$ 看成“对时间求一次导”，把 $\\partial_x$ 看成“对位置求一次导”，它们并不是普通数字，而是作用在函数上的操作。",
+                "像代数中的 $A^2-B^2=(A-B)(A+B)$ 一样，波动算子也能拆成两个一阶算子。",
+                "展开时会出现混合导数 $u_{tx}$ 和 $u_{xt}$；对足够光滑的函数两者相等，所以中间两项抵消，只剩 $u_{tt}-a^2u_{xx}$。"
+              ],
+              formula: String.raw`u_{tt}-a^2u_{xx}
+=(\partial_t-a\partial_x)(\partial_t+a\partial_x)u`
+            },
+            {
+              id: "wave-characteristics",
+              type: "formula",
+              title: "换坐标：把偏微分方程化成 $u_{\\xi\\eta}=0$",
+              body: [
+                "为了把两个一阶算子分开，引入 $\\xi=x+at$ 和 $\\eta=x-at$。它们分别对应对着左、右传播的组合坐标。",
+                "由链式法则，$x$ 增加会同时增加 $\\xi$ 和 $\\eta$；时间增加会让 $\\xi$ 增加 $a$、$\\eta$ 减少 $a$。",
+                "把新的导数代回后，原波动算子变成 $-4a^2\\partial_\\xi\\partial_\\eta$。方程等于零，约去常数，就只剩 $u_{\\xi\\eta}=0$。"
+              ],
+              formula: String.raw`\partial_x=\partial_\xi+\partial_\eta,
+\qquad
+\partial_t=a\partial_\xi-a\partial_\eta,
+\qquad
+u_{\xi\eta}=0`
+            },
+            {
+              id: "two-traveling-waves",
+              type: "formula",
+              title: "两个波：一个向左，一个向右",
+              body: [
+                "$u_{\\xi\\eta}=0$ 表示 $u_\\xi$ 不随 $\\eta$ 改变；先对 $\\eta$ 积分，再对 $\\xi$ 积分，就得到两个任意函数之和。",
+                "$F(x+at)$ 保持 $x+at$ 不变时满足 $dx/dt=-a$，所以向左传播；$G(x-at)$ 保持 $x-at$ 不变时满足 $dx/dt=a$，所以向右传播。",
+                "行波法的核心图像就是把任意初始扰动拆成左右两列波。"
+              ],
+              formula: String.raw`u(x,t)=F(x+at)+G(x-at)`
+            },
+            {
+              id: "dalembert-formula",
+              type: "formula",
+              title: "达朗贝尔公式：初形状加初速度积分",
+              body: [
+                "用 $u(x,0)=\\varphi(x)$ 和 $u_t(x,0)=\\psi(x)$ 确定两个任意函数，就得到达朗贝尔公式。",
+                "第一项表示初始形状被平均分成两半，分别向左右传播；第二项表示初始速度对区间 $[x-at,x+at]$ 内各点的累积影响。",
+                "这是无界弦公式，不能直接拿去解两端固定的有限长弦。"
+              ],
+              formula: String.raw`u(x,t)=
+\frac12\left[\varphi(x+at)+\varphi(x-at)\right]
++\frac{1}{2a}\int_{x-at}^{x+at}\psi(\xi)\,d\xi`
+            },
+            {
+              id: "dalembert-example",
+              type: "example",
+              title: "例题：$\\varphi=\\cos x$，$\\psi=2$",
+              body: [
+                "先找波速 $a$、初始形状 $\\varphi$ 和初始速度 $\\psi$，再直接代入达朗贝尔公式。",
+                "两个余弦相加可用和差公式化为 $2\\cos x\\cos at$；常数初速度的积分区间长度是 $2at$，所以积分项化为 $2t$。",
+                "最终结果同时保留了随时间振荡的余弦项和匀速增长的线性项。"
+              ],
+              example: {
+                title: "逐步代入",
+                body: [
+                  "代入初值：$u=\\frac12[\\cos(x+at)+\\cos(x-at)]+\\frac1{2a}\\int_{x-at}^{x+at}2\\,d\\xi$。",
+                  "使用 $\\cos(A+B)+\\cos(A-B)=2\\cos A\\cos B$。",
+                  "积分得到 $2t$。"
+                ],
+                formula: String.raw`u(x,t)=\cos x\cos at+2t`
+              }
+            }
+          ]
+        },
+        {
+          id: "forced-and-workflow",
+          title: "强迫振动与答题模板",
+          summary: "持续外力可以看成许多瞬时冲量的叠加；一般解等于初值自由振动加上外力强迫振动。",
+          cards: [
+            {
+              id: "impulse-principle",
+              type: "definition",
+              title: "冲量原理：不停施力就是不停补速度",
+              body: [
+                "外力 $f(x,t)$ 持续作用，可以切成许多很短的时段。每个时段内，$f\\Delta\\tau$ 像一次短促冲量，让弦获得一点速度。",
+                "每个冲量产生一个自由传播的小波；把从时刻 $0$ 到 $t$ 的所有小波叠加，就是对时间的双重积分。",
+                "所以强迫振动不是“另造一套波动规律”，而是让自由传播的波不断被外力补充。"
+              ]
+            },
+            {
+              id: "forced-solution",
+              type: "formula",
+              title: "纯强迫振动：零初值下的外力响应",
+              body: [
+                "先假设一开始没有位移、没有速度，只研究持续外力造成的运动。",
+                "内外两层积分分别表示：对所有作用时刻 $\\tau$ 求和，以及对每个冲量影响到的空间区间积分。"
+              ],
+              formula: String.raw`u_{II}(x,t)=
+\frac{1}{2a}\int_0^t
+\int_{x-a(t-\tau)}^{x+a(t-\tau)}
+f(\xi,\tau)\,d\xi\,d\tau`
+            },
+            {
+              id: "general-forced-solution",
+              type: "formula",
+              title: "一般解：初值响应加外力响应",
+              body: [
+                "波动方程是线性的，可以把有初值、无外力的自由振动，与零初值、有外力的强迫振动直接相加。",
+                "先分别求出两部分，再叠加；不要把所有初始条件和外力混在一个积分里。"
+              ],
+              formula: String.raw`u=u_I+u_{II},
+\qquad
+u_I=\text{达朗贝尔自由振动},
+\qquad
+u_{II}=\text{冲量叠加}`
+            },
+            {
+              id: "wave-answer-template",
+              type: "judgment",
+              title: "无界弦题目五步写",
+              bullets: [
+                "确认区域是 $ -\\infty<x<\\infty$，没有边界条件。",
+                "从题目中读出波速 $a$、初位移 $\\varphi(x)$ 和初速度 $\\psi(x)$。",
+                "无外力时直接套达朗贝尔公式。",
+                "有外力时再加纯强迫振动的双重积分。",
+                "最后检查三角恒等式、积分上下限和初始时刻 $t=0$ 是否恢复题目给的条件。"
+              ]
+            },
+            {
+              id: "wave-common-errors",
+              type: "warning",
+              title: "行波法最容易错的地方",
+              bullets: [
+                "有限长弦误用达朗贝尔公式，忘记端点会产生反射波。",
+                "把 $x+at$、$x-at$ 的传播方向写反。",
+                "混淆初始形状与初始速度，把 $\\varphi$ 和 $\\psi$ 放错位置。",
+                "忘记达朗贝尔公式速度项的因子 $1/(2a)$。",
+                "强迫项积分的时间变量与空间变量混用。",
+                "把微分算子当成普通数字，忽略它必须作用在未知函数上。"
               ]
             }
           ]

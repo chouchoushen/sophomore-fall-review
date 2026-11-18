@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="数学物理方法互动复习站：复变函数、解析函数、留数、三类数学物理方程与定解条件。">
+  <meta name="description" content="数学物理方法互动复习站：复变函数、解析函数、留数、三类数学物理方程、定解条件与行波法。">
   <title>数学物理方法 · 复变与方程</title>
   <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/katex/katex.min.css">
@@ -125,7 +125,7 @@
 
         <nav class="rail__actions" aria-label="冲刺入口">
           <a href="#assessment">通关自测 <span>18 题</span></a>
-          <a href="#formulaSheet">公式速查 <span>17 组</span></a>
+          <a href="#formulaSheet">公式速查 <span>20 组</span></a>
           <a href="#examWorkflow">解题流程 <span>4 步</span></a>
         </nav>
       </div>
@@ -205,7 +205,7 @@
         <div class="section-heading">
           <div>
             <p class="eyebrow">FORMULA SHEET</p>
-            <h2 id="formulaSheetTitle">复变与留数公式速查</h2>
+            <h2 id="formulaSheetTitle">复变、定解与行波公式速查</h2>
           </div>
           <p>先确认解析区域，再写公式；路径方向和奇点是否在内部，往往比公式本身更容易丢分。</p>
         </div>
@@ -300,6 +300,21 @@
                 <td>$u=g,\quad \partial u/\partial n=g,\quad \alpha u+\beta\partial u/\partial n=\mu$</td>
                 <td>依次为 Dirichlet、Neumann、Robin 边界条件。</td>
               </tr>
+              <tr>
+                <td>波动算子分解</td>
+                <td>$u_{tt}-a^2u_{xx}=(\partial_t-a\partial_x)(\partial_t+a\partial_x)u$</td>
+                <td>换成 $\xi=x+at,\eta=x-at$ 后化为 $u_{\xi\eta}=0$。</td>
+              </tr>
+              <tr>
+                <td>达朗贝尔公式</td>
+                <td>$u=\frac12[\varphi(x+at)+\varphi(x-at)]+\frac1{2a}\int_{x-at}^{x+at}\psi(\xi)d\xi$</td>
+                <td>仅用于无界弦；初形状分成左右两列波，初速度通过积分传播。</td>
+              </tr>
+              <tr>
+                <td>强迫振动</td>
+                <td>$u_{II}=\frac1{2a}\int_0^t\int_{x-a(t-\tau)}^{x+a(t-\tau)}f(\xi,\tau)d\xi d\tau$</td>
+                <td>把持续外力看成许多瞬时冲量的叠加。</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -382,7 +397,7 @@
   <script defer src="./vendor/katex/katex.min.js"></script>
   <script defer src="./vendor/katex/contrib/auto-render.min.js"></script>
   <script defer src="../weekly-quiz.js?v=20261104-examples"></script>
-  <script defer src="./js/course-data.js?v=20261104-examples"></script>
+  <script defer src="./js/course-data.js?v=20261118-traveling-wave"></script>
   <script defer src="./js/quiz-data.js?v=20261104-examples"></script>
   <script defer src="./js/weekly-variants.js?v=20261104-examples"></script>
   <script defer src="./js/app.js?v=20261104-examples"></script>
